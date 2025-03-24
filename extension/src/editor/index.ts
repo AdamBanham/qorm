@@ -57,9 +57,9 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         function(events, factory, canvas, modeling) {
             var s1 = Object.assign(
                 factory.createDummyAttributesForEntities("entity"),
-                { x: 300, y: 100,}
+                { x: 275, y: 100,}
             );
-            s1 = factory.create("entity", s1);
+
             s1 = modeling.createShape(
                 s1, {x: s1.x, y:s1.y}, 
                 canvas.getRootElement()
@@ -67,14 +67,21 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
             var s2 = Object.assign(
                 factory.createDummyAttributesForEntities("value"),
-                { x: 500, y: 100,}
+                { x: 525, y: 100,}
             );
-            s2 = factory.create("value", s2);
             s2 = modeling.createShape(
                 s2, {x: s2.x, y:s2.y}, 
                 canvas.getRootElement()
             );
 
+            var s3 = Object.assign(
+                factory.createDummyAttributesForFacts("entity"),
+                { x: 400, y: 100,}
+            );
+            s3 = modeling.createShape(
+                s3, {x: s3.x, y:s3.y},
+                canvas.getRootElement()
+            );
 
             modeling.moveElements([s1,s2], {x:0,y:0});
     }]);

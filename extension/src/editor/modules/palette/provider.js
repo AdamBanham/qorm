@@ -57,16 +57,12 @@ export default function ExamplePaletteProvider(
         title: 'Create Entity Type',
         action: {
           click: function(event) {
-            var s1 = Object.assign(
+            var s = Object.assign(
               factory.createDummyAttributesForEntities("entity"),
-              { x: 100, y: 100,}
+              { x: 200, y: 100,}
             );
-            s1 = factory.create("entity", s1);
-            s1 = modeling.createShape(
-                s1, {x: s1.x, y:s1.y}, 
-                canvas.getRootElement()
-            );
-            modeling.moveElements([s1], {x:0,y:0});
+
+            create.start(event, s);
           }
         }
       },
@@ -76,16 +72,12 @@ export default function ExamplePaletteProvider(
         title: 'Create Value Type',
         action: {
           click: function(event) {
-            var s1 = Object.assign(
+            var s = Object.assign(
               factory.createDummyAttributesForEntities("value"),
-              { x: 100, y: 100,}
+              { x: 200, y: 100,}
             );
-            s1 = factory.create("value", s1);
-            s1 = modeling.createShape(
-                s1, {x: s1.x, y:s1.y}, 
-                canvas.getRootElement()
-            );
-            modeling.moveElements([s1], {x:0,y:0});
+
+            create.start(event, s);
           }
         }
       },
@@ -95,7 +87,12 @@ export default function ExamplePaletteProvider(
         title: 'Create Fact type',
         action: {
           click: function(event) {
-            console.log("create fact type");
+            var s = Object.assign(
+              factory.createDummyAttributesForFacts(),
+              { x: 200, y: 100,}
+            );
+
+            create.start(event, s);
           }
         }
       },

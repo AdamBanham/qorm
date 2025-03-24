@@ -55,8 +55,9 @@ export default class OrmElementFactory extends ElementFactory{
     createDummyAttributesForFacts(){
         return {
             factors: [],
-            width: 100,
-            height: 100,
+            width: 25,
+            height: 25,
+            type: 'fact',
             x: 0,
             y: 0
         };
