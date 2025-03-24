@@ -16,6 +16,7 @@ const LassoToolModule = require('diagram-js/lib/features/lasso-tool').default;
 import gridModule from './modules/grid';
 import paletteProvider from './modules/palette';
 import ormFactory from './modules/elements';
+import ormRenderer from './modules/render';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -39,7 +40,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
     const additionalModules = [
         gridModule,
         paletteProvider,
-        ormFactory
+        ormFactory,
+        ormRenderer
     ];
 
     var diagram =  new Diagram({
@@ -75,7 +77,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             );
 
             var s3 = Object.assign(
-                factory.createDummyAttributesForFacts("entity"),
+                factory.createDummyAttributesForFacts(),
                 { x: 400, y: 100,}
             );
             s3 = modeling.createShape(
