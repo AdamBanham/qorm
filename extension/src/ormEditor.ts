@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import  { getNonce } from './util';
 
-
 export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -49,6 +48,13 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 
         const styles = webview.asWebviewUri(vscode.Uri.joinPath(
             this.context.extensionUri, 'media', 'editor.css'));
+
+        const djsStyles = webview.asWebviewUri(vscode.Uri.joinPath(
+            this.context.extensionUri, 'media', 'diagram-js.css'));
+
+        const mdiStyles = webview.asWebviewUri(vscode.Uri.joinPath(
+            this.context.extensionUri, "media", "@mdi", "font", "css", "materialdesignicons.css"
+        ));
         // Use a nonce to whitelist which scripts can be run
 		const nonce = getNonce();
 
@@ -58,18 +64,20 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link href="${styles}" rel="stylesheet" />
+                <link href="${djsStyles}" rel="stylesheet" />
+                <link href="${mdiStyles}" rel="stylesheet" />
                 <title>qORM - Editor</title>
             </head>
             <body>
-                <div class="content">
+                <div class="content" data-vscode-context='{"webviewSection": "main", "mouseCount": 4, "preventDefaultContextMenuItems": true}'>
                     <h1> Editor </h1>
-                    <div class="editor" id="editor"></div>
+                    <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'></div>
 
                     <script nonce="${nonce}" src="${scriptUri}"></script>
                 </div>
             </body>
         </html>
-        `
+        `;
     } 
     
 }
