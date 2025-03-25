@@ -17,6 +17,7 @@ import gridModule from './modules/grid';
 import paletteProvider from './modules/palette';
 import ormFactory from './modules/elements';
 import ormRenderer from './modules/render';
+import ormModeling from "./modules/modeling"
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -41,7 +42,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         gridModule,
         paletteProvider,
         ormFactory,
-        ormRenderer
+        ormRenderer,
+        ormModeling
     ];
 
     var diagram =  new Diagram({
@@ -84,8 +86,12 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
                 s3, {x: s3.x, y:s3.y},
                 canvas.getRootElement()
             );
+            s3.addRole()
+            s3.setRole(s1 , 1)
 
-            modeling.moveElements([s1,s2], {x:0,y:0});
+            let c1 = modeling.connect(s1, s3)
+
+            modeling.moveElements([s1,s2,s3], {x:0,y:0});
     }]);
 
     (diagram.get('canvas') as any).zoom('fit-viewport');

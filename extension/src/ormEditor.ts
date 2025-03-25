@@ -52,6 +52,9 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         const djsStyles = webview.asWebviewUri(vscode.Uri.joinPath(
             this.context.extensionUri, 'media', 'diagram-js.css'));
 
+        const renderStyles = webview.asWebviewUri(vscode.Uri.joinPath(
+            this.context.extensionUri, 'media', 'render.css'));
+
         const mdiStyles = webview.asWebviewUri(vscode.Uri.joinPath(
             this.context.extensionUri, "media", "@mdi", "font", "css", "materialdesignicons.css"
         ));
@@ -66,6 +69,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                 <link href="${styles}" rel="stylesheet" />
                 <link href="${djsStyles}" rel="stylesheet" />
                 <link href="${mdiStyles}" rel="stylesheet" />
+                <link href="${renderStyles}" rel="stylesheet" />
                 <title>qORM - Editor</title>
             </head>
             <body>

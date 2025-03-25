@@ -12,7 +12,15 @@ import BaseRenderer from "diagram-js/lib/draw/BaseRenderer";
 import {
     createLine
 } from 'diagram-js/lib/util/RenderUtil';
-  
+
+import { ValueEntity, Entity } from '../model/entities';
+import { Fact } from "../model/facts"
+
+
+const BORDER_COLOUR = "var(--render-border-colour)";
+const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
+const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
+const ARC_STROKE_COLOUR = "var(--render-arc-stroke)";
 var RENDER_PRIORITY = 1500;
 const LABEL_COLOUR = "#01031b";
 const INNER_ICON_FILL_COLOUR = "#222222";
@@ -44,7 +52,7 @@ export default class TSRenderer extends  BaseRenderer {
             if (self.canRender(element)) {
                 return self.drawShape(visuals, element, attrs);
             } else {
-                thedraw(visuals, element, attrs);
+                return thedraw(visuals, element, attrs);
             }
         });
         const theconection = super.drawConnection;
@@ -62,16 +70,8 @@ export default class TSRenderer extends  BaseRenderer {
         });
 
         this.CONNECTION_STYLE = styles.style(
-            { strokeWidth: 3, stroke: '#303c4a', strokeLinecap: 'round',
-                strokeLinejoin: 'round', fill: 'none'});
-        this.INTERNAL_SHAPE_STYLE = styles.style(
-            { fill: '#f5f5f5', stroke: '#222222', strokeWidth: 2 }
-        );
-        this.STARTING_SHAPE_STYLE = styles.style(
-            { fill: '#67f5a9', stroke: '#222222', strokeWidth: 2 }
-        );
-        this.ENDING_SHAPE_STYLE = styles.style(
-            { fill: '#f58867', stroke: '#222222', strokeWidth: 2 }
+            { strokeWidth: 3, stroke: ARC_STROKE_COLOUR, strokeLinecap: 'round',
+                strokeLinejoin: 'round', fill: 'none'}
         );
     }
 
@@ -84,6 +84,13 @@ export default class TSRenderer extends  BaseRenderer {
         return false;
     }
 
+    /**
+     * 
+     * @param {*} visuals 
+     * @param {ValueEntity | Entity | Fact} element 
+     * @param {*} attrs 
+     * @returns 
+     */
     drawShape(visuals, element, attrs) {
             // init
             var svgElements;
@@ -91,10 +98,78 @@ export default class TSRenderer extends  BaseRenderer {
             
             // draw 
             console.log("drawing element :: ", element);
-            
+            console.log("drawing element:: attrs::", attrs)
 
-        
-            return super.drawShape(visuals, element, attrs);
+            let rx = 10 
+            let strokeWidth = 3
+            let dashType = ""
+            let textLeft = (element.width / 2) - (element.width / 4)
+            let textUpper = (element.height / 2) - 3.75
+            let textMiddle = (element.height / 2) + 1.25
+            let textLower = (element.height / 2) + 7.5
+            if (element.type == 'fact'){
+                rx = 2.5
+                strokeWidth = 1.5;
+            }
+            if (element.type == 'value') {
+                dashType = "18 6";
+            }
+            
+            // draw bounding box
+            let box = svgCreate("rect", {
+                fill: SHAPE_FILL_COLOUR,
+                stroke: BORDER_COLOUR,
+                strokeWidth: strokeWidth,
+                'stroke-dasharray': dashType,
+                rx: rx,
+                width: element.width,
+                height: element.height
+            })
+            svgAppend(group, box)
+
+            if (element.type != 'fact'){
+                if (element.type == 'value'){
+                    let upperText = svgCreate("text", {
+                        x: textLeft, y: textMiddle, style:"text-align: center;",
+                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                    });
+                    upperText.textContent = element.name
+                    svgAppend(group, upperText)
+                } else {
+                    // draw labels
+                    let upperText = svgCreate("text", {
+                        x: textLeft, y: textUpper, style:"text-align: center;",
+                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                    });
+                    upperText.textContent = element.name
+                    svgAppend(group, upperText)
+
+                    let lowerText = svgCreate("text", {
+                        x: textLeft, y: textLower, style:"text-align: center;",
+                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                    });
+                    lowerText.textContent = "(."+ element.ref + ")"
+                    svgAppend(group, lowerText)
+                }
+                
+            }
+             
+
+
+            // draw center for debug
+            let dot = svgCreate("circle", {
+                cx: (element.width / 2),
+                cy: (element.height / 2),
+                r: 5,
+                fill: "red",
+                stroke: "transparent",
+                opacity: 0.25
+            })
+            svgAppend(group, dot)
+            
+            // add compontents to group and return
+            svgAppend(visuals, group)
+            return group
     };    
     
     createShadowForShape(svgElement){
