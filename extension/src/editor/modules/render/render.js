@@ -14,7 +14,7 @@ import {
 } from 'diagram-js/lib/util/RenderUtil';
 
 import { ValueEntity, Entity } from '../model/entities';
-import { Fact } from "../model/facts"
+import { unitWidth, unitHeight, Fact } from "../model/facts";
 
 
 const BORDER_COLOUR = "var(--render-border-colour)";
@@ -100,56 +100,80 @@ export default class TSRenderer extends  BaseRenderer {
             console.log("drawing element :: ", element);
             console.log("drawing element:: attrs::", attrs)
 
-            let rx = 10 
-            let strokeWidth = 3
-            let dashType = ""
-            let textLeft = (element.width / 2) - (element.width / 4)
-            let textUpper = (element.height / 2) - 3.75
-            let textMiddle = (element.height / 2) + 1.25
-            let textLower = (element.height / 2) + 7.5
-            if (element.type == 'fact'){
-                rx = 2.5
+            let rx = 10 ;
+            let strokeWidth = 3;
+            let dashType = "";
+            let textLeft = (element.width / 2) - (element.width / 4);
+            let textUpper = (element.height / 2) - 3.75;
+            let textMiddle = (element.height / 2) + 1.25;
+            let textLower = (element.height / 2) + 7.5;
+            if (element.type === 'fact'){
+                rx = 2.5;
                 strokeWidth = 1.5;
             }
-            if (element.type == 'value') {
+            if (element.type === 'value') {
                 dashType = "18 6";
             }
             
             // draw bounding box
-            let box = svgCreate("rect", {
-                fill: SHAPE_FILL_COLOUR,
-                stroke: BORDER_COLOUR,
-                strokeWidth: strokeWidth,
-                'stroke-dasharray': dashType,
-                rx: rx,
-                width: element.width,
-                height: element.height
-            })
-            svgAppend(group, box)
+            if (element.type === 'fact'){
+                let x = 0;
+                let y = 0;
+                for (let i = 0; i < element.roles; i++){
+                    console.log("drawing box :: ", i , " and :: ", element);
+                    let box = svgCreate("rect", {
+                        fill: SHAPE_FILL_COLOUR,
+                        stroke: BORDER_COLOUR,
+                        strokeWidth: strokeWidth,
+                        'stroke-dasharray': dashType,
+                        rx: rx,
+                        width: unitWidth,
+                        height: unitHeight,
+                        x: x,
+                        y: 0
+                    });
+                    console.log("drawing box :: ", box);
+                    svgAppend(group, box);
+                    x = x + unitWidth;
+                }
+                
+            } else {
+                let box = svgCreate("rect", {
+                    fill: SHAPE_FILL_COLOUR,
+                    stroke: BORDER_COLOUR,
+                    strokeWidth: strokeWidth,
+                    'stroke-dasharray': dashType,
+                    rx: rx,
+                    width: element.width,
+                    height: element.height
+                });
+                svgAppend(group, box);
+            }
+           
 
-            if (element.type != 'fact'){
-                if (element.type == 'value'){
+            if (element.type !== 'fact'){
+                if (element.type === 'value'){
                     let upperText = svgCreate("text", {
                         x: textLeft, y: textMiddle, style:"text-align: center;",
                         textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
                     });
-                    upperText.textContent = element.name
-                    svgAppend(group, upperText)
+                    upperText.textContent = element.name;
+                    svgAppend(group, upperText);
                 } else {
                     // draw labels
                     let upperText = svgCreate("text", {
                         x: textLeft, y: textUpper, style:"text-align: center;",
                         textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
                     });
-                    upperText.textContent = element.name
-                    svgAppend(group, upperText)
+                    upperText.textContent = element.name;
+                    svgAppend(group, upperText);
 
                     let lowerText = svgCreate("text", {
                         x: textLeft, y: textLower, style:"text-align: center;",
                         textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
                     });
-                    lowerText.textContent = "(."+ element.ref + ")"
-                    svgAppend(group, lowerText)
+                    lowerText.textContent = "(."+ element.ref + ")";
+                    svgAppend(group, lowerText);
                 }
                 
             }
@@ -164,12 +188,12 @@ export default class TSRenderer extends  BaseRenderer {
                 fill: "red",
                 stroke: "transparent",
                 opacity: 0.25
-            })
-            svgAppend(group, dot)
+            });
+            svgAppend(group, dot);
             
             // add compontents to group and return
-            svgAppend(visuals, group)
-            return group
+            svgAppend(visuals, group);
+            return group;
     };    
     
     createShadowForShape(svgElement){

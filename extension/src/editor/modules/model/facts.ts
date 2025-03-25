@@ -1,8 +1,8 @@
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 
-const unitWidth = 25;
-const unitHeight = 25;
+export const unitWidth = 25;
+export const unitHeight = 25;
 
 interface fact {
     id: string;
@@ -44,15 +44,15 @@ export class Fact implements fact {
     }
 
     addRole(){
-        this.roles++;
-        this.factors = this.factors.concat(...[null])
-        this.width = this.width + unitWidth
+        this.roles = this.roles + 1;
+        this.factors = this.factors.concat(...[null]);
+        this.width = this.width + unitWidth;
     }
 
     removeRole(){
-        this.roles--;
+        this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -2);
-        this.width = this.width - unitWidth
+        this.width = this.width - unitWidth;
     }
 
     setRole(role:entity,pos:number){

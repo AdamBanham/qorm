@@ -15,7 +15,7 @@ export default class OrmModelling extends Modeling {
      * @param {CommandStack} commandStack 
      */
     constructor(eventBus, elementFactory, commandStack){
-        super(eventBus, elementFactory, commandStack)
+        super(eventBus, elementFactory, commandStack);
     }
 
     /**
@@ -24,10 +24,23 @@ export default class OrmModelling extends Modeling {
      * @param {entity}
      */
     expandFact(fact, entity){
-        fact.addRole()
+        console.log("Fact pre-expanded ::", fact);
+        fact.addRole();
         if (entity){
-            fact.setRole(entity, fact.roles)
+            fact.setRole(entity, fact.roles);
         }
         // TODO: send the event for element changed.
+        this._eventBus.fire('element.changed', {element: fact});
+        console.log("Fact expanded ::", fact);
+    }
+
+    /**
+     * 
+     * @param {Fact} fact 
+     * @param {entity}
+     */
+    reduceFact(fact){
+        fact.removeRole();
+        this._eventBus.fire('element.changed', {element: fact});
     }
 }
