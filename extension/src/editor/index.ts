@@ -11,6 +11,8 @@ const PaletteModule = require('diagram-js/lib/features/palette').default;
 const ZoomScrollModule = require('diagram-js/lib/navigation/zoomscroll').default;
 const SnappingModule = require('diagram-js/lib/features/snapping').default;
 const LassoToolModule = require('diagram-js/lib/features/lasso-tool').default;
+const ContextPadModule = require('diagram-js/lib/features/context-pad').default;
+const KeyBoardModule = require('diagram-js/lib/features/keyboard').default;
 
 // additionals modules
 import gridModule from './modules/grid';
@@ -19,6 +21,7 @@ import ormFactory from './modules/elements';
 import ormRenderer from './modules/render';
 import ormModeling from "./modules/modeling";
 import ordering from "./modules/ordering";
+import ormContextPads from "./modules/contextPad";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -35,7 +38,9 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         LassoToolModule,
         PaletteModule,
         ZoomScrollModule,
-        SnappingModule
+        SnappingModule,
+        ContextPadModule,
+        KeyBoardModule
     ];
 
     // additiona modules for the orm-editor
@@ -45,7 +50,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ormFactory,
         ormRenderer,
         ormModeling,
-        ordering
+        ordering,
+        ormContextPads
     ];
 
     var diagram =  new Diagram({
@@ -56,6 +62,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             ...builtinModules,
             ...additionalModules
         ],
+        'keyboard.bind' : true
     });
 
     // dummy creates to test out modules

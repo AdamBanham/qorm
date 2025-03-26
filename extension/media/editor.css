@@ -1,3 +1,7 @@
+:root{
+    --editor-primary: #3131d4;
+}
+
 html, body {
     width: 100%;
     height: 100%;
@@ -15,6 +19,10 @@ html, body {
     height: 95%;
     margin: auto;
     background: rgba(168, 165, 218, 0.24);
+}
+
+#editor .editor-hover:hover {
+    color: var(--editor-primary);
 }
 
 #editor svg:focus {

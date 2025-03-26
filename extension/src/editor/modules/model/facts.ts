@@ -4,7 +4,7 @@ import { getNextIdentifier } from "./util";
 export const unitWidth = 25;
 export const unitHeight = 25;
 
-interface fact {
+export interface fact {
     id: string;
     roles: number;
     factors: Array<entity | null>;
