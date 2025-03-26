@@ -6,7 +6,7 @@
 		{
 			"label" : "run:watch",
 			"type": "shell",
-			"command": "cd extension | npm run compile |npm run watch",
+			"command": "cd ./extension && npm run watch",
 			"problemMatcher": "$tsc-watch",
 			"isBackground": true,
 			"presentation": {

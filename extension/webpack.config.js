@@ -48,6 +48,7 @@
     infrastructureLogging: {
       level: "log", // enables logging required for problem matchers
     },
+    watchOptions: { poll: true },
   };
   module.exports = [ extensionConfig ];
 }());
