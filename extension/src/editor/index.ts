@@ -89,6 +89,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             modeling.expandFact(s3);
 
             let c1 = modeling.connect(s1, s3);
+            let c2 = modeling.connect(s3, s2);
 
             modeling.moveElements([s1,s2,s3], {x:0,y:0});
     }]);

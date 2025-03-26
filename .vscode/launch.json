@@ -8,6 +8,8 @@
 		{
 			"name": "Run Extension",
 			"type": "extensionHost",
+			"localRoot": "${workspaceFolder}/extension",
+			"cwd": "${workspaceFolder}/extension",
 			"request": "launch",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}/extension"
@@ -16,7 +18,7 @@
 				"${workspaceFolder}/extension/out/**/*.js",
 				"${workspaceFolder}/sampleFiles/**.*"
 			],
-			"preLaunchTask": "${defaultBuildTask}"
+			"preLaunchTask": "run:watch"
 		}
 	]
 }
