@@ -9,22 +9,23 @@ import {
     getConnectedDistance
 } from 'diagram-js/lib/features/auto-place/AutoPlaceUtil.js';
 
-import { unitHeight } from "../model/facts";
-
+import { ShapeLike } from "diagram-js/lib/model";
+import { unitHeight, fact } from "../model/facts";
+import { entity } from "../model/entities";
 import { isFact } from "../model/util";
   
 
 export default function ContextPadProvider(
-    create, elementFactory, connect, contextPad, modeling, eventBus, registry
-) {
-    this._create = create;
-    this._elementFactory = elementFactory;
-    this._connect = connect;
-    this._modeling = modeling;
-    this._eventBus = eventBus;
-    this._registry = registry
-    contextPad.registerProvider(this);
-}
+        create, elementFactory, connect, contextPad, modeling, eventBus, registry
+    ) {
+        this._create = create;
+        this._elementFactory = elementFactory;
+        this._connect = connect;
+        this._modeling = modeling;
+        this._eventBus = eventBus;
+        this._registry = registry
+        contextPad.registerProvider(this);
+    }
 
     ContextPadProvider.$inject = [
         'create',
@@ -46,6 +47,10 @@ export default function ContextPadProvider(
             registry = this._registry,
             bus = this._eventBus;
 
+        if (isFact(element)){
+            return this.getFactOptions(element);
+        }
+
         function removeElement(event, target, autoActivate) {
             bus.fire('pad.delete', {
                 elements: [element]
@@ -66,7 +71,7 @@ export default function ContextPadProvider(
                 fact, {x: fact.x, y:fact.y}, 
                 element.parent
             );
-
+            fact.setNextMissingRole(element);
             let connect = modeling.connect(element, fact);
             modeling.moveElements([connect,element,fact], {x:0,y:0});
             bus.fire('elements.changed', {
@@ -154,6 +159,9 @@ export default function ContextPadProvider(
         if (isConnection(element)){
             return contextPadOptions;
         }
+        if (isFact(element) && !element.hasMissingRole()){
+            return contextPadOptions;
+        }
 
         contextPadOptions['connect'] = {
             action: {
@@ -182,4 +190,79 @@ export default function ContextPadProvider(
     
 
         return contextPadOptions
+    }
+
+    /**
+     * Removes the element from the orm schema.
+     * @param {ContextPadProvider} that 
+     * @param {fact | entity | ShapeLike} element
+     */
+    ContextPadProvider.prototype.removeElement = function(that, element) {
+        bus.fire('pad.delete', {
+            elements: [element]
+        })
+        that._modeling.removeElements([ element ]);
+    }
+
+    /**
+     * Starts a connection attempt from the given element
+     * @param {ContextPadProvider} that 
+     * @param {fact | entity | ShapeLike } element 
+     * @param {*} event 
+     */
+    ContextPadProvider.prototype.startConnect = function(that, element, event){
+        that._connect.start(event, element, autoActivate);
+    }
+
+    ContextPadProvider.prototype.expandFact = function(that, fact){
+        fact.addRole();
+        that._eventBus.fire("element.changed", {element: fact});
+    }
+
+    /**
+     * Builds the current context options from the state of the fact
+     * @param {fact} fact 
+     * @returns the options 
+     */
+    ContextPadProvider.prototype.getFactOptions = function(fact){
+        var that = this;
+        
+        var options = {};
+
+        options['delete'] = {
+            action: {
+                click: () => {that.removeElement(that, fact)},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'delete',
+            group: 'edit'
+        }
+
+        options['expand'] = {
+            action : {
+                click : () => {that.expandFact(that, fact)}
+            },
+            className: 'content-pad-fact-expand',
+            html: '<div class="entry mdi-plus-box-outline mdi editor-hover" />',
+            title: 'expand roles',
+            group: 'edit'
+        }
+
+        if (!fact.hasMissingRole()){
+            return options;
+        }
+
+        contextPadOptions['connect'] = {
+            action: {
+                click: (event,) => {that.startConnect(that,fact, event,)},
+                dragstart: (event,) => {that.startConnect(that,fact, event,)}
+            },
+            className: 'context-pad-contect',
+            html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
+            title: 'connect',
+            group: 'join'
+        };
+
+        return options;
     }

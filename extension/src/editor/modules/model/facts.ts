@@ -1,4 +1,4 @@
-import { entity } from "./entities";
+import { Entity, entity } from "./entities";
 import { getNextIdentifier } from "./util";
 
 export const unitWidth = 25;
@@ -55,10 +55,39 @@ export class Fact implements fact {
         this.width = this.width - unitWidth;
     }
 
+    /**
+     * @returns {boolean} 
+     */
+    hasMissingRole(){
+        let missing = this.factors.filter( i => !i)
+        return missing.length > 0
+    }
+
+    /**
+     * May add the given entity as a factor of this fact type.
+     * returns either the given entity was added.
+     * @param {entity} entity  the entity to add
+     * @return {boolean} whether it was added
+     */
+    setNextMissingRole(entity:entity){
+        if (!this.hasMissingRole()){
+            return false;
+        }
+        for(let i = 0; i < this.roles; i++){
+            if (!this.factors[i]){
+                this.factors[i] = entity;
+                break;
+            }
+        }
+        return true
+    }
+
     setRole(role:entity,pos:number){
         if (pos < 1 && pos >= this.roles){
             throw new Error("Assertion Failed :: expected pos to between :: 1 and "+this.roles+" :: but was given :: "+pos);
         } 
         this.factors[pos] = role;
     }
+
+
 }

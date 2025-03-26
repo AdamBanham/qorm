@@ -87,20 +87,23 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
                 canvas.getRootElement()
             );
 
-            var s3 = Object.assign(
+            var fact = Object.assign(
                 factory.createDummyAttributesForFacts(),
                 { x: 400, y: 100,}
             );
-            s3 = modeling.createShape(
-                s3, {x: s3.x, y:s3.y},
+            fact = modeling.createShape(
+                fact, {x: fact.x, y:fact.y},
                 canvas.getRootElement()
             );
-            modeling.expandFact(s3);
+            modeling.expandFact(fact);
 
-            let c1 = modeling.connect(s1, s3);
-            let c2 = modeling.connect(s3, s2);
+            let c1 = modeling.connect(s1, fact);
+            console.log("added to fact? ::", fact.setNextMissingRole(s1))
 
-            modeling.moveElements([s1,s2,s3], {x:0,y:0});
+            let c2 = modeling.connect(s2, fact);
+            console.log("added to fact? ::", fact.setNextMissingRole(s2))
+            console.log("the fact :: ",  fact)
+            modeling.moveElements([s1,s2,fact], {x:0,y:0});
     }]);
 
     (diagram.get('canvas') as any).zoom('fit-viewport');
