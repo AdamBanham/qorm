@@ -76,7 +76,6 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     canRender(element){
-        console.log("draw :: testing :: ", element);
         let type = element['type'] | "";
         if (type in ['entity', 'value', 'fact']){
             return true;
@@ -97,8 +96,6 @@ export default class TSRenderer extends  BaseRenderer {
             var group = svgCreate("g", {});
             
             // draw 
-            console.log("drawing element :: ", element);
-            console.log("drawing element:: attrs::", attrs)
 
             let rx = 10 ;
             let strokeWidth = 3;
@@ -120,7 +117,6 @@ export default class TSRenderer extends  BaseRenderer {
                 let x = 0;
                 let y = 0;
                 for (let i = 0; i < element.roles; i++){
-                    console.log("drawing box :: ", i , " and :: ", element);
                     let box = svgCreate("rect", {
                         fill: SHAPE_FILL_COLOUR,
                         stroke: BORDER_COLOUR,
@@ -132,7 +128,6 @@ export default class TSRenderer extends  BaseRenderer {
                         x: x,
                         y: 0
                     });
-                    console.log("drawing box :: ", box);
                     svgAppend(group, box);
                     x = x + unitWidth;
                 }
@@ -244,7 +239,6 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     drawConnection(visuals, connection, attrs) {
-        console.log("drawing connection :: ", connection);
         return this._drawSimpleConnection(
             visuals, connection, attrs
         );

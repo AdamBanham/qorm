@@ -50,6 +50,7 @@ export default class OrmModelling extends Modeling {
         if (remove){
             this.removeConnectionFromFact(fact, remove);
         }
+        this.sendUpdates(fact.incoming);
         return remove;
     }
 
