@@ -3,8 +3,8 @@ import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 
-import { Fact } from "../model/facts"
-import { entity } from "../model/entities"
+import { Fact } from "../model/facts";
+import { entity, ValueEntity, Entity } from "../model/entities";
 
 export default class OrmModelling extends Modeling {
 
@@ -18,29 +18,84 @@ export default class OrmModelling extends Modeling {
         super(eventBus, elementFactory, commandStack);
     }
 
+    sendUpdate(element){
+        this._eventBus.fire('element.changed', {element: element});
+    }
+
+    sendUpdates(...elements){
+        elements.forEach(element => this.sendUpdate(element));
+    }
+
     /**
-     * 
-     * @param {Fact} fact 
-     * @param {entity}
+     * Expands the fact to the right.
+     * @param {Fact} fact the fact to expand
+     * @param {entity} entity the entity to add
      */
     expandFact(fact, entity){
-        console.log("Fact pre-expanded ::", fact);
         fact.addRole();
         if (entity){
             fact.setRole(entity, fact.roles);
         }
-        // TODO: send the event for element changed.
-        this._eventBus.fire('element.changed', {element: fact});
-        console.log("Fact expanded ::", fact);
+        this.sendUpdate(fact);
     }
 
     /**
-     * 
+     * Reduces the fact from the right.
      * @param {Fact} fact 
-     * @param {entity}
+     * @returns {Entity | ValueEntity | null} the removed entity
      */
     reduceFact(fact){
-        fact.removeRole();
-        this._eventBus.fire('element.changed', {element: fact});
+        let remove = fact.removeRole();
+        this.sendUpdate(fact);
+        if (remove){
+            this.removeConnectionFromFact(fact, remove);
+        }
+        return remove;
     }
+
+    /**
+     * finds the connection between the fact and the entity
+     * and removes it.
+     * @param {Fact} fact
+     * @param {Entity | ValueEntity} entity
+     */
+    removeConnectionFromFact(fact, entity){
+        let con = null;
+        for(let inc in fact.incoming){
+            if (fact.incoming[inc].source.id === entity.id){
+                con = fact.incoming[inc];
+                break;
+            }
+        }
+        if (con){
+            this.removeConnection(con);
+        }   
+        this.sendUpdates(fact, entity, con);
+    }
+
+    /**
+     * Connects an entity to a fact
+     * @param {Fact} fact 
+     * @param {Entity | ValueEntity} entity 
+     * @param {number} pos
+     * @returns {Connection | null} the created connection
+     */
+    connectToFact(fact, entity, pos){
+        let added = false;
+        if (!pos){
+            added = fact.setNextMissingRole(entity);
+        } else {
+            try {
+                added = fact.setRole(entity, pos);
+            }
+            catch (e){}
+        }
+        let con = null;
+        if (added){
+            con = this.connect(entity, fact);
+            this.sendUpdates(con,fact,entity);
+        }
+        return con;
+    }
+        
 }

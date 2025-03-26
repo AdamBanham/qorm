@@ -1,5 +1,6 @@
 :root{
-    --editor-primary: #3131d4;
+    --editor-primary: #2222f8;
+    --editor-secondary: #074355;
 }
 
 html, body {
@@ -21,8 +22,15 @@ html, body {
     background: rgba(168, 165, 218, 0.24);
 }
 
+#editor .editor-hover {
+    cursor: pointer;
+    color: var(--editor-secondary);
+    transition: 0.3s;
+}
+
 #editor .editor-hover:hover {
     color: var(--editor-primary);
+    transition: 0.3s;
 }
 
 #editor svg:focus {

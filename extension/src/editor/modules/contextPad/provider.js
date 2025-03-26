@@ -1,7 +1,7 @@
 
 import  {
     isLabel, isConnection
-} from "diagram-js/lib/util/ModelUtil"
+} from "diagram-js/lib/util/ModelUtil";
 
 import {
     findFreePosition,
@@ -23,7 +23,7 @@ export default function ContextPadProvider(
         this._connect = connect;
         this._modeling = modeling;
         this._eventBus = eventBus;
-        this._registry = registry
+        this._registry = registry;
         contextPad.registerProvider(this);
     }
 
@@ -54,7 +54,7 @@ export default function ContextPadProvider(
         function removeElement(event, target, autoActivate) {
             bus.fire('pad.delete', {
                 elements: [element]
-            })
+            });
             modeling.removeElements([ element ]);
         }
             
@@ -76,10 +76,10 @@ export default function ContextPadProvider(
             modeling.moveElements([connect,element,fact], {x:0,y:0});
             bus.fire('elements.changed', {
                 elements: [connect,element,fact]}
-            )            
+            );            
         }
 
-        var contextPadOptions = {}
+        var contextPadOptions = {};
 
         // alaways present
         contextPadOptions['delete'] = {
@@ -90,7 +90,7 @@ export default function ContextPadProvider(
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
             title: 'delete',
             group: 'edit'
-        }
+        };
 
         // if (isLabel(element)){
         //     return contextPadOptions
@@ -189,8 +189,8 @@ export default function ContextPadProvider(
         };
     
 
-        return contextPadOptions
-    }
+        return contextPadOptions;
+    };
 
     /**
      * Removes the element from the orm schema.
@@ -198,11 +198,8 @@ export default function ContextPadProvider(
      * @param {fact | entity | ShapeLike} element
      */
     ContextPadProvider.prototype.removeElement = function(that, element) {
-        bus.fire('pad.delete', {
-            elements: [element]
-        })
         that._modeling.removeElements([ element ]);
-    }
+    };
 
     /**
      * Starts a connection attempt from the given element
@@ -211,13 +208,18 @@ export default function ContextPadProvider(
      * @param {*} event 
      */
     ContextPadProvider.prototype.startConnect = function(that, element, event){
-        that._connect.start(event, element, autoActivate);
-    }
+        that._connect.start(event, element, true);
+    };
 
     ContextPadProvider.prototype.expandFact = function(that, fact){
-        fact.addRole();
-        that._eventBus.fire("element.changed", {element: fact});
-    }
+        that._modeling.expandFact(fact);
+    };
+
+    ContextPadProvider.prototype.reduceFact = function(that, fact){
+        if (fact.roles > 1){
+            that._modeling.reduceFact(fact);
+        }
+    };
 
     /**
      * Builds the current context options from the state of the fact
@@ -229,39 +231,51 @@ export default function ContextPadProvider(
         
         var options = {};
 
-        options['delete'] = {
-            action: {
-                click: () => {that.removeElement(that, fact)},
-            },
-            className: 'context-pad-delete',
-            html: '<div class="entry mdi-delete mdi editor-hover"/>',
-            title: 'delete',
-            group: 'edit'
-        }
-
+       
         options['expand'] = {
             action : {
-                click : () => {that.expandFact(that, fact)}
+                click : () => {that.expandFact(that, fact);}
             },
             className: 'content-pad-fact-expand',
             html: '<div class="entry mdi-plus-box-outline mdi editor-hover" />',
             title: 'expand roles',
-            group: 'edit'
+            group: '1-grow'
+        };
+
+        if (fact.roles > 1){
+            options['reduce'] = {
+                action : {
+                    click : () => {that.reduceFact(that, fact);}
+                },
+                className: 'content-pad-fact-reduce',
+                html: '<div class="entry mdi-minus-box-outline mdi editor-hover" />',
+                title: 'reduce roles',
+                group: '1-grow'
+            };
+    
         }
 
-        if (!fact.hasMissingRole()){
-            return options;
+        if (fact.hasMissingRole()){
+            options['connect'] = {
+                action: {
+                    click: (event,) => {that.startConnect(that,fact, event,);},
+                    dragstart: (event,) => {that.startConnect(that,fact, event,);}
+                },
+                className: 'context-pad-contect',
+                html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
+                title: 'connect',
+                group: '2-join'
+            };
         }
 
-        contextPadOptions['connect'] = {
+        options['delete'] = {
             action: {
-                click: (event,) => {that.startConnect(that,fact, event,)},
-                dragstart: (event,) => {that.startConnect(that,fact, event,)}
+                click: () => {that.removeElement(that, fact);},
             },
-            className: 'context-pad-contect',
-            html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
-            title: 'connect',
-            group: 'join'
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'delete',
+            group: '3-delete'
         };
 
         return options;

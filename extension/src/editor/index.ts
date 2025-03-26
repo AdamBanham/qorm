@@ -97,12 +97,9 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             );
             modeling.expandFact(fact);
 
-            let c1 = modeling.connect(s1, fact);
-            console.log("added to fact? ::", fact.setNextMissingRole(s1))
-
-            let c2 = modeling.connect(s2, fact);
-            console.log("added to fact? ::", fact.setNextMissingRole(s2))
-            console.log("the fact :: ",  fact)
+            let c1 = modeling.connectToFact(fact, s1);
+            let c2 = modeling.connectToFact(fact, s2);
+            
             modeling.moveElements([s1,s2,fact], {x:0,y:0});
     }]);
 

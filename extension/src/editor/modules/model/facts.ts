@@ -49,18 +49,24 @@ export class Fact implements fact {
         this.width = this.width + unitWidth;
     }
 
+    /**
+     * Removes the last role from the fact type.
+     * @returns {entity | null} the entity that was removed
+     */
     removeRole(){
+        let temp = this.factors[this.roles - 1];
         this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -2);
         this.width = this.width - unitWidth;
+        return temp;
     }
 
     /**
      * @returns {boolean} 
      */
     hasMissingRole(){
-        let missing = this.factors.filter( i => !i)
-        return missing.length > 0
+        let missing = this.factors.filter( i => !i);
+        return missing.length > 0;
     }
 
     /**
@@ -79,7 +85,7 @@ export class Fact implements fact {
                 break;
             }
         }
-        return true
+        return true;
     }
 
     setRole(role:entity,pos:number){
