@@ -17,7 +17,8 @@ import gridModule from './modules/grid';
 import paletteProvider from './modules/palette';
 import ormFactory from './modules/elements';
 import ormRenderer from './modules/render';
-import ormModeling from "./modules/modeling"
+import ormModeling from "./modules/modeling";
+import ordering from "./modules/ordering";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -43,7 +44,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         paletteProvider,
         ormFactory,
         ormRenderer,
-        ormModeling
+        ormModeling,
+        ordering
     ];
 
     var diagram =  new Diagram({
