@@ -1,5 +1,5 @@
 import OrderingProvider from "diagram-js/lib/features/ordering/OrderingProvider.js"
-import { ConnectionImpl } from "diagram-js/lib/model/"
+import  { isConnection } from "diagram-js/lib/util/ModelUtil";
 
 class OrmOrderingProvider extends OrderingProvider{
 
@@ -8,7 +8,7 @@ class OrmOrderingProvider extends OrderingProvider{
     }
 
     getOrdering(element, newParent){
-        if (element.waypoints){
+        if (isConnection(element)){
             return {
                 index: 1,
                 parent: newParent
