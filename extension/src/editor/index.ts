@@ -22,6 +22,7 @@ import ormRenderer from './modules/render';
 import ormModeling from "./modules/modeling";
 import ordering from "./modules/ordering";
 import ormContextPads from "./modules/contextPad";
+import ormConnect from "./modules/connect";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -45,13 +46,15 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
     // additiona modules for the orm-editor
     const additionalModules = [
+        ormConnect,
         gridModule,
         paletteProvider,
         ormFactory,
         ormRenderer,
         ormModeling,
         ordering,
-        ormContextPads
+        ormContextPads,
+        
     ];
 
     var diagram =  new Diagram({

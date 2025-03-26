@@ -1,4 +1,5 @@
-import { Entity, entity } from "./entities";
+import { ShapeLike } from "diagram-js/lib/model/types";
+import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 
 export const unitWidth = 25;
@@ -55,9 +56,12 @@ export class Fact implements fact {
      */
     removeRole(){
         let temp = this.factors[this.roles - 1];
+        console.log("Fact::removeRole::", temp);
+        debugger;
         this.roles = this.roles - 1;
-        this.factors = this.factors.slice(0, -2);
+        this.factors = this.factors.slice(0, -1);
         this.width = this.width - unitWidth;
+        console.log("Fact::removeRole::", temp);
         return temp;
     }
 
@@ -94,6 +98,5 @@ export class Fact implements fact {
         } 
         this.factors[pos] = role;
     }
-
-
 }
+

@@ -19,7 +19,7 @@ export default function ExamplePaletteProvider(
     'elementFactory',
     'lassoTool',
     'palette',
-    'connect',
+    'ormConnect',
     'elementRegistry',
     'modeling',
     'canvas',

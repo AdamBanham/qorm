@@ -63,6 +63,7 @@ export default class OrmModelling extends Modeling {
     removeConnectionFromFact(fact, entity){
         let con = null;
         for(let inc in fact.incoming){
+            console.log("modeler::removeConnectionFromFact::", fact.incoming[inc]);
             if (fact.incoming[inc].source.id === entity.id){
                 con = fact.incoming[inc];
                 break;

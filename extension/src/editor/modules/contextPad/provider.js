@@ -30,7 +30,7 @@ export default function ContextPadProvider(
     ContextPadProvider.$inject = [
         'create',
         'elementFactory',
-        'connect',
+        'ormConnect',
         'contextPad',
         'modeling',
         'eventBus',
@@ -279,4 +279,4 @@ export default function ContextPadProvider(
         };
 
         return options;
-    }
+    };

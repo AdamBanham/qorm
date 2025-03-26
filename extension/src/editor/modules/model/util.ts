@@ -14,11 +14,25 @@ export function getNextIdentifier () {
 }
 
 /**
- * 
- * @param element 
+ * Determines if the shape is a fact type.
+ * @param {ShapeLike} shape 
+ * @returns {boolean} whether the shape is a fact type.
  */
-export function isFact(element:ShapeLike | entity | fact){
-    if (element.type){
-        return element.type === 'fact'
+export function isFact(shape: ShapeLike): shape is fact {
+    if (shape.type){
+        return shape.type === "fact";
     }
+    return false;
+}
+
+/**
+ * Determines if the shape is an entity type.
+ * @param {ShapeLike} shape 
+ * @returns {boolean} whether the shape is an entity type.
+ */
+export function isEntity(shape: ShapeLike): shape is entity {
+    if (shape.type){
+        return shape.type === "entity" || shape.type === "value";
+    }
+    return false;
 }
