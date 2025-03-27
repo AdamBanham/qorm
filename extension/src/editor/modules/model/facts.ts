@@ -66,6 +66,32 @@ export class Fact implements fact {
     }
 
     /**
+     * Clears the role with the given entity, otherwise clears at the given position.
+     * @param {entity} entity
+     * @param {number} pos 
+     */
+    clearRole(entity:entity, pos:number){
+        if (entity){
+            let idx = this.factors.findIndex((i,_) => {
+                console.log("looking :: ", i, entity)
+                if (i){
+                    return i.id === entity.id
+                } return false
+            });
+            if (idx >= 0){
+                this.factors[idx] = null;
+                return;
+            }
+        }
+        if (pos !== null){
+            if (pos >= 0 && pos < this.roles){
+                    this.factors[pos] = null;
+            }
+        }
+        console.log("couldn't find the what role to clear :: ", this, entity, pos);
+    }
+
+    /**
      * @returns {boolean} 
      */
     hasMissingRole(){

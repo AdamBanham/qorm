@@ -47,6 +47,10 @@ export default function ContextPadProvider(
             registry = this._registry,
             bus = this._eventBus;
 
+
+        if (isConnection(element)){
+            return this.getConnectionOptions(element);
+        }    
         if (isFact(element)){
             return this.getFactOptions(element);
         }
@@ -280,3 +284,40 @@ export default function ContextPadProvider(
 
         return options;
     };
+
+
+    /**
+     * 
+     * @param {ContextPadProvider} that 
+     * @param {Connection} con 
+     */
+    ContextPadProvider.prototype.removeConnection = function(that, con){
+        var fact = con.target;
+        var entity = con.source;
+        fact.clearRole(entity,)
+        that._modeling.removeElements([ con ]);
+        that._modeling.sendUpdates(con, fact, entity)
+    }
+
+    /**
+     * Builds the current context options from the state of the connection
+     * @param {Connection} fact 
+     * @returns the options 
+     */
+    ContextPadProvider.prototype.getConnectionOptions = function(con){
+        var that = this;
+        var options = {};
+
+        options['delete'] = {
+            action: {
+                click: () => {that.removeConnection(that, con)},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'delete',
+            group: 'edit'
+        };
+
+        console.log(options)
+        return options;
+    }
