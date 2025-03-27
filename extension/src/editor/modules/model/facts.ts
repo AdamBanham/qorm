@@ -57,7 +57,6 @@ export class Fact implements fact {
     removeRole(){
         let temp = this.factors[this.roles - 1];
         console.log("Fact::removeRole::", temp);
-        debugger;
         this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -1);
         this.width = this.width - unitWidth;
@@ -92,7 +91,8 @@ export class Fact implements fact {
     }
 
     /**
-     * @returns {boolean} 
+     * Checks whether the fact type has any missing roles.
+     * @returns {boolean} is there any missing role
      */
     hasMissingRole(){
         let missing = this.factors.filter( i => !i);
