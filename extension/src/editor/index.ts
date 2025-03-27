@@ -23,6 +23,7 @@ import ormModeling from "./modules/modeling";
 import ordering from "./modules/ordering";
 import ormContextPads from "./modules/contextPad";
 import ormConnect from "./modules/connect";
+import ormRules from "./modules/rules";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -47,6 +48,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
     // additiona modules for the orm-editor
     const additionalModules = [
         ormConnect,
+        ormRules,
         gridModule,
         paletteProvider,
         ormFactory,
