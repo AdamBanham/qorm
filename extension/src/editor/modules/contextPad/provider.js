@@ -3,10 +3,10 @@ import  {
     isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
 
-import { ShapeLike } from "diagram-js/lib/model";
-import { unitHeight, fact } from "../model/facts";
-import { entity } from "../model/entities";
-import { isFact } from "../model/util";
+import { ShapeLike, Connection } from "diagram-js/lib/model";
+import { unitHeight, fact,  Fact } from "../model/facts";
+import { Entity, ValueEntity, entity } from "../model/entities";
+import { isFact, isEntity } from "../model/util";
   
 
 export default function ContextPadProvider(
@@ -35,171 +35,24 @@ export default function ContextPadProvider(
 
     ];
 
+    /**
+     * Generates the suitable options to show in the context pad for the given element.
+     * @param {Connection | Fact | Entity | ValueEntity } element 
+     * @returns {Object} the options to show in the context pad
+     */
     ContextPadProvider.prototype.getContextPadEntries = function(element){
+        var options = {};
         
-        var connect = this._connect,
-            modeling = this._modeling,
-            factory = this._elementFactory,
-            placer = this._placement,
-            create = this._create,
-            registry = this._registry,
-            bus = this._eventBus;
-
-
         if (isConnection(element)){
-            return this.getConnectionOptions(element);
+            options = this.getConnectionOptions(element);
         }    
         if (isFact(element)){
-            return this.getFactOptions(element);
+            options = this.getFactOptions(element);
         }
-
-        function removeElement(event, target, autoActivate) {
-            bus.fire('pad.delete', {
-                elements: [element]
-            });
-            modeling.removeElements([ element ]);
+        if (isEntity(element)){
+            options = this.getEntityOptions(element);
         }
-            
-        function startConnect(event, element, autoActivate) {
-            connect.start(event, element, autoActivate);
-        }
-
-        function createConnectedFact(event, element){
-            var fact = Object.assign(
-                factory.createDummyAttributesForFacts(),
-                { x: element.x+element.width+ 100, 
-                  y: element.y+element.height/2,}
-            );
-            fact = modeling.createShape(
-                fact, {x: fact.x, y:fact.y}, 
-                element.parent
-            );
-            // find a free position
-            let pos = placer.place(element, fact);
-            fact.x = pos.x;
-            fact.y = pos.y;
-            // add entity as a role to the fact
-            fact.setNextMissingRole(element);
-            // add connection
-            let connect = modeling.connect(element, fact);
-            // silly updating to make sure the layering is correct
-            modeling.moveElements([connect,element,fact], {x:0,y:0});
-            bus.fire('elements.changed', {
-                elements: [connect,element,fact]}
-            );            
-        }
-
-        var contextPadOptions = {};
-
-        // alaways present
-        contextPadOptions['delete'] = {
-            action: {
-                click: removeElement,
-            },
-            className: 'context-pad-delete',
-            html: '<div class="entry mdi-delete mdi editor-hover"/>',
-            title: 'delete',
-            group: 'edit'
-        };
-
-        // if (isLabel(element)){
-        //     return contextPadOptions
-        // }
-
-        // if (isFlow(element)){
-
-        //     contextPadOptions['flip'] = {
-        //         action: {
-        //             click: flipConnection
-        //         },
-        //         class: 'context-pad-flip',
-        //         html: '<div class="entry mdi mdi-arrow-left-right editor-hover"/>',
-        //         title: 'flip direction',
-        //         group: 'edit'
-        //     }
-
-        //     return contextPadOptions
-        // }
-
-        // if (isTransition(element)){
-        //     contextPadOptions['switch'] = {
-        //         action: {
-        //             click: switchStateType
-        //         },
-        //         class: 'context-pad-switch',
-        //         html: '<div class="entry mdi mdi-toggle-switch mdi editor-hover"/>',
-        //         title: element.silent ? 'make visible' : 'make silent',
-        //         group: 'edit'
-        //     }
-
-        // }
-
-        // if (isPlace(element)){
-        //     contextPadOptions['create-trans'] = {
-        //         action: {
-        //             click: createConnectedTransition
-        //         },
-        //         class: 'context-pad-create-trans',
-        //         html: '<div class="entry mdi mdi-square-rounded-outline editor-hover"/>',
-        //         title: 'add transition',
-        //         group: 'add'
-        //     }
-        //     contextPadOptions['create-sil-trans'] = {
-        //         action: {
-        //             click: (ev,el) => createConnectedTransition(ev, el, true)
-        //         },
-        //         class: 'context-pad-create-sil-trans',
-        //         html: '<div class="entry mdi mdi-square-rounded editor-hover"/>',
-        //         title: 'add silent transition',
-        //         group: 'add'
-        //     }
-        // }
-
-        // if (isTransition(element)){
-        //     contextPadOptions['create-place'] = {
-        //         action: {
-        //             click: createConnectedPlace
-        //         },
-        //         class: 'context-pad-create-place',
-        //         html: '<div class="entry mdi mdi-circle-outline editor-hover"/>',
-        //         title: 'add place',
-        //         group: 'add'
-        //     }
-        // }        
-        if (isConnection(element)){
-            return contextPadOptions;
-        }
-        if (isFact(element) && !element.hasMissingRole()){
-            return contextPadOptions;
-        }
-
-        contextPadOptions['connect'] = {
-            action: {
-                click: startConnect,
-                dragstart: startConnect
-            },
-            className: 'context-pad-contect',
-            html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
-            title: 'connect',
-            group: 'join'
-        };
-
-        if (isFact(element)){
-            return contextPadOptions;
-        }
-        
-        contextPadOptions['create-fact'] = {
-            action: {
-                click: (ev,el) => createConnectedFact(ev, el)
-            },
-            class: 'context-pad-create-fact',
-            html: '<div class="entry mdi mdi-alpha-f-box-outline editor-hover"/>',
-            title: 'Add and Connect to Fact',
-            group: 'add'
-        };
-    
-
-        return contextPadOptions;
+        return options;
     };
 
     /**
@@ -214,17 +67,27 @@ export default function ContextPadProvider(
     /**
      * Starts a connection attempt from the given element
      * @param {ContextPadProvider} that 
-     * @param {fact | entity | ShapeLike } element 
+     * @param {Fact | Entity | ValueEntity | ShapeLike } element 
      * @param {*} event 
      */
     ContextPadProvider.prototype.startConnect = function(that, element, event){
         that._connect.start(event, element, true);
     };
 
+    /**
+     * Expands the fact with a new role.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact the fact to expand 
+     */
     ContextPadProvider.prototype.expandFact = function(that, fact){
         that._modeling.expandFact(fact);
     };
 
+    /**
+     * Reduces the number of roles in the fact.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact the fact to reduce
+     */
     ContextPadProvider.prototype.reduceFact = function(that, fact){
         if (fact.roles > 1){
             that._modeling.reduceFact(fact);
@@ -293,9 +156,9 @@ export default function ContextPadProvider(
 
 
     /**
-     * 
+     * Removes a connection from the orm schema, updating the fact and entity.
      * @param {ContextPadProvider} that 
-     * @param {Connection} con 
+     * @param {Connection} con the connection to remove.
      */
     ContextPadProvider.prototype.removeConnection = function(that, con){
         var fact = con.target;
@@ -307,7 +170,7 @@ export default function ContextPadProvider(
 
     /**
      * Builds the current context options from the state of the connection
-     * @param {Connection} fact 
+     * @param {Connection} con the selected connection
      * @returns the options 
      */
     ContextPadProvider.prototype.getConnectionOptions = function(con){
@@ -325,5 +188,98 @@ export default function ContextPadProvider(
         };
 
         console.log(options);
+        return options;
+    };
+
+    /**
+     * Creates a new fact connected to the given entity type.
+     * @param {ContextPadProvider} that click event data.
+     * @param {Entity | ValueEntity} element the source entity
+     */
+    ContextPadProvider.prototype.createConnectedFact = function (that, element){
+        var fact = Object.assign(
+            that._elementFactory.createDummyAttributesForFacts(),
+            { x: element.x+element.width+ 100, 
+              y: element.y+element.height/2,}
+        );
+        fact = that._modeling.createShape(
+            fact, {x: fact.x, y:fact.y}, 
+            element.parent
+        );
+        // find a free position
+        let pos = that._placement.place(element, fact);
+        fact.x = pos.x;
+        fact.y = pos.y;
+        // add entity as a role to the fact
+        fact.setNextMissingRole(element);
+        // add connection
+        let connect = that._modeling.connect(element, fact);
+        // silly updating to make sure the layering is correct
+        that._modeling.moveElements([connect,element,fact], {x:0,y:0});
+        that._eventBus.fire('elements.changed', {
+            elements: [connect,element,fact]}
+        );            
+    };
+
+    /**
+     * Flips the type of the entity.
+     * @param {ContextPadProvider} that 
+     * @param {Entity | ValueEntity} entity the entity to flip
+     */
+    ContextPadProvider.prototype.flipEntity = function(that, entity){
+        entity.flipType();
+        that._modeling.sendUpdate(entity);
+    };
+
+    /**
+     * Creates the usable options for the given Entity type.
+     * @param {Entity} entity 
+     * @returns {object} the options for the entity
+     */
+    ContextPadProvider.prototype.getEntityOptions = function(entity){
+        var that = this;
+        var options = {};
+
+        options['connect'] = {
+            action: {
+                click: (event,) => {that.startConnect(that,entity, event,);},
+                dragstart: (event,) => {that.startConnect(that,entity, event,);}
+            },
+            className: 'context-pad-contect',
+            html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
+            title: 'edit',
+            group: 'join'
+        };
+
+        options['flip-entity-type'] = {
+            action: {
+                click: () => {that.flipEntity(that, entity);},
+            },
+            className: 'context-pad-flip',
+            html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
+            title: 'flip type',
+            group: 'edit'
+        };
+        
+        options['create-fact'] = {
+            action: {
+                click: () => {that.createConnectedFact(that, entity);},
+            },
+            class: 'context-pad-create-fact',
+            html: '<div class="entry mdi mdi-alpha-f-box-outline editor-hover"/>',
+            title: 'Add and Connect to Fact',
+            group: 'add'
+        };
+
+        options['delete'] = {
+            action: {
+                click: () => {that.removeElement(that, entity);},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'delete',
+            group: 'edit'
+        };
+
         return options;
     };

@@ -34,7 +34,7 @@ export class ValueEntity implements entity {
     id: string;
     name: string;
     ref: string;
-    type: "value";
+    type: "value" | "entity";
     width: number;
     height: number;
     x: number;
@@ -65,13 +65,21 @@ export class ValueEntity implements entity {
         this.parent = undefined;
         this.attachers = [];
     }
+
+    flipType() {
+        if (this.type === "value") {
+            this.type = "entity";
+        } else {
+            this.type = "value";
+        }
+    }
     
 }
 
 export class Entity implements entity {
     id: string;
     ref: string;
-    type: "entity";
+    type: "entity" | "value";
     width: number;
     height: number;
     x: number;
@@ -102,5 +110,13 @@ export class Entity implements entity {
         this.labels = [];
         this.parent = undefined;
         this.attachers = [];
+    }
+
+    flipType() {
+        if (this.type === "value") {
+            this.type = "entity";
+        } else {
+            this.type = "value";
+        }
     }
 }

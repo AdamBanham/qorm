@@ -114,11 +114,29 @@ export class Fact implements fact {
         return true;
     }
 
+    /**
+     * sets the given entity in the pos-th role of the fact type.
+     * @param {entity} role the entity to set
+     * @param {number} pos the position of the role 
+     */
     setRole(role:entity,pos:number){
         if (pos < 1 && pos >= this.roles){
             throw new Error("Assertion Failed :: expected pos to between :: 1 and "+this.roles+" :: but was given :: "+pos);
         } 
         this.factors[pos] = role;
+    }
+
+    /**
+     * Finds the position of role that the given entity is in.
+     * @param {entity} entity the entity to find
+     * @returns {number} the position of the entity or -1 if not found
+     */
+    findEntityPosition(entity:entity): number {
+        return this.factors.findIndex((i,_) => {
+            if (i){
+                return i.id === entity.id;
+            } return false;
+        });
     }
 }
 
