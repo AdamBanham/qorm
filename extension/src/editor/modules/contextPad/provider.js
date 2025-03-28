@@ -3,12 +3,6 @@ import  {
     isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
 
-import {
-    findFreePosition,
-    generateGetNextPosition,
-    getConnectedDistance
-} from 'diagram-js/lib/features/auto-place/AutoPlaceUtil.js';
-
 import { ShapeLike } from "diagram-js/lib/model";
 import { unitHeight, fact } from "../model/facts";
 import { entity } from "../model/entities";
@@ -16,7 +10,8 @@ import { isFact } from "../model/util";
   
 
 export default function ContextPadProvider(
-        create, elementFactory, connect, contextPad, modeling, eventBus, registry
+        create, elementFactory, connect, contextPad, 
+        modeling, eventBus, registry, placementModule
     ) {
         this._create = create;
         this._elementFactory = elementFactory;
@@ -24,6 +19,7 @@ export default function ContextPadProvider(
         this._modeling = modeling;
         this._eventBus = eventBus;
         this._registry = registry;
+        this._placement = placementModule;
         contextPad.registerProvider(this);
     }
 
@@ -34,7 +30,8 @@ export default function ContextPadProvider(
         'contextPad',
         'modeling',
         'eventBus',
-        'elementRegistry'
+        'elementRegistry',
+        'placementModule'
 
     ];
 
@@ -43,6 +40,7 @@ export default function ContextPadProvider(
         var connect = this._connect,
             modeling = this._modeling,
             factory = this._elementFactory,
+            placer = this._placement,
             create = this._create,
             registry = this._registry,
             bus = this._eventBus;
@@ -69,14 +67,22 @@ export default function ContextPadProvider(
         function createConnectedFact(event, element){
             var fact = Object.assign(
                 factory.createDummyAttributesForFacts(),
-                { x: element.x+element.width+ 100, y: element.y+element.height/2,}
+                { x: element.x+element.width+ 100, 
+                  y: element.y+element.height/2,}
             );
             fact = modeling.createShape(
                 fact, {x: fact.x, y:fact.y}, 
                 element.parent
             );
+            // find a free position
+            let pos = placer.place(element, fact);
+            fact.x = pos.x;
+            fact.y = pos.y;
+            // add entity as a role to the fact
             fact.setNextMissingRole(element);
+            // add connection
             let connect = modeling.connect(element, fact);
+            // silly updating to make sure the layering is correct
             modeling.moveElements([connect,element,fact], {x:0,y:0});
             bus.fire('elements.changed', {
                 elements: [connect,element,fact]}
@@ -294,10 +300,10 @@ export default function ContextPadProvider(
     ContextPadProvider.prototype.removeConnection = function(that, con){
         var fact = con.target;
         var entity = con.source;
-        fact.clearRole(entity,)
+        fact.clearRole(entity,);
         that._modeling.removeElements([ con ]);
-        that._modeling.sendUpdates(con, fact, entity)
-    }
+        that._modeling.sendUpdates(con, fact, entity);
+    };
 
     /**
      * Builds the current context options from the state of the connection
@@ -310,7 +316,7 @@ export default function ContextPadProvider(
 
         options['delete'] = {
             action: {
-                click: () => {that.removeConnection(that, con)},
+                click: () => {that.removeConnection(that, con);},
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
@@ -318,6 +324,6 @@ export default function ContextPadProvider(
             group: 'edit'
         };
 
-        console.log(options)
+        console.log(options);
         return options;
-    }
+    };

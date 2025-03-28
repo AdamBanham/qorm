@@ -21,16 +21,20 @@ export default class OrmElementFactory extends ElementFactory{
     {
         type = attrs.type || type;
         if (type === 'entity') {
-            return createEntity(attrs.label, attrs.ref, attrs.type, attrs.width, attrs.height, attrs.x, attrs.y);
+            return createEntity(attrs.label, attrs.ref, 
+                attrs.type, attrs.width, attrs.height, 
+                attrs.x, attrs.y);
         }
         if (type === 'value') {
-            return createEntity(attrs.label, attrs.ref, attrs.type, attrs.width, attrs.height, attrs.x, attrs.y);
+            return createEntity(attrs.label, attrs.ref, 
+                attrs.type, attrs.width, attrs.height, 
+                attrs.x, attrs.y);
         }
         if (type === 'fact') {
             return createFact(attrs.factors, attrs.x, attrs.y);
         }
         if (type === 'connection'){
-            return super.create(type, attrs)
+            return super.create(type, attrs);
         }
         throw new Error('Unknown element type: ' + type);
     }

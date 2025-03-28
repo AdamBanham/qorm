@@ -56,11 +56,9 @@ export class Fact implements fact {
      */
     removeRole(){
         let temp = this.factors[this.roles - 1];
-        console.log("Fact::removeRole::", temp);
         this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -1);
         this.width = this.width - unitWidth;
-        console.log("Fact::removeRole::", temp);
         return temp;
     }
 
@@ -72,10 +70,9 @@ export class Fact implements fact {
     clearRole(entity:entity, pos:number){
         if (entity){
             let idx = this.factors.findIndex((i,_) => {
-                console.log("looking :: ", i, entity)
                 if (i){
-                    return i.id === entity.id
-                } return false
+                    return i.id === entity.id;
+                } return false;
             });
             if (idx >= 0){
                 this.factors[idx] = null;
@@ -87,7 +84,6 @@ export class Fact implements fact {
                     this.factors[pos] = null;
             }
         }
-        console.log("couldn't find the what role to clear :: ", this, entity, pos);
     }
 
     /**

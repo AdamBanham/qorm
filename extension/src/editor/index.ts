@@ -24,6 +24,7 @@ import ordering from "./modules/ordering";
 import ormContextPads from "./modules/contextPad";
 import ormConnect from "./modules/connect";
 import ormRules from "./modules/rules";
+import placementService from "./modules/placement";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -56,7 +57,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ormModeling,
         ordering,
         ormContextPads,
-        
+        placementService
     ];
 
     var diagram =  new Diagram({
