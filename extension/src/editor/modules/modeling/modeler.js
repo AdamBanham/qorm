@@ -3,7 +3,7 @@ import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 
-import { Fact } from "../model/facts";
+import { Fact, unitHeight } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
 
 export default class OrmModelling extends Modeling {
@@ -19,7 +19,7 @@ export default class OrmModelling extends Modeling {
     }
 
     sendUpdate(element){
-        this._eventBus.fire('element.changed', {element: element});
+        this._eventBus.fire('element.changed', {element: element, layout:false});
     }
 
     sendUpdates(...elements){
@@ -84,18 +84,32 @@ export default class OrmModelling extends Modeling {
      */
     connectToFact(fact, entity, pos){
         let added = false;
-        if (!pos){
+        if (pos === undefined){
             added = fact.setNextMissingRole(entity);
         } else {
             try {
                 added = fact.setRole(entity, pos);
             }
-            catch (e){}
+            catch (e){
+                console.error("modeler::connectToFact::",
+                    "Error while connecting entity to fact: ", e);
+            }
         }
         let con = null;
         if (added){
+            let entityPos = fact.findEntityPosition(entity);
+            let rolePos = fact.getCenterForRole(entityPos);
             con = this.connect(entity, fact);
+            con.waypoints = 
+            [
+                con.waypoints[0],
+                { x: rolePos.x, y: rolePos.y - unitHeight },
+                Object.assign({}, rolePos)
+            ];
             this.sendUpdates(con,fact,entity);
+        } else {
+            console.error("modeler::connectToFact::",
+                "Could not connect entity to fact.");
         }
         return con;
     }

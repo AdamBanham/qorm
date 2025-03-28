@@ -1,5 +1,8 @@
-import { Connect } from 'diagram-js/lib/features/connect/Connect';
+
 import { isFact } from '../model/util';
+import {
+  set as cursorSet,
+} from 'diagram-js/lib/util/Cursor';
 
 import {
     getMid
@@ -10,34 +13,70 @@ import {
     isObject
   } from 'min-dash';
 
-export default function OrmConnect(eventBus, dragging, modeling, rules) {
+  var MARKER_OK = 'connect-ok',
+  MARKER_NOT_OK = 'connect-not-ok';
+
+export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) {
 
     // rules
   
-    function canConnect(source, target) {
+    function canConnect(source, target, role) {
       return rules.allowed('connection.create', {
         source: source,
-        target: target
+        target: target,
+        role: role
       });
-    }
-  
-    function canConnectReverse(source, target) {
-      return canConnect(target, source);
     }
   
   
     // event handlers
+    eventBus.on('connect.move', function(event) {
+      var context = event.context,
+          start = context.start,
+          hover = context.hover;
+      // check for fact, otherwise cancel
+      if (!hover || !isFact(hover)) {
+        canvas.removeMarker(start, MARKER_OK);
+        canvas.removeMarker(start, MARKER_NOT_OK);
+        canvas.addMarker(start, MARKER_NOT_OK);
+        return;
+      }
+      // check if the targeted role is available.
+      context.targetRole = hover.findNearestRoleUsingPosX(event.originalEvent.layerX);
+      var targetedRole = context.targetRole;
+      var canExecute = context.canExecute = canConnect(start, hover, targetedRole);
+      // reset markers on mouse
+      canvas.removeMarker(hover, MARKER_OK);
+      canvas.removeMarker(hover, MARKER_NOT_OK);
+      // adjust
+      canvas.addMarker(hover, canExecute ? MARKER_OK : MARKER_NOT_OK);
+      if (canExecute) {
+        context.source = start;
+        context.target = hover;
+      }
+      return;
+    });
   
     eventBus.on('connect.hover', function(event) {
       var context = event.context,
           start = context.start,
           hover = event.hover,
           canExecute;
+
+      // check for fact, otherwise cancel
+      if (!hover || !isFact(hover)) {
+        return;
+      }
   
       // cache hover state
       context.hover = hover;
-  
-      canExecute = context.canExecute = canConnect(start, hover);
+      var targetedRole = context.targetRole;
+      if (hover){
+        context.targetRole = targetedRole = 
+          hover.findNearestRoleUsingPosX(event.originalEvent.layerX);
+      }
+      canExecute = context.canExecute = 
+        canConnect(start, hover, targetedRole);
   
       // ignore hover
       if (isNil(canExecute)) {
@@ -47,21 +86,8 @@ export default function OrmConnect(eventBus, dragging, modeling, rules) {
       if (canExecute !== false) {
         context.source = start;
         context.target = hover;
-  
-        return;
-      }
-  
-      canExecute = context.canExecute = canConnectReverse(start, hover);
-  
-      // ignore hover
-      if (isNil(canExecute)) {
-        return;
-      }
-  
-      if (canExecute !== false) {
-        context.source = hover;
-        context.target = start;
-      }
+      } 
+      return;
     });
   
     eventBus.on([ 'connect.out', 'connect.cleanup' ], function(event) {
@@ -70,6 +96,7 @@ export default function OrmConnect(eventBus, dragging, modeling, rules) {
       context.hover = null;
       context.source = null;
       context.target = null;
+      context.targetRole = null;
   
       context.canExecute = false;
     });
@@ -82,26 +109,22 @@ export default function OrmConnect(eventBus, dragging, modeling, rules) {
             x: event.x,
             y: event.y
           },
-          source = context.source,
-          target = context.target;
+          entity = context.source,
+          role = context.targetRole,
+          fact = context.target;
   
       if (!canExecute) {
         return false;
       }
 
-      let fact = null;
-      let entity = null;
-      if (isFact(source)){
-        fact = source;
-        entity = target;
-      } else {
-        fact = target;
-        entity = source;
+      if (canConnect(entity, fact, role)){
+        console.log("connect.end::", entity, fact, role);
+        let connection = modeling.connectToFact(fact, entity, role);
+        modeling.moveElements([connection,fact,entity], { x: 0, y: 0. });
       }
-      console.log("using custom connect :: ", fact, entity);
-      context.connection = modeling.connectToFact(fact, entity);
-      modeling.moveElements([context.connection,fact,entity], { x: 0, y: 0. });
     });
+
+    
   
   
     // API
@@ -137,7 +160,8 @@ export default function OrmConnect(eventBus, dragging, modeling, rules) {
     'eventBus',
     'dragging',
     'modeling',
-    'rules'
+    'rules',
+    'canvas'
   ];
   
   

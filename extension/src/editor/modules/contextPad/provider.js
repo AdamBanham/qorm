@@ -187,7 +187,6 @@ export default function ContextPadProvider(
             group: 'edit'
         };
 
-        console.log(options);
         return options;
     };
 
