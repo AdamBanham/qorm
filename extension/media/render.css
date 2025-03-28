@@ -4,4 +4,26 @@
     --render-fill-colour: #d1d1df;
     --render-label-colour: #303038;
     --render-arc-stroke: black;
+    --render-fact-hover-success: hsla(143, 30%, 45%, 0.80);
+    --render-fact-hover-error: hsla(0, 30%, 45%, 0.80);
+}
+
+#editor .fact-role {
+    fill: var(--render-fill-colour);
+    stroke: var(--render-border-colour);
+    stroke-width: 1.5;
+    cursor: pointer;
+}
+
+#editor .djs-visual {
+    .orm-visuals {
+        .fact-role-free {
+            fill: var(--render-fact-hover-success);
+            transition: 0.2s;
+        }
+        .fact-role-filled {
+            fill: var(--render-fact-hover-error);
+            transition: 0.2s;
+        }
+    }
 }

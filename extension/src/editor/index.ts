@@ -25,6 +25,7 @@ import ormContextPads from "./modules/contextPad";
 import ormConnect from "./modules/connect";
 import ormRules from "./modules/rules";
 import placementService from "./modules/placement";
+import ormInteractions from "./modules/interactions";   
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -57,7 +58,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ormModeling,
         ordering,
         ormContextPads,
-        placementService
+        placementService,
+        ormInteractions
     ];
 
     var diagram =  new Diagram({
@@ -103,10 +105,22 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             );
             modeling.expandFact(fact);
 
+            var fact2 = Object.assign(
+                factory.createDummyAttributesForFacts(),
+                { x: 375, y: 250,}
+            );
+            fact2 = modeling.createShape(
+                fact2, {x: fact2.x, y:fact2.y},
+                canvas.getRootElement()
+            );
+            modeling.expandFact(fact2);
+            modeling.expandFact(fact2);
+            modeling.expandFact(fact2);
+
             let c1 = modeling.connectToFact(fact, s1);
             let c2 = modeling.connectToFact(fact, s2);
             
-            modeling.moveElements([s1,s2,fact], {x:0,y:0});
+            modeling.moveElements([s1,s2,fact,fact2], {x:0,y:0, layout:false});
     }]);
 
     (diagram.get('canvas') as any).zoom('fit-viewport');
