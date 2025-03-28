@@ -14,6 +14,7 @@ export interface fact {
     height: number;
     x: number;
     y: number;
+    hovered?: boolean;
 }
 
 export function createFact(
@@ -32,6 +33,7 @@ export class Fact implements fact {
     height: number;
     x: number;
     y: number;
+    hovered?: boolean;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -42,6 +44,7 @@ export class Fact implements fact {
         this.height = height;
         this.x = x;
         this.y = y;
+        this.hovered = false;
     }
 
     addRole(){
@@ -124,6 +127,7 @@ export class Fact implements fact {
             throw new Error("Assertion Failed :: expected pos to between :: 1 and "+this.roles+" :: but was given :: "+pos);
         } 
         this.factors[pos] = role;
+        return true;
     }
 
     /**
@@ -137,6 +141,38 @@ export class Fact implements fact {
                 return i.id === entity.id;
             } return false;
         });
+    }
+
+    /**
+     * Gets the center of the role at the given position.
+     * @param pos the position of the role
+     * @returns {x:number, y:number} the center of the role
+     */
+    getCenterForRole(pos:number): {x:number, y:number} {
+        return {
+            x: this.x + ((pos + 0.5) * unitWidth),
+            y: this.y + 0.5 * unitHeight
+        };
+    }
+
+    findNearestRoleUsingPosX(posX:number): number {
+        let pos = Math.max(0, 
+            Math.floor((posX - this.x) / unitWidth)
+        );
+        if (pos < this.roles){
+            return pos;
+        } else {
+            return -1;
+        }
+    }
+            
+    /**
+     * Checks whether the role has been filled at the given position.
+     * @param pos the pos to check
+     * @returns {boolean} whether the role is filled
+     */
+    isFilled(pos:number) : boolean {
+        return this.factors[pos] !== null;
     }
 }
 

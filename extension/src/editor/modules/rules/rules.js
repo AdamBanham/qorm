@@ -24,7 +24,7 @@ export default class OrmRules extends RuleProvider{
     }
 
     /**
-     * 
+     * Add the rules for valid and legal connections
      */
     addConnectionRules(){
         // add a rule that checks that the source is an entity and
@@ -34,10 +34,15 @@ export default class OrmRules extends RuleProvider{
             DEFAULT_PRIORITY,
             function(context) {
                 var source = context.source,
-                    target = context.target;
+                    target = context.target,
+                    role = context.role;
                 let itern = isEntity(source) && isFact(target);
                 if (itern){
-                    return target.hasMissingRole();
+                    if (!target.hasMissingRole()){
+                        return false;
+                    } else {
+                        return !target.isFilled(role);
+                    }
                 }
                 return itern;
             }

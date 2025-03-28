@@ -93,7 +93,9 @@ export default class TSRenderer extends  BaseRenderer {
     drawShape(visuals, element, attrs) {
             // init
             var svgElements;
-            var group = svgCreate("g", {});
+            var group = svgCreate("g", {
+                class: "orm-visuals"
+            });
             
             // draw 
 
@@ -118,10 +120,8 @@ export default class TSRenderer extends  BaseRenderer {
                 let y = 0;
                 for (let i = 0; i < element.roles; i++){
                     let box = svgCreate("rect", {
-                        fill: SHAPE_FILL_COLOUR,
-                        stroke: BORDER_COLOUR,
-                        strokeWidth: strokeWidth,
                         'stroke-dasharray': dashType,
+                        class: "fact-role",
                         rx: rx,
                         width: unitWidth,
                         height: unitHeight,
@@ -129,9 +129,21 @@ export default class TSRenderer extends  BaseRenderer {
                         y: 0
                     });
                     svgAppend(group, box);
+                    if (element.hovered && i === element.hoveredRole){
+                        let classer = element.isFilled(i) ? 
+                            "fact-role-filled" : "fact-role-free";
+                        box = svgCreate("rect", {
+                            class: classer,
+                            rx: rx,
+                            width: unitWidth,
+                            height: unitHeight,
+                            x: x,
+                            y: 0
+                        });
+                        svgAppend(group, box);
+                    }
                     x = x + unitWidth;
                 }
-                
             } else {
                 let box = svgCreate("rect", {
                     fill: SHAPE_FILL_COLOUR,
@@ -208,31 +220,35 @@ export default class TSRenderer extends  BaseRenderer {
                 y: stateRadius,
                 fill: LABEL_COLOUR,
             }, TEXT_STYLE)
-        )
+        );
 
         if (!isInternalState(element)){
             svgAttr(text,
                 {
                 fill: "#F8F8FF"
-            })
+            });
         }
         if (element.stateLabel.length > 0)
-            text.textContent = element.stateLabel
+            {text.textContent = element.stateLabel;}
         else 
-        text.textContent = element.id
-        return text
+        {text.textContent = element.id;}
+        return text;
     }
 
     _drawSimpleConnection(visuals, connection, attrs){
+        // handle the role that is being targeted
+        const entity = connection.source;
+        const fact = connection.target;
+        let waypoints = Array.from(connection.waypoints);
+
+
+        // now create the line using the updated waypoints
         var line = createLine(
-            connection.waypoints, assign({
+            waypoints, assign({
                 id: connection.id
             }, 
             this.CONNECTION_STYLE, attrs || {})
         );
-        var waypoints = connection.waypoints.slice(0,2).map(p => {
-            return {x:p.x, y:p.y};
-        });
     
         svgAppend(visuals, line);
         return line;
