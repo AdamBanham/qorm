@@ -9,9 +9,7 @@
     const OrmEditor = require('./index.ts').default;
 
     const editorHolder = document.getElementById('editor');
-    console.log("found the editor holder");
     const editor = OrmEditor(editorHolder);
-    console.log("connected to holder.");
 
     // handle messages from the extension
     // window.addEventListener('message', async (event) => {

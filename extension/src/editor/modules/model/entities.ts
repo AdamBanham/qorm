@@ -50,7 +50,6 @@ export class ValueEntity implements entity {
 
     constructor(name: string, ref: string, width: number, height: number, x: number, y: number) {
         this.id = "v-entity-" + getNextIdentifier();
-        console.log("Entity id: ", this.id);
         this.name = name;
         this.ref = ref;
         this.type = "value";
@@ -96,7 +95,6 @@ export class Entity implements entity {
     
     constructor(name: string, ref: string, width: number, height: number, x: number, y: number) {
         this.id = "e-entity-" + getNextIdentifier();
-        console.log("Entity id: ", this.id);
         this.ref = ref;
         this.type = "entity";
         this.name = name;

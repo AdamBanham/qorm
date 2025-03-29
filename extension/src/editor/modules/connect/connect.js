@@ -1,22 +1,21 @@
 
-import { isFact } from '../model/util';
-import {
-  set as cursorSet,
-} from 'diagram-js/lib/util/Cursor';
-
 import {
     getMid
-  } from 'diagram-js/lib/layout/LayoutUtil';
+} from 'diagram-js/lib/layout/LayoutUtil';
   
-  import {
-    isNil,
-    isObject
-  } from 'min-dash';
+import {
+  isNil,
+  isObject
+} from 'min-dash';
 
-  var MARKER_OK = 'connect-ok',
-  MARKER_NOT_OK = 'connect-not-ok';
+import { isFact } from '../model/util';
+import { transformToViewbox } from "../utils/canvasUtils";
 
-export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) {
+var MARKER_OK = 'connect-ok',
+MARKER_NOT_OK = 'connect-not-ok';
+
+export default function OrmConnect(
+    eventBus, dragging, modeling, rules, canvas) {
 
     // rules
   
@@ -41,9 +40,14 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
         canvas.addMarker(start, MARKER_NOT_OK);
         return;
       }
-      // check if the targeted role is available.
-      console.log("connect.move :: ", event.originalEvent);
-      context.targetRole = hover.findNearestRoleUsingPosX(event.originalEvent.layerX);
+      // check if the targeted role is available after transforming.
+      let transform = transformToViewbox(
+        canvas.viewbox(), 
+        { x : event.originalEvent.layerX, 
+          y: event.originalEvent.layerY
+        }
+      );
+      context.targetRole = hover.findNearestRoleUsingPosX(transform.x);
       var targetedRole = context.targetRole;
       var canExecute = context.canExecute = canConnect(start, hover, targetedRole);
       // reset markers on mouse
@@ -73,8 +77,15 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
       context.hover = hover;
       var targetedRole = context.targetRole;
       if (hover){
+        // check if the targeted role is available after transforming.
+        let transform = transformToViewbox(
+          canvas.viewbox(),
+          { x : event.originalEvent.layerX, 
+            y: event.originalEvent.layerY
+          }
+        );
         context.targetRole = targetedRole = 
-          hover.findNearestRoleUsingPosX(event.originalEvent.layerX);
+          hover.findNearestRoleUsingPosX(transform.x);
       }
       canExecute = context.canExecute = 
         canConnect(start, hover, targetedRole);
@@ -128,7 +139,6 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
       }
 
       if (canConnect(entity, fact, role)){
-        console.log("connect.end::", entity, fact, role);
         let connection = modeling.connectToFact(fact, entity, role);
         modeling.moveElements([connection,fact,entity], { x: 0, y: 0. });
       }
@@ -144,7 +154,7 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
      *
      * @param {MouseEvent|TouchEvent} event
      * @param {Element} start
-     * @param {Point} [connectionStart]
+     * @param {*} [connectionStart]
      * @param {boolean} [autoActivate=false]
      */
     this.start = function(event, start, connectionStart, autoActivate) {
