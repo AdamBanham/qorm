@@ -42,6 +42,7 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
         return;
       }
       // check if the targeted role is available.
+      console.log("connect.move :: ", event.originalEvent);
       context.targetRole = hover.findNearestRoleUsingPosX(event.originalEvent.layerX);
       var targetedRole = context.targetRole;
       var canExecute = context.canExecute = canConnect(start, hover, targetedRole);
@@ -92,12 +93,9 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
   
     eventBus.on([ 'connect.out', 'connect.cleanup' ], function(event) {
       var context = event.context;
-  
       context.hover = null;
-      context.source = null;
       context.target = null;
       context.targetRole = null;
-  
       context.canExecute = false;
     });
   
@@ -112,6 +110,18 @@ export default function OrmConnect(eventBus, dragging, modeling, rules, canvas) 
           entity = context.source,
           role = context.targetRole,
           fact = context.target;
+
+      // clear markers
+      if (context.start !== null) {
+        let start = context.start;
+        canvas.removeMarker(start, MARKER_OK);
+        canvas.removeMarker(start, MARKER_NOT_OK);
+      }
+      if (context.hover !== null) {
+        let hover = context.hover;
+        canvas.removeMarker(hover, MARKER_OK);
+        canvas.removeMarker(hover, MARKER_NOT_OK);
+      }
   
       if (!canExecute) {
         return false;

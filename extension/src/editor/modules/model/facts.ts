@@ -24,6 +24,11 @@ export function createFact(
     return new Fact(factors, unitWidth * factors.length, unitHeight, x, y);
 }
 
+export interface RoleFoundResponse {
+    found: boolean;
+    role: number;
+}
+
 export class Fact implements fact {
     id: string;
     roles: number;
@@ -71,6 +76,12 @@ export class Fact implements fact {
      * @param {number} pos 
      */
     clearRole(entity:entity, pos:number){
+        if (pos !== null){
+            if (pos >= 0 && pos < this.roles){
+                    this.factors[pos] = null;
+                    return;
+            }
+        }
         if (entity){
             let idx = this.factors.findIndex((i,_) => {
                 if (i){
@@ -80,11 +91,6 @@ export class Fact implements fact {
             if (idx >= 0){
                 this.factors[idx] = null;
                 return;
-            }
-        }
-        if (pos !== null){
-            if (pos >= 0 && pos < this.roles){
-                    this.factors[pos] = null;
             }
         }
     }
@@ -102,19 +108,22 @@ export class Fact implements fact {
      * May add the given entity as a factor of this fact type.
      * returns either the given entity was added.
      * @param {entity} entity  the entity to add
-     * @return {boolean} whether it was added
+     * @return {RoleFoundResponse} whether it was added
      */
     setNextMissingRole(entity:entity){
+        let role = -1;
         if (!this.hasMissingRole()){
-            return false;
+            return {found: false, role: role};
         }
+        
         for(let i = 0; i < this.roles; i++){
             if (!this.factors[i]){
                 this.factors[i] = entity;
+                role = i;
                 break;
             }
         }
-        return true;
+        return {found: true, role: role};
     }
 
     /**
@@ -157,7 +166,7 @@ export class Fact implements fact {
 
     findNearestRoleUsingPosX(posX:number): number {
         let pos = Math.max(0, 
-            Math.floor((posX - this.x) / unitWidth)
+            Math.floor((posX+5 - this.x) / unitWidth)
         );
         if (pos < this.roles){
             return pos;

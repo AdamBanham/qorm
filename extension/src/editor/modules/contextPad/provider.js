@@ -163,9 +163,9 @@ export default function ContextPadProvider(
     ContextPadProvider.prototype.removeConnection = function(that, con){
         var fact = con.target;
         var entity = con.source;
-        fact.clearRole(entity,);
+        fact.clearRole(entity,con.role);
         that._modeling.removeElements([ con ]);
-        that._modeling.sendUpdates(con, fact, entity);
+        that._modeling.sendUpdates(fact, entity);
     };
 
     /**
@@ -210,14 +210,10 @@ export default function ContextPadProvider(
         fact.x = pos.x;
         fact.y = pos.y;
         // add entity as a role to the fact
-        fact.setNextMissingRole(element);
-        // add connection
-        let connect = that._modeling.connect(element, fact);
+        let con = that._modeling.connectToFact(fact, element, 0);
         // silly updating to make sure the layering is correct
-        that._modeling.moveElements([connect,element,fact], {x:0,y:0});
-        that._eventBus.fire('elements.changed', {
-            elements: [connect,element,fact]}
-        );            
+        // that._modeling.moveElements([con,element,fact], {x:0,y:0});
+        that._modeling.sendUpdates(con,fact,element);
     };
 
     /**

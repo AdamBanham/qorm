@@ -19,6 +19,7 @@ export default class OrmModelling extends Modeling {
     }
 
     sendUpdate(element){
+        this.moveElements([element], {x:0,y:0});
         this._eventBus.fire('element.changed', {element: element, layout:false});
     }
 
@@ -85,7 +86,9 @@ export default class OrmModelling extends Modeling {
     connectToFact(fact, entity, pos){
         let added = false;
         if (pos === undefined){
-            added = fact.setNextMissingRole(entity);
+            let ret = fact.setNextMissingRole(entity);
+            added = ret.found;
+            pos = ret.role;
         } else {
             try {
                 added = fact.setRole(entity, pos);
@@ -97,15 +100,7 @@ export default class OrmModelling extends Modeling {
         }
         let con = null;
         if (added){
-            let entityPos = fact.findEntityPosition(entity);
-            let rolePos = fact.getCenterForRole(entityPos);
-            con = this.connect(entity, fact);
-            con.waypoints = 
-            [
-                con.waypoints[0],
-                { x: rolePos.x, y: rolePos.y - unitHeight },
-                Object.assign({}, rolePos)
-            ];
+            con = this.connect(entity, fact, {role : pos});
             this.sendUpdates(con,fact,entity);
         } else {
             console.error("modeler::connectToFact::",
