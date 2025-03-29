@@ -15,24 +15,17 @@ import {
 
 import { ValueEntity, Entity } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
+import { isLabel } from '../model/util';
 
 
 const BORDER_COLOUR = "var(--render-border-colour)";
 const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
 const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
 const ARC_STROKE_COLOUR = "var(--render-arc-stroke)";
+const SUPPORTED_TYPES = [
+    'entity', 'value', 'fact', 'connection', 'label'
+];
 var RENDER_PRIORITY = 1500;
-const LABEL_COLOUR = "#01031b";
-const INNER_ICON_FILL_COLOUR = "#222222";
-const MARKED_COLOR = "#ebdf3f";
-const TEXT_STYLE = {
-      fontFamily: 'Arial, sans-serif',
-      fontSize: 8,
-      fontWeight: 'normal',
-      textLength: 50,
-      textAnchor: 'middle',
-      dominantBaseline: 'middle'
-};
 
 export default class TSRenderer extends  BaseRenderer {
     
@@ -50,6 +43,9 @@ export default class TSRenderer extends  BaseRenderer {
                 attrs = context.attrs;
 
             if (self.canRender(element)) {
+                if (isLabel(element)){
+                    return self.drawLabel(visuals, element, attrs);
+                }
                 return self.drawShape(visuals, element, attrs);
             } else {
                 return thedraw(visuals, element, attrs);
@@ -76,11 +72,9 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     canRender(element){
-        let type = element['type'] | "";
-        if (type in ['entity', 'value', 'fact']){
-            return true;
-        }
-        return false;
+        let type = element['type'] || "no-support";
+        console.log("Type: ", type , SUPPORTED_TYPES.includes(type));
+        return SUPPORTED_TYPES.includes(type);
     }
 
     /**
@@ -213,25 +207,32 @@ export default class TSRenderer extends  BaseRenderer {
         return svg;
     }
 
-    drawStateLabel(element){
+    drawLabel(visuals, label, attrs){
+        var group = svgCreate("g", {
+            class: "orm-visuals"
+        });
         var text = svgCreate('text',
-            assign({
-                x: stateRadius,
-                y: stateRadius,
-                fill: LABEL_COLOUR,
-            }, TEXT_STYLE)
+            {
+                x: 0,
+                y: 3.5,
+                class: 'fact-label'
+            }
         );
-
-        if (!isInternalState(element)){
-            svgAttr(text,
-                {
-                fill: "#F8F8FF"
-            });
+        if (label.content.length > 0){
+            text.textContent = label.content;
         }
-        if (element.stateLabel.length > 0)
-            {text.textContent = element.stateLabel;}
-        else 
-        {text.textContent = element.id;}
+        // draw center for debug
+        let dot = svgCreate("circle", {
+            cx: (0),
+            cy: (0),
+            r: 5,
+            fill: "red",
+            stroke: "transparent",
+            opacity: 0.25
+        });
+        svgAppend(group, text);
+        svgAppend(group, dot);
+        svgAppend(visuals, group);
         return text;
     }
 

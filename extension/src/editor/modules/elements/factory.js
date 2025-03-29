@@ -34,6 +34,11 @@ export default class OrmElementFactory extends ElementFactory{
             return createFact(attrs.factors, attrs.x, attrs.y);
         }
         if (type === 'connection'){
+            attrs['type'] = 'connection';
+            return super.create(type, attrs);
+        }
+        if (type === 'label'){
+            attrs['type'] = 'label';
             return super.create(type, attrs);
         }
         throw new Error('Unknown element type: ' + type);

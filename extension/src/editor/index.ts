@@ -13,6 +13,7 @@ const SnappingModule = require('diagram-js/lib/features/snapping').default;
 const LassoToolModule = require('diagram-js/lib/features/lasso-tool').default;
 const ContextPadModule = require('diagram-js/lib/features/context-pad').default;
 const KeyBoardModule = require('diagram-js/lib/features/keyboard').default;
+const LabelSupportModule = require('diagram-js/lib/features/label-support').default;
 
 // additionals modules
 import gridModule from './modules/grid';
@@ -27,6 +28,7 @@ import ormRules from "./modules/rules";
 import placementService from "./modules/placement";
 import ormInteractions from "./modules/interactions";   
 import ormLayouter from "./modules/layout";
+import { unitWidth } from './modules/model/facts';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -45,7 +47,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ZoomScrollModule,
         SnappingModule,
         ContextPadModule,
-        KeyBoardModule
+        KeyBoardModule,
+        LabelSupportModule
     ];
 
     // additiona modules for the orm-editor
@@ -121,6 +124,16 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
             let c1 = modeling.connectToFact(fact, s1);
             let c2 = modeling.connectToFact(fact, s2);
+
+            let l1 = modeling.createLabel(
+                fact,
+                { x: fact.x + fact.width / 2, 
+                  y: fact.y + unitWidth * 1.5
+                },
+                {
+                    content: "has >",
+                }
+            );
             
             modeling.moveElements([s1,s2,fact,fact2], {x:0,y:0, layout:false});
     }]);

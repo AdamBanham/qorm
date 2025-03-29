@@ -1,4 +1,4 @@
-import { ShapeLike } from "diagram-js/lib/model/types";
+import { ShapeLike } from "diagram-js/lib/model/Types";
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 

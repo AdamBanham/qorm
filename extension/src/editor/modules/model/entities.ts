@@ -1,5 +1,7 @@
 import { getNextIdentifier } from "./util";
-import { Connection, Shape, Element, Label } from "diagram-js/lib/model/types";
+import { 
+    Connection, Shape, 
+    Element, Label } from "diagram-js/lib/model/Types";
 
 export interface entity extends Shape {
     id: string;

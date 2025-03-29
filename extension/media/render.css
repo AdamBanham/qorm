@@ -15,6 +15,17 @@
     cursor: pointer;
 }
 
+#editor .fact-label {
+    fill: var(--render-fill-colour);
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    text-anchor: middle;
+    box-shadow: 1px 1px 2px var(--render-border-colour);
+    text-wrap: pretty;
+}
+
+
 #editor .djs-visual {
     .orm-visuals {
         .fact-role-free {
