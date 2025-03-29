@@ -34,8 +34,11 @@ export default class FactInteractions {
                         fact.findNearestRoleUsingPosX(
                             transform.x
                         );
-                    modeling.sendUpdate(fact);
+                    setTimeout(() => {
+                        modeling.sendUpdate(fact);
+                    }, 25);
                 }
+                return event;
             }
         );
 
@@ -44,8 +47,11 @@ export default class FactInteractions {
                 if (isFact(event.element)) {
                     let fact = event.element;
                     fact.hovered = false;
-                    modeling.sendUpdate(fact);
+                    setTimeout(() => {
+                        modeling.sendUpdate(fact);
+                    }, 25);
                 }
+                return event;
             }
         );
     }

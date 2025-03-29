@@ -44,7 +44,6 @@ export function isEntity(shape: ShapeLike): shape is entity {
  */
 export function isLabel(shape: ShapeLike): boolean {
     if (shape.type){
-        console.log(shape, shape.type, shape.type === "label");
         return shape.type === "label";
     }
     return false;

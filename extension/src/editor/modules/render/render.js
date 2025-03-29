@@ -73,7 +73,6 @@ export default class TSRenderer extends  BaseRenderer {
 
     canRender(element){
         let type = element['type'] || "no-support";
-        console.log("Type: ", type , SUPPORTED_TYPES.includes(type));
         return SUPPORTED_TYPES.includes(type);
     }
 

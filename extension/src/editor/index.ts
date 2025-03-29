@@ -28,6 +28,7 @@ import ormRules from "./modules/rules";
 import placementService from "./modules/placement";
 import ormInteractions from "./modules/interactions";   
 import ormLayouter from "./modules/layout";
+import ormLabelEditing from "./modules/labels";
 import { unitWidth } from './modules/model/facts';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
@@ -64,7 +65,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ormContextPads,
         placementService,
         ormInteractions,
-        ormLayouter
+        ormLayouter,
+        ormLabelEditing
     ];
 
     var diagram =  new Diagram({
@@ -134,6 +136,9 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
                     content: "has >",
                 }
             );
+
+            console.log("l1", l1);
+            console.log("fact", fact);  
             
             modeling.moveElements([s1,s2,fact,fact2], {x:0,y:0, layout:false});
     }]);
