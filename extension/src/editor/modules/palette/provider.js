@@ -130,12 +130,17 @@ export default function ExamplePaletteProvider(
         title: 'fit to screen',
         action: {
           click: function(event) {
-            const {inner} = canvas.viewbox();
+            const {inner,outer} = canvas.viewbox();
             var center = {
               x: inner.x + inner.width/2,
               y: inner.y + inner.height/2
             };
+            let scale = Math.min( 
+              (outer.width / inner.width),
+              (outer.height / inner.height)
+            ) * 0.8;
             canvas.zoom('fit-viewport', center);
+            canvas.zoom(scale);
           }
         }
       },
