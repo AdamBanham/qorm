@@ -1,5 +1,5 @@
 import { ShapeLike } from "diagram-js/lib/model/Types";
-import { entity } from "./entities";
+import { entity, Entity, ValueEntity } from "./entities";
 import { fact } from "./facts";
 
 let id = 0;
@@ -36,6 +36,31 @@ export function isEntity(shape: ShapeLike): shape is entity {
     }
     return false;
 }
+
+/**
+ * Checks whetherthe shape is a Entity entity.
+ * @param shape the shape to check
+ * @returns 
+ */
+export function isExactlyEntity(shape: ShapeLike): shape is Entity {
+    if (shape.type){
+        return shape.type === "entity";
+    }
+    return false;
+}
+
+/**
+ * Checks whetherthe shape is a Value entity.
+ * @param shape the shape to check
+ * @returns 
+ */
+export function isExactlyValue(shape: ShapeLike): shape is ValueEntity {
+    if (shape.type){
+        return shape.type === "value";
+    }
+    return false;
+}
+
 
 /**
  * Determines if the shape is a label type.

@@ -45,13 +45,14 @@ export default class OrmElementFactory extends ElementFactory{
     }
 
     /**
+     * creates dummy attributes for an entity or value.
      * @param {"entity" | "value"} type
      * @return {entity}
      */
     createDummyAttributesForEntities(type){
         return {
             label: 'Foobar',
-            ref: 'Nr',
+            ref: 'id',
             type: type,
             width: 100,
             height: 75,
@@ -61,7 +62,7 @@ export default class OrmElementFactory extends ElementFactory{
     }
 
     /**
-     * 
+     * creates dummy attributes for a fact.
      * @returns {fact}
      */
     createDummyAttributesForFacts(){
@@ -72,6 +73,16 @@ export default class OrmElementFactory extends ElementFactory{
             type: 'fact',
             x: 0,
             y: 0
+        };
+    }
+
+    /**
+     * creates dummy attributes for a label.
+     * @returns {label}
+     */
+    createDummyAttributesForLabel(){
+        return {
+            content: "..."
         };
     }
 }

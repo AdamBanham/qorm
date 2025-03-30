@@ -9,17 +9,23 @@ import {
 import  {
   isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
-import { isFact } from '../model/util';
+import { isEntity, isFact, isExactlyEntity, isExactlyValue} from '../model/util';
 import { transformToViewbox } from "../utils/canvasUtils";
 
 // helpers //////////
 
-function getLabel(element){
-  if (element.labels){
-    if (element.labels.length){
-        return element.labels[0].content;
+function getLabel(element ,context){
+  if (context.touchingMode === 'name'){
+    return element.name;
+  } else if (context.touchingMode === 'ref'){
+    return element.ref;
+  } else if (context.touchingMode === 'label'){
+    if (element.labels){
+      if (element.labels.length){
+          return element.labels[0].content;
+      }
     }
-    }
+  }
   return "";
 }
   
@@ -33,50 +39,34 @@ export default function LabelEditingProvider(
     this._canvas = canvas;
     this._modeling = modeling;
     this._textRenderer = textRenderer;
+    this._directEditing = directEditing;  
     this._bus = eventBus;
   
+
+    this._context = {
+      touchingType: null,
+      touchingMode: null,
+    };
+
     directEditing.registerProvider(this);
+    var that = this;
   
     // listen to dblclick on non-root elements
     eventBus.on('element.dblclick', function(event) {
       activateDirectEdit(event.element, true);
     });
   
-    // complete on followup canvas operation
-    eventBus.on([
-      'autoPlace.start',
-      'canvas.viewbox.changing',
-      'drag.init',
-      'element.mousedown',
-      'popupMenu.open',
-      'root.set',
-      'selection.changed'
-    ], function() {
-      if (directEditing.isActive()) {
-        directEditing.complete();
-      }
-    });
-  
     eventBus.on([
       'shape.remove',
-      'connection.remove'
+      'connection.remove',
+      'canvas.focus.changed',
     ], HIGH_PRIORITY, function(event) {
   
       if (directEditing.isActive(event.element)) {
         directEditing.cancel();
+        that._context.touchingType = null;
+        that._context.touchingMode = null;
       }
-    });
-  
-    // cancel on command stack changes
-    eventBus.on([ 'commandStack.changed' ], function(e) {
-      if (directEditing.isActive()) {
-        directEditing.cancel();
-      }
-    });
-  
-  
-    eventBus.on('directEditing.activate', function(event) {
-    //   resizeHandles.removeResizers();
     });
   
     eventBus.on('create.end', 500, function(event) {
@@ -107,7 +97,21 @@ export default function LabelEditingProvider(
   
   
     function activateDirectEdit(element, force) {
-        directEditing.activate(element);
+      if (isFact(element)){
+        that._context.touchingType = 'fact';
+        that._context.touchingMode = 'label';
+      } else if (isExactlyEntity(element)){
+        that._context.touchingType = 'entity';
+        that._context.touchingMode = 'name';
+      } else if (isExactlyValue(element)){
+        that._context.touchingType = 'value';
+        that._context.touchingMode = 'name';
+      } else {
+        that._context.touchingType = null;
+        that._context.touchingMode = null;
+        return;
+      }
+      directEditing.activate(element);
     }
   
   }
@@ -140,7 +144,7 @@ export default function LabelEditingProvider(
   LabelEditingProvider.prototype.activate = function(element) {
   
     // text
-    var text = getLabel(element);
+    var text = getLabel(element, this._context);
   
     if (text === undefined) {
       return;
@@ -224,10 +228,34 @@ export default function LabelEditingProvider(
   LabelEditingProvider.prototype.update = function(
       element, newLabel,
       activeContextText, bounds) {
-  
-    var newBounds,
-        bbox;
-  
+    
+    console.log("update label :: ", element, newLabel, activeContextText, bounds);
+    
+    if (this._context.touchingMode === 'name'){
+      element.name = newLabel;
+      if (this._context.touchingType === 'entity'){
+        this._context.touchingMode = 'ref';
+        setTimeout(() => this._directEditing.activate(element), 5 );
+      }
+    } else if (this._context.touchingMode === 'ref'){
+      element.ref = newLabel;
+    } else if (this._context.touchingMode === 'label'){
+      if (element.labels && element.labels.length > 0){
+        let label = element.labels[0];
+        label.content = newLabel;
+        setTimeout(() => {
+          this._bus.fire('element.changed', {element: label});
+        }, 25);
+      } else {
+        this._modeling.createLabelForFact(
+          element,
+          newLabel
+        );
+      }
+    }
+    setTimeout(() => {
+      this._bus.fire('element.changed', {element: element});
+    }, 25);
     // if (isEmptyText(newLabel)) {
     //   newLabel = "";
     //   return

@@ -127,20 +127,12 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
             let c1 = modeling.connectToFact(fact, s1);
             let c2 = modeling.connectToFact(fact, s2);
 
-            let l1 = modeling.createLabel(
+            let l1 = modeling.createLabelForFact(
                 fact,
-                { x: fact.x + fact.width / 2, 
-                  y: fact.y + unitWidth * 1.5
-                },
-                {
-                    content: "has >",
-                }
-            );
-
-            console.log("l1", l1);
-            console.log("fact", fact);  
+                "has >"
+            ); 
             
-            modeling.moveElements([s1,s2,fact,fact2], {x:0,y:0, layout:false});
+            modeling.moveElements([s1,s2,l1,fact,fact2], {x:0,y:0, layout:false});
     }]);
 
     (diagram.get('canvas') as any).zoom('fit-viewport');

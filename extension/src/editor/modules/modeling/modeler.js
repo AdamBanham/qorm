@@ -3,7 +3,7 @@ import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 
-import { Fact, unitHeight } from "../model/facts";
+import { Fact, unitHeight, unitWidth } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
 
 export default class OrmModelling extends Modeling {
@@ -106,6 +106,25 @@ export default class OrmModelling extends Modeling {
                 "Could not connect entity to fact.");
         }
         return con;
+    }
+
+    /**
+     * Adds a label to the give fact.
+     * @param {Fact} fact the fact to attach to
+     * @param {string} label content of the label
+     * @returns created label
+     */
+    createLabelForFact(fact, label){
+        return this.createLabel(
+            fact,
+            { x: fact.x + fact.width / 2, 
+                y: fact.y + unitHeight * 1.5
+            },
+            Object.assign(
+                this._elementFactory.createDummyAttributesForLabel(),
+                { content: label}
+            )
+        );
     }
         
 }

@@ -74,7 +74,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             </head>
             <body>
                 <div class="content" data-vscode-context='{"webviewSection": "main", "mouseCount": 4, "preventDefaultContextMenuItems": true}'>
-                    <h1> Queensland Object-Role-Mapping Editor </h1>
+                    <h1> Queensland Object-Role-Modelling (ORM) Editor </h1>
                     <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'></div>
                     <h2> Elementary Facts </h2>
                     <div class="facts" id="facts" data-vscode-context='{"webviewSection": "facts"}'></div>
