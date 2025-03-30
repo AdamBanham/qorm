@@ -26,7 +26,47 @@ export default function OrmConnect(
         role: role
       });
     }
-  
+
+    function removeMarkers(element) {
+      if (!element) {
+        return;
+      }
+      canvas.removeMarker(element, MARKER_OK);
+      canvas.removeMarker(element, MARKER_NOT_OK);
+    }
+
+    function updateMarkers(start, canExecute) {
+      if (!start) {
+        return;
+      }
+      removeMarkers(start);
+      if (canExecute) {
+        canvas.addMarker(start, MARKER_OK);
+      } else {
+        canvas.addMarker(start, MARKER_NOT_OK);
+      }
+    }
+
+    function hasMarkers(element){
+      if (!element) {
+        return false;
+      }
+      return canvas.hasMarker(element, MARKER_OK) ||
+        canvas.hasMarker(element, MARKER_NOT_OK);
+    }
+
+    function recuriseRemoveMarkers(element) {
+      if (!element) {
+        return;
+      }
+      while (hasMarkers(element)) {
+        removeMarkers(element);
+        element = element.parent;
+        if (!element) {
+          break;
+        }
+      }
+    }
   
     // event handlers
     eventBus.on('connect.move', function(event) {
@@ -35,9 +75,9 @@ export default function OrmConnect(
           hover = context.hover;
       // check for fact, otherwise cancel
       if (!hover || !isFact(hover)) {
-        canvas.removeMarker(start, MARKER_OK);
-        canvas.removeMarker(start, MARKER_NOT_OK);
-        canvas.addMarker(start, MARKER_NOT_OK);
+        context.canExecute = false;
+        updateMarkers(context.start, context.canExecute);
+        updateMarkers(context.hover, context.canExecute);
         return;
       }
       // check if the targeted role is available after transforming.
@@ -48,18 +88,17 @@ export default function OrmConnect(
         }
       );
       context.targetRole = hover.findNearestRoleUsingPosX(transform.x);
-      var targetedRole = context.targetRole;
-      var canExecute = context.canExecute = canConnect(start, hover, targetedRole);
+      var canExecute = context.canExecute = canConnect(
+        start, hover, context.targetRole
+      );
+      
       // reset markers on mouse
-      canvas.removeMarker(hover, MARKER_OK);
-      canvas.removeMarker(hover, MARKER_NOT_OK);
-      // adjust
-      canvas.addMarker(hover, canExecute ? MARKER_OK : MARKER_NOT_OK);
+      updateMarkers(context.start, context.canExecute);
+      updateMarkers(context.hover, context.canExecute);
       if (canExecute) {
         context.source = start;
         context.target = hover;
       }
-      return;
     });
   
     eventBus.on('connect.hover', function(event) {
@@ -70,6 +109,9 @@ export default function OrmConnect(
 
       // check for fact, otherwise cancel
       if (!hover || !isFact(hover)) {
+        context.canExecute = false;
+        updateMarkers(start, context.canExecute);
+        updateMarkers(hover, context.canExecute);
         return;
       }
   
@@ -89,7 +131,8 @@ export default function OrmConnect(
       }
       canExecute = context.canExecute = 
         canConnect(start, hover, targetedRole);
-  
+      updateMarkers(start, context.canExecute);
+      updateMarkers(hover, context.canExecute);
       // ignore hover
       if (isNil(canExecute)) {
         return;
@@ -104,10 +147,19 @@ export default function OrmConnect(
   
     eventBus.on([ 'connect.out', 'connect.cleanup' ], function(event) {
       var context = event.context;
+      recuriseRemoveMarkers(context.hover);
+      recuriseRemoveMarkers(context.start);
       context.hover = null;
+      context.source = null;
       context.target = null;
       context.targetRole = null;
       context.canExecute = false;
+    });
+
+    eventBus.on(['connect.cancel','connect.canceled'], function(event) {
+      var context = event.context;
+      recuriseRemoveMarkers(context.hover);
+      recuriseRemoveMarkers(context.start);
     });
   
     eventBus.on('connect.end', function(event) {
@@ -123,25 +175,16 @@ export default function OrmConnect(
           fact = context.target;
 
       // clear markers
-      if (context.start !== null) {
-        let start = context.start;
-        canvas.removeMarker(start, MARKER_OK);
-        canvas.removeMarker(start, MARKER_NOT_OK);
-      }
-      if (context.hover !== null) {
-        let hover = context.hover;
-        canvas.removeMarker(hover, MARKER_OK);
-        canvas.removeMarker(hover, MARKER_NOT_OK);
-      }
-  
+      recuriseRemoveMarkers(entity);
+      recuriseRemoveMarkers(fact);
       if (!canExecute) {
-        return false;
+        return;
       }
 
       if (canConnect(entity, fact, role)){
         let connection = modeling.connectToFact(fact, entity, role);
         modeling.moveElements([connection,fact,entity], { x: 0, y: 0. });
-      }
+      } 
     });
 
     

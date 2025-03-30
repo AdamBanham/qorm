@@ -36,15 +36,14 @@ export default class OrmRules extends RuleProvider{
                 var source = context.source,
                     target = context.target,
                     role = context.role;
-                let itern = isEntity(source) && isFact(target);
-                if (itern){
+                if (isEntity(source) && isFact(target)){
                     if (!target.hasMissingRole()){
                         return false;
                     } else {
                         return !target.isFilled(role);
                     }
                 }
-                return itern;
+                return false;
             }
         );
     }
