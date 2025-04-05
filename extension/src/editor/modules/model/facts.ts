@@ -1,6 +1,7 @@
 import { ShapeLike } from "diagram-js/lib/model/Types";
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
+import { constraint } from "./constraints";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
@@ -15,6 +16,7 @@ export interface fact {
     x: number;
     y: number;
     hovered?: boolean;
+    constraints?: Array<constraint>;
 }
 
 export function createFact(
@@ -39,6 +41,7 @@ export class Fact implements fact {
     x: number;
     y: number;
     hovered?: boolean;
+    constraints?: Array<constraint>;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -50,6 +53,7 @@ export class Fact implements fact {
         this.x = x;
         this.y = y;
         this.hovered = false;
+        this.constraints = new Array();
     }
 
     addRole(){

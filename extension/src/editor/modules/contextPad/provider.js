@@ -95,6 +95,15 @@ export default function ContextPadProvider(
     };
 
     /**
+     * Triggers the creation of a constraint for the given fact.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.createConstraint = function(that, fact){
+        that._eventBus.fire('fact.create.constraint', {fact: fact});
+    };
+
+    /**
      * Builds the current context options from the state of the fact
      * @param {fact} fact 
      * @returns the options 
@@ -111,7 +120,7 @@ export default function ContextPadProvider(
             },
             className: 'content-pad-fact-expand',
             html: '<div class="entry mdi-plus-box-outline mdi editor-hover" />',
-            title: 'expand roles',
+            title: 'Expand',
             group: '1-grow'
         };
 
@@ -122,24 +131,21 @@ export default function ContextPadProvider(
                 },
                 className: 'content-pad-fact-reduce',
                 html: '<div class="entry mdi-minus-box-outline mdi editor-hover" />',
-                title: 'reduce roles',
+                title: 'Reduce',
                 group: '1-grow'
             };
     
         }
 
-        if (fact.hasMissingRole()){
-            options['connect'] = {
-                action: {
-                    click: (event,) => {that.startConnect(that,fact, event,);},
-                    dragstart: (event,) => {that.startConnect(that,fact, event,);}
-                },
-                className: 'context-pad-contect',
-                html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
-                title: 'connect',
-                group: '2-join'
-            };
-        }
+        options['make-contraint'] = {
+            action: {
+                click: () => {that.createConstraint(that, fact);},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-minus mdi editor-hover"/>',
+            title: 'Add Constraint',
+            group: '2-edit'
+        };
 
         options['delete'] = {
             action: {
@@ -147,7 +153,7 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
-            title: 'delete',
+            title: 'Delete',
             group: '3-delete'
         };
 
@@ -183,7 +189,7 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
-            title: 'delete',
+            title: 'Delete',
             group: 'edit'
         };
 
@@ -242,7 +248,7 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-contect',
             html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
-            title: 'edit',
+            title: 'Connect',
             group: 'join'
         };
 
@@ -252,7 +258,7 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-flip',
             html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
-            title: 'flip type',
+            title: 'Flip',
             group: 'edit'
         };
         
@@ -262,7 +268,7 @@ export default function ContextPadProvider(
             },
             class: 'context-pad-create-fact',
             html: '<div class="entry mdi mdi-alpha-f-box-outline editor-hover"/>',
-            title: 'Add and Connect to Fact',
+            title: 'Join to Fact',
             group: 'add'
         };
 
@@ -272,7 +278,7 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
-            title: 'delete',
+            title: 'Delete',
             group: 'edit'
         };
 
