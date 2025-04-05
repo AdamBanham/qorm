@@ -73,3 +73,15 @@ export function isLabel(shape: ShapeLike): boolean {
     }
     return false;
 }
+
+/**
+ * Determines if the shape is a constraint type.    
+ * @param shape the shape to check
+ * @returns whether the shape is a constraint type
+ */
+export function isConstraint(shape: ShapeLike): boolean {
+    if (shape.type){
+        return shape.type === "constraint";
+    }
+    return false;
+}

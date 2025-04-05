@@ -21,6 +21,7 @@ export default class OrmRules extends RuleProvider{
         this.addConnectionRules();
         this.addEntityRules();
         this.addFactRules();
+        this.addContraintRules();
     }
 
     checkConnectionCreation(context) {
@@ -64,12 +65,35 @@ export default class OrmRules extends RuleProvider{
     addFactRules(){
     
     }
+    
+
+    checkSimpleConstraintCreation(context) {
+        var fact = context.fact,
+            constraint = context.constraint;
+
+        return constraint.over.length > fact.roles - 1;
+    }
+
+    handleConstraintCreation(context) {
+        var mode = context.mode; 
+
+        if (mode === 'simple') {
+            return this.checkSimpleConstraintCreation(context);
+        }
+        console.error('Unknown constraint creation mode: ', mode);
+        return false;
+    }
 
     /**
-     * 
+     * Adds the rules for constraints.
      */
     addContraintRules(){
-
+        var that = this;
+        this.addRule(
+            'constraint.create',
+            DEFAULT_PRIORITY,
+            that.handleConstraintCreation
+        );
     }
 
 }

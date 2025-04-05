@@ -6,7 +6,8 @@ import  {
 import { ShapeLike, Connection } from "diagram-js/lib/model";
 import { unitHeight, fact,  Fact } from "../model/facts";
 import { Entity, ValueEntity, entity } from "../model/entities";
-import { isFact, isEntity } from "../model/util";
+import { isFact, isEntity, isConstraint } from "../model/util";
+import { constraint } from "../model/constraints";
   
 
 export default function ContextPadProvider(
@@ -51,6 +52,9 @@ export default function ContextPadProvider(
         }
         if (isEntity(element)){
             options = this.getEntityOptions(element);
+        }
+        if (isConstraint(element)){
+            options = this.getConstraintOptions(element);
         }
         return options;
     };
@@ -99,8 +103,10 @@ export default function ContextPadProvider(
      * @param {ContextPadProvider} that 
      * @param {Fact} fact 
      */
-    ContextPadProvider.prototype.createConstraint = function(that, fact){
-        that._eventBus.fire('fact.create.constraint', {fact: fact});
+    ContextPadProvider.prototype.createConstraint = function(that, fact, event){
+        that._eventBus.fire('fact.create.constraint', 
+            {fact: fact, mode: 'simple', originalEvent: event}
+        );
     };
 
     /**
@@ -139,7 +145,7 @@ export default function ContextPadProvider(
 
         options['make-contraint'] = {
             action: {
-                click: () => {that.createConstraint(that, fact);},
+                click: (event) => {that.createConstraint(that, fact, event);},
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-minus mdi editor-hover"/>',
@@ -275,6 +281,41 @@ export default function ContextPadProvider(
         options['delete'] = {
             action: {
                 click: () => {that.removeElement(that, entity);},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'Delete',
+            group: 'edit'
+        };
+
+        return options;
+    };
+
+    /**
+     * Removes the given constraint from the schema.
+     * @param {ContextPadProvider} that 
+     * @param {constraint} constraint the constraint to remove
+     */
+    ContextPadProvider.prototype.removeConstraint = function(that, constraint){
+        let src = constraint.src;
+        constraint.src.removeConstraint(constraint);
+        that._modeling.removeElements([ constraint ]);
+        that._modeling.sendUpdate(src);
+        that._modeling.sendUpdates(...src.constraints);
+    };
+
+    /**
+     * Creates the usable options for the given constraint type.
+     * @param {constraint} constraint 
+     * @returns 
+     */
+    ContextPadProvider.prototype.getConstraintOptions = function(constraint){
+        var that = this;
+        var options = {};
+
+        options['delete'] = {
+            action: {
+                click: () => {that.removeConstraint(that, constraint);},
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',

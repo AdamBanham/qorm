@@ -1,5 +1,6 @@
 import { Position } from "../model/position";
 import { CanvasViewbox } from "diagram-js/lib/core/Canvas";
+import { ShapeLike } from "diagram-js/lib/model/Types";
 
 /**
  * Transforms an mouse original event into the canvas coordinates.
@@ -16,3 +17,22 @@ export function transformToViewbox(
         y: position.y / canvasViewbox.scale + canvasViewbox.y
     };
 };
+
+/**
+ * Checks whether the position is within the shape.
+ * @param shape the shape to be checked
+ * @param position the position to be checked
+ * @returns {boolean} whether the position is within the shape
+ */
+export function isWithinShape(
+    shape: ShapeLike,
+    position: Position
+    ) : boolean {
+        let ret = (
+            position.x >= shape.x &&
+            position.x <= shape.x + shape.width &&
+            position.y >= shape.y &&
+            position.y <= shape.y + shape.height
+        );
+        return ret;
+    };

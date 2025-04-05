@@ -5,6 +5,7 @@ import { constraint } from "./constraints";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
+export const constraintDiff = 10;
 
 export interface fact {
     id: string;
@@ -41,7 +42,7 @@ export class Fact implements fact {
     x: number;
     y: number;
     hovered?: boolean;
-    constraints?: Array<constraint>;
+    constraints: Array<constraint>;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -187,5 +188,60 @@ export class Fact implements fact {
     isFilled(pos:number) : boolean {
         return this.factors[pos] !== null;
     }
+
+    /**
+     * Helper function to get the next free position for a constraint.
+     * @returns {x:number, y:number} the next free position for a constraint
+     */
+    getNextFreeContraintPosition(): {x:number, y:number} {
+        let x = this.x + this.width / 2;
+        let y = this.y - ( constraintDiff * (this.constraints.length + 1) );
+        return {x: x, y: y};
+    }
+
+    /**
+     * Adds a constraint to the fact type.
+     * @param constraint the constraint to add
+     */
+    addConstraint(constraint: constraint): void {
+        this.constraints.push(constraint);
+        constraint.setSource(this);
+    }
+
+    /**
+     * Removes the given constraint from the fact type.
+     * @param constraint the constraint to remove
+     */
+    removeConstraint(constraint: constraint): void {
+        let idx = this.constraints.findIndex((i,_) => {
+            if (i){
+                return i.id === constraint.id;
+            } return false;
+        });
+        if (idx >= 0){
+            let rem = this.constraints.splice(idx,1);
+            for(let removed of rem){
+                removed.setSource(null);
+            }
+        }
+        let curr_y = this.y - constraintDiff;
+        for(let keeps of this.constraints){
+            keeps.y = curr_y;
+            curr_y = curr_y - constraintDiff;
+        }
+    }
+
+    /**
+     * Refreshes the positions of the constraints.
+     */
+    refreshConstraintPositions(): void {
+        let curr_y = this.y - constraintDiff;
+        for(let keeps of this.constraints){
+            keeps.y = curr_y;
+            keeps.x = this.x;
+            curr_y = curr_y - constraintDiff;
+        }
+    }
+
 }
 

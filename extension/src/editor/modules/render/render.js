@@ -15,7 +15,7 @@ import {
 
 import { ValueEntity, Entity } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
-import { isLabel } from '../model/util';
+import { isLabel, isConstraint } from '../model/util';
 
 
 const BORDER_COLOUR = "var(--render-border-colour)";
@@ -23,9 +23,10 @@ const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
 const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
 const ARC_STROKE_COLOUR = "var(--render-arc-stroke)";
 const SUPPORTED_TYPES = [
-    'entity', 'value', 'fact', 'connection', 'label'
+    'entity', 'value', 'fact', 'connection', 'label', 'constraint'
 ];
 var RENDER_PRIORITY = 1500;
+const DEBUG = true;
 
 export default class TSRenderer extends  BaseRenderer {
     
@@ -45,6 +46,9 @@ export default class TSRenderer extends  BaseRenderer {
             if (self.canRender(element)) {
                 if (isLabel(element)){
                     return self.drawLabel(visuals, element, attrs);
+                }
+                if (isConstraint(element)){
+                    return self._drawContraint(visuals, element, attrs);
                 }
                 return self.drawShape(visuals, element, attrs);
             } else {
@@ -179,17 +183,19 @@ export default class TSRenderer extends  BaseRenderer {
             }
              
 
-
-            // draw center for debug
-            let dot = svgCreate("circle", {
-                cx: (element.width / 2),
-                cy: (element.height / 2),
-                r: 5,
-                fill: "red",
-                stroke: "transparent",
-                opacity: 0.25
-            });
-            svgAppend(group, dot);
+            if (DEBUG){
+                 // draw center for debug
+                let dot = svgCreate("circle", {
+                    cx: (element.width / 2),
+                    cy: (element.height / 2),
+                    r: 5,
+                    fill: "red",
+                    stroke: "transparent",
+                    opacity: 0.25
+                });
+                svgAppend(group, dot);
+            }
+           
             
             // add compontents to group and return
             svgAppend(visuals, group);
@@ -232,7 +238,37 @@ export default class TSRenderer extends  BaseRenderer {
         svgAppend(group, text);
         svgAppend(group, dot);
         svgAppend(visuals, group);
-        return text;
+        return group;
+    }
+
+    _drawContraint(visuals, constraint, attrs){
+        var group = svgCreate("g", {
+            class: "orm-visuals"
+        });
+        // draw segments 
+        let curr_x = 0;
+        let next_x = unitWidth;
+        let opactity = (constraint.editing) ? 0.5 : 1;
+        let color = (constraint.editing) ? "gray" : "purple";
+        for(let i = 0; i < constraint.roles; i++){
+            let dash = (constraint.isRoleConstrainted(i)) 
+                ? "0" : "2.5";
+            let line = svgCreate("line", {
+                x1: curr_x,
+                y1: 1.5,
+                x2: next_x,
+                y2: 1.5,
+                stroke: color,
+                'stroke-width': 2,
+                'stroke-dasharray': dash,
+                opacity: opactity,
+            });
+            svgAppend(group, line);
+            curr_x = next_x;
+            next_x = next_x + unitWidth;
+        }
+        svgAppend(visuals, group);
+        return group;
     }
 
     _drawSimpleConnection(visuals, connection, attrs){

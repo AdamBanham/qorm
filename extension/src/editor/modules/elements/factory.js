@@ -2,6 +2,7 @@ import ElementFactory from "diagram-js/lib/core/ElementFactory";
 
 import { createEntity, entity} from "../model/entities";
 import { createFact, fact } from "../model/facts";
+import { createConstraint } from "../model/constraints";
 
 /**
  * @type ElementFactory
@@ -33,6 +34,14 @@ export default class OrmElementFactory extends ElementFactory{
         if (type === 'fact') {
             return createFact(attrs.factors, attrs.x, attrs.y);
         }
+        if (type === 'constraint'){
+            attrs['type'] = 'constraint';
+            return createConstraint(
+                attrs.x, attrs.y, 
+                attrs.width, attrs.height,
+                attrs.over, attrs.roles
+            );
+        }
         if (type === 'connection'){
             attrs['type'] = 'connection';
             return super.create(type, attrs);
@@ -41,6 +50,7 @@ export default class OrmElementFactory extends ElementFactory{
             attrs['type'] = 'label';
             return super.create(type, attrs);
         }
+       
         throw new Error('Unknown element type: ' + type);
     }
 
@@ -83,6 +93,24 @@ export default class OrmElementFactory extends ElementFactory{
     createDummyAttributesForLabel(){
         return {
             content: "..."
+        };
+    }
+
+    /**
+     * creates dummy attributes for a constraint over a fact.
+     * @param {Fact} fact 
+     * @returns 
+     */
+    createDummyAttributesForConstraintOverFact(fact){
+        let pos = fact.getNextFreeContraintPosition();
+        return {
+            type: 'constraint',
+            width: fact.width,
+            height: 3,
+            x: pos.x,
+            y: pos.y,
+            over: [],
+            roles: fact.roles, 
         };
     }
 }
