@@ -51,7 +51,7 @@ export default class OrmModelling extends Modeling {
         if (remove){
             this.removeConnectionFromFact(fact, remove);
         }
-        this.sendUpdates(fact.incoming);
+        this.sendUpdates(fact);
         return remove;
     }
 
@@ -72,7 +72,7 @@ export default class OrmModelling extends Modeling {
         if (con){
             this.removeConnection(con);
         }   
-        this.sendUpdates(fact, entity, con);
+        this.sendUpdates(fact, entity);
     }
 
     /**

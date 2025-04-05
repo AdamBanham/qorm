@@ -14,6 +14,7 @@ const LassoToolModule = require('diagram-js/lib/features/lasso-tool').default;
 const ContextPadModule = require('diagram-js/lib/features/context-pad').default;
 const KeyBoardModule = require('diagram-js/lib/features/keyboard').default;
 const LabelSupportModule = require('diagram-js/lib/features/label-support').default;
+const BendpointsModule = require('diagram-js/lib/features/bendpoints').default;
 
 // additionals modules
 import gridModule from './modules/grid';
@@ -29,6 +30,7 @@ import placementService from "./modules/placement";
 import ormInteractions from "./modules/interactions";   
 import ormLayouter from "./modules/layout";
 import ormLabelEditing from "./modules/labels";
+import customBendpoints from "./modules/bendpoints";
 import { unitWidth } from './modules/model/facts';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
@@ -49,7 +51,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         SnappingModule,
         ContextPadModule,
         KeyBoardModule,
-        LabelSupportModule
+        LabelSupportModule,
+        BendpointsModule
     ];
 
     // additiona modules for the orm-editor
@@ -66,7 +69,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         placementService,
         ormInteractions,
         ormLayouter,
-        ormLabelEditing
+        ormLabelEditing,
+        customBendpoints
     ];
 
     var diagram =  new Diagram({

@@ -7,7 +7,38 @@ import { unitHeight, unitWidth } from "../model/facts";
 
 export default class OrmLayouter extends BaseLayouter {
 
+    tolerance = 0.01;
+
     constructer(){
+    }
+
+    /**
+     * Whether two positions are nearly the same.
+     * @param {*} pos one position
+     * @param {*} other other position
+     * @returns {boolean} whether they are nearly exaclty the same position
+     */
+    nearlyEqual(pos, other){
+        return Math.abs(pos.x - other.x) < this.tolerance &&
+            Math.abs(pos.y - other.y) < this.tolerance;
+    }
+
+    /**
+     * prefix or update the last position in the bends array.
+     * @param {Array} bends the current wayspoints
+     * @param {*} pos a new position
+     * @returns {Array} the new bends
+     */
+    suffixOrUpdate(bends, pos){
+        if (bends.length === 0){
+            return [pos];
+        }
+        let last = bends[bends.length - 1];
+        if (this.nearlyEqual(last, pos)){
+            return bends;
+        } else {
+            return [...bends, pos];
+        }
     }
 
     /**
@@ -28,44 +59,41 @@ export default class OrmLayouter extends BaseLayouter {
         }
 
         // check if the connection is a fact-entity connection
+        // [rules should stop this from happening]
         if (!isFact(fact) || !isEntity(entity)){
             console.error("error: unable to consider connection :: ", connection);
             return super.layoutConnection(connection, hints);
         }
         // work for waypoints
-        // TODO: in future I may want to know about the last set
-        // waypoints, so I can use them to calculate the new ones.
         let srcPos = getMid(entity);
         let tgtPos = fact.getCenterForRole(
             role
         );
-        let waypoints = [ ];
+        let waypoints = [];
+        let bends;
+        if (connection.waypoints){
+            bends = connection.waypoints.slice(1, -1);
+        } else {
+            bends = [];
+        }
 
         if (fact.roles === 1){
             // if the fact has only one role then put the pivot
             // to the left or right of the fact
-            if (srcPos.x > tgtPos.x){
-                waypoints = 
-                [
+            waypoints = [
                     Object.assign({}, srcPos),
-                    { x: tgtPos.x + unitWidth, y: tgtPos.y},
+                    ...bends,
                     Object.assign({}, tgtPos)
-                ];
-            }
-            else {
-                waypoints = 
-                [
-                    Object.assign({}, srcPos),
-                    { x: tgtPos.x - unitWidth, y: tgtPos.y},
-                    Object.assign({}, tgtPos)
-                ];
-            }
+            ];
         } else if (role === 0){
             // if its the first role then put the pivot to the left
+
             waypoints = 
             [
                 Object.assign({}, srcPos),
-                { x: tgtPos.x - unitWidth, y: tgtPos.y},
+                ...this.suffixOrUpdate(bends, 
+                    { x: tgtPos.x - unitWidth, y: tgtPos.y}
+                ),
                 Object.assign({}, tgtPos)
             ];
         } else if (role === fact.roles - 1){
@@ -73,7 +101,9 @@ export default class OrmLayouter extends BaseLayouter {
             waypoints = 
                 [
                     Object.assign({}, srcPos),
-                    { x: tgtPos.x + unitWidth, y: tgtPos.y},
+                    ...this.suffixOrUpdate(bends,
+                        { x: tgtPos.x + unitWidth, y: tgtPos.y}
+                    ),
                     Object.assign({}, tgtPos)
                 ];
         } else {
@@ -82,14 +112,18 @@ export default class OrmLayouter extends BaseLayouter {
                 waypoints = 
                 [
                     Object.assign({}, srcPos),
-                    { x: tgtPos.x, y: tgtPos.y - unitHeight },
+                    ...this.suffixOrUpdate(bends,
+                        { x: tgtPos.x, y: tgtPos.y - unitHeight }
+                    ),
                     Object.assign({}, tgtPos)
                 ];
             } else {
                 waypoints = 
                 [
                     Object.assign({}, srcPos),
-                    { x: tgtPos.x, y: tgtPos.y + unitHeight },
+                    ...this.suffixOrUpdate(bends,
+                        { x: tgtPos.x, y: tgtPos.y + unitHeight }
+                    ),
                     Object.assign({}, tgtPos)
                 ];
             }

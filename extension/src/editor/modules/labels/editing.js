@@ -210,7 +210,6 @@ export default function LabelEditingProvider(
       height: target.height * vbox.scale
     };
 
-    console.log("editing :: ", target, bounds);
     var defaultStyle = this._textRenderer.getDefaultStyle();
   
     // take zoom into account
@@ -220,7 +219,6 @@ export default function LabelEditingProvider(
   
     var style = Object.assign({},defaultStyle);
     style['fontSize'] = defaultFontSize;
-    console.log("style", style);
     return { bounds: bounds, style: style };
   };
   
@@ -229,7 +227,6 @@ export default function LabelEditingProvider(
       element, newLabel,
       activeContextText, bounds) {
     
-    console.log("update label :: ", element, newLabel, activeContextText, bounds);
     
     if (this._context.touchingMode === 'name'){
       element.name = newLabel;
