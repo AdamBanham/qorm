@@ -71,14 +71,18 @@ export default class OrmRules extends RuleProvider{
         var fact = context.fact,
             constraint = context.constraint;
 
-        return constraint.over.length > fact.roles - 1;
+        if (constraint.editing){
+            constraint.valid = constraint.over.length >= fact.roles - 1;
+        }
+
+        return constraint.over.length >= fact.roles - 1;
     }
 
-    handleConstraintCreation(context) {
+    handleConstraintCreation(context, that) {
         var mode = context.mode; 
 
         if (mode === 'simple') {
-            return this.checkSimpleConstraintCreation(context);
+            return that.checkSimpleConstraintCreation(context);
         }
         console.error('Unknown constraint creation mode: ', mode);
         return false;
@@ -92,7 +96,9 @@ export default class OrmRules extends RuleProvider{
         this.addRule(
             'constraint.create',
             DEFAULT_PRIORITY,
-            that.handleConstraintCreation
+            (context) => {
+                return that.handleConstraintCreation(context,that);
+            }
         );
     }
 

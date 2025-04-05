@@ -6,6 +6,9 @@
     --render-arc-stroke: black;
     --render-fact-hover-success: hsla(143, 30%, 45%, 0.80);
     --render-fact-hover-error: hsla(0, 30%, 45%, 0.80);
+    --render-simple-constraint: hsl(300, 82%, 32%);
+    --render-simple-constraint-editing: hsla(147, 93%, 54%, 0.5);
+    --render-simple-constraint-fail: hsla(0, 85%, 37%, 0.5);    
 }
 
 #editor .fact-role {

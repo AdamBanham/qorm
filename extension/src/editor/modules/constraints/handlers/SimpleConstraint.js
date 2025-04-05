@@ -14,12 +14,14 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
      * @param {*} eventBus 
      * @param {*} factory 
      * @param {*} modeling 
+     * @param {*} rules
      */
-    constructor(eventBus, factory, modeling) {
+    constructor(eventBus, factory, modeling, rules) {
         super(eventBus);
         this._eventBus = eventBus;
         this._factory = factory;
         this._modeling = modeling;
+        this._rules = rules;
 
 
         this._eventBus.on(
@@ -60,13 +62,29 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
             event.x
         );
         event.constraint.flipRole(role);
+        this._rules.allowed('constraint.create', {
+            mode: event.mode,
+            constraint: event.constraint,
+            fact: event.fact,
+        });
         this._modeling.sendUpdate(event.constraint);
     }
 
     cleanup(event) {
         event.constraint.setEditing(false);
-        event.fact.addConstraint(event.constraint);
-        this._modeling.sendUpdates(event.constraint, event.fact);
+
+        let allowed = this._rules.allowed('constraint.create', {
+            mode: event.mode,
+            constraint: event.constraint,
+            fact: event.fact,
+        });
+
+        if (allowed) {
+            event.fact.addConstraint(event.constraint);
+            this._modeling.sendUpdates(event.constraint, event.fact);
+        } else {
+            this._modeling.removeElements([event.constraint]);
+        }
     }
 
     cancel(event) {
@@ -77,5 +95,6 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
 SimpleConstraintHandler.$inject = [
     'eventBus',
     'elementFactory',
-    'modeling'
+    'modeling',
+    'rules'
 ];

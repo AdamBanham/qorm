@@ -22,6 +22,9 @@ const BORDER_COLOUR = "var(--render-border-colour)";
 const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
 const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
 const ARC_STROKE_COLOUR = "var(--render-arc-stroke)";
+const CONSTRAINT_COLOUR = "var(--render-simple-constraint)";
+const CONSTRAINT_EDIT_COLOUR = "var(--render-simple-constraint-editing)";
+const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
 const SUPPORTED_TYPES = [
     'entity', 'value', 'fact', 'connection', 'label', 'constraint'
 ];
@@ -248,8 +251,9 @@ export default class TSRenderer extends  BaseRenderer {
         // draw segments 
         let curr_x = 0;
         let next_x = unitWidth;
-        let opactity = (constraint.editing) ? 0.5 : 1;
-        let color = (constraint.editing) ? "gray" : "purple";
+        let color = (constraint.editing) ? 
+        ( constraint.valid ? CONSTRAINT_EDIT_COLOUR : CONSTRAINT_EDIT_FAIL) 
+        : CONSTRAINT_COLOUR;
         for(let i = 0; i < constraint.roles; i++){
             let dash = (constraint.isRoleConstrainted(i)) 
                 ? "0" : "2.5";
@@ -261,7 +265,6 @@ export default class TSRenderer extends  BaseRenderer {
                 stroke: color,
                 'stroke-width': 2,
                 'stroke-dasharray': dash,
-                opacity: opactity,
             });
             svgAppend(group, line);
             curr_x = next_x;

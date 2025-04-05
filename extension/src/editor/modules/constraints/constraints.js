@@ -17,7 +17,7 @@ export default class ContraintsModule {
      * @param {Modeling} modeling 
      * @param {Builder} dragging 
      */
-    constructor(eventBus, modeling, builder, elementFactory) {
+    constructor(eventBus, modeling, builder, elementFactory, rules) {
         this._builder = builder;
         this._eventBus = eventBus;
         this._modeling = modeling;
@@ -30,7 +30,7 @@ export default class ContraintsModule {
 
         this._registry = {
             'simple' : new SimpleConstraintHandler(
-                eventBus, elementFactory, modeling 
+                eventBus, elementFactory, modeling, rules
             )
         };
     }
@@ -62,4 +62,5 @@ ContraintsModule.$inject = [
     'modeling',
     'constraintsBuilder',
     'elementFactory',
+    'rules'
 ];

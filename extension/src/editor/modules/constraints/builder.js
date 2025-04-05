@@ -323,6 +323,8 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
     // emit click if its on the fact
     if (isWithinShape(context.data.fact, context.payload)) {
         fire('click', context);
+    } else {
+        end(event);
     }
 
   }
