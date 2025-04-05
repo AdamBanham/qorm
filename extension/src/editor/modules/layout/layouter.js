@@ -33,6 +33,14 @@ export default class OrmLayouter extends BaseLayouter {
         if (bends.length === 0){
             return [pos];
         }
+        if (bends.length === 1){
+            let last = bends[0];
+            if (this.nearlyEqual(last, pos)){
+                return bends;
+            } else {
+                return [last, pos];
+            }
+        }
         let last = bends[bends.length - 1];
         if (this.nearlyEqual(last, pos)){
             return bends;
