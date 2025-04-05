@@ -37,7 +37,7 @@ export default class OrmLayouter extends BaseLayouter {
         if (this.nearlyEqual(last, pos)){
             return bends;
         } else {
-            return [...bends, pos];
+            return [...bends.slice(0,-1), pos];
         }
     }
 
