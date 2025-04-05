@@ -23,28 +23,31 @@ export default class OrmRules extends RuleProvider{
         this.addFactRules();
     }
 
+    checkConnectionCreation(context) {
+        var source = context.source,
+        target = context.target,
+        role = context.role;
+        if (isEntity(source) && isFact(target)){
+            if (!target.hasMissingRole()){
+                return false;
+            } else {
+                return !target.isFilled(role);
+            }
+        }
+        return false;
+    }
+        
     /**
      * Add the rules for valid and legal connections
      */
     addConnectionRules(){
         // add a rule that checks that the source is an entity and
         // the target is a fact
+        var that = this;
         this.addRule(
             'connection.create',
             DEFAULT_PRIORITY,
-            function(context) {
-                var source = context.source,
-                    target = context.target,
-                    role = context.role;
-                if (isEntity(source) && isFact(target)){
-                    if (!target.hasMissingRole()){
-                        return false;
-                    } else {
-                        return !target.isFilled(role);
-                    }
-                }
-                return false;
-            }
+            that.checkConnectionCreation
         );
     }
 
@@ -60,6 +63,13 @@ export default class OrmRules extends RuleProvider{
      */
     addFactRules(){
     
+    }
+
+    /**
+     * 
+     */
+    addContraintRules(){
+
     }
 
 }
