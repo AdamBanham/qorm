@@ -8,8 +8,14 @@ import { unitHeight, unitWidth } from "../model/facts";
 export default class OrmLayouter extends BaseLayouter {
 
     tolerance = 0.01;
+    offsetTolerance = Math.max(unitHeight, unitWidth) * 1.2
 
     constructer(){
+    }
+
+    nearby(pos, other){
+        return Math.abs(pos.x - other.x) < this.offsetTolerance &&
+            Math.abs(pos.y - other.y) < this.offsetTolerance;
     }
 
     /**
@@ -38,6 +44,9 @@ export default class OrmLayouter extends BaseLayouter {
             if (this.nearlyEqual(last, pos)){
                 return bends;
             } else {
+                if (this.nearby(last, pos)){
+                    return [pos]
+                }
                 return [last, pos];
             }
         }
@@ -45,7 +54,10 @@ export default class OrmLayouter extends BaseLayouter {
         if (this.nearlyEqual(last, pos)){
             return bends;
         } else {
-            return [...bends.slice(0,-1), pos];
+            if (this.nearby(last, pos)){
+                return [...bends.slice(0,-1), pos]
+            }
+            return [...bends.slice(), pos];
         }
     }
 
