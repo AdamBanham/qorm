@@ -181,6 +181,17 @@ export default function ContextPadProvider(
     };
 
     /**
+     * Flips the mandatory role that this connection plays, i.e. the entity must
+     * play a role in the connected fact type.
+     * @param {ContextPadProvider} that 
+     * @param {Connection} con the connection to make mandatory
+     */
+    ContextPadProvider.prototype.makeMandatory = function(that, con){
+        that._modeling.flipMandatoryConstraint(con);
+        that._modeling.sendUpdate(con)
+    }
+
+    /**
      * Builds the current context options from the state of the connection
      * @param {Connection} con the selected connection
      * @returns the options 
@@ -188,6 +199,20 @@ export default function ContextPadProvider(
     ContextPadProvider.prototype.getConnectionOptions = function(con){
         var that = this;
         var options = {};
+
+        let offMandatory = "circle-off-outline"
+        let onMandatory = "circle"
+        let included = con.mandatory ? offMandatory : onMandatory
+
+        options['mandatory'] = {
+            action : {
+                click: () => {that.makeMandatory(that, con)}
+            },
+            className: 'context-pad-mandatory',
+            html: '<div class="entry mdi-'+included +' mdi editor-hover"/>',
+            title: 'Flip Mandatory?',
+            group: 'edit'
+        }
 
         options['delete'] = {
             action: {

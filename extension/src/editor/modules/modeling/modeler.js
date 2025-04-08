@@ -2,6 +2,7 @@ import Modeling from 'diagram-js/lib/features/Modeling/Modeling';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
+import { Connection } from 'diagram-js/lib/model';
 
 import { Fact, unitHeight, unitWidth } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
@@ -99,7 +100,8 @@ export default class OrmModelling extends Modeling {
         }
         let con = null;
         if (added){
-            con = this.connect(entity, fact, {role : pos});
+            let attrs = this._elementFactory.createDummyAttributesForConnection(pos);
+            con = this.connect(entity, fact, attrs);
             this.sendUpdates(con,fact,entity);
         } else {
             console.error("modeler::connectToFact::",
@@ -125,6 +127,15 @@ export default class OrmModelling extends Modeling {
                 { content: label}
             )
         );
+    }
+
+    /**
+     * Flips the mandatory constraint on this connection between an entity
+     * and fact type.
+     * @param {Connection} con 
+     */
+    flipMandatoryConstraint(con){
+        con.mandatory = !con.mandatory;
     }
         
 }

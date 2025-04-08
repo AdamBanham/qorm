@@ -3,6 +3,9 @@ import ElementFactory from "diagram-js/lib/core/ElementFactory";
 import { createEntity, entity} from "../model/entities";
 import { createFact, fact } from "../model/facts";
 import { createConstraint } from "../model/constraints";
+import { createConnection } from "../model/connections";
+import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
+import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 
 /**
  * @type ElementFactory
@@ -44,7 +47,17 @@ export default class OrmElementFactory extends ElementFactory{
         }
         if (type === 'connection'){
             attrs['type'] = 'connection';
-            return super.create(type, attrs);
+            let basic = super.create(type, attrs)
+            // TODO: workout how to extend a connection
+            // let mine = createConnection(
+            //     attrs.waypoints ? attrs.waypoints : [],
+            //     attrs.role,
+            //     attrs.mandatory ? attrs.mandatory : false
+            // );
+            // if (!attrs.waypoints || attrs.waypoints.length < 1){
+            //     mine.waypoints = undefined
+            // }
+            return basic; 
         }
         if (type === 'label'){
             attrs['type'] = 'label';
@@ -64,8 +77,8 @@ export default class OrmElementFactory extends ElementFactory{
             label: 'Foobar',
             ref: 'id',
             type: type,
-            width: 100,
-            height: 75,
+            width: entityWidth,
+            height: entityHeight,
             x: 0,
             y: 0
         };
@@ -78,8 +91,8 @@ export default class OrmElementFactory extends ElementFactory{
     createDummyAttributesForFacts(){
         return {
             factors: [null],
-            width: 25,
-            height: 25,
+            width: factWidth,
+            height: factHeight,
             type: 'fact',
             x: 0,
             y: 0
@@ -111,6 +124,18 @@ export default class OrmElementFactory extends ElementFactory{
             y: pos.y,
             over: [],
             roles: fact.roles, 
+        };
+    }
+
+    /**
+     * Makes a dummy set of attributes for connections.
+     * @param {number} role the position of the fact type 
+     * @returns {object} a mapping of attributes
+     */
+    createDummyAttributesForConnection(role){
+        return {
+            mandatory: false,
+            role: role
         };
     }
 }

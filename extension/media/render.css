@@ -9,6 +9,8 @@
     --render-simple-constraint: hsl(300, 82%, 32%);
     --render-simple-constraint-editing: hsla(147, 93%, 54%, 0.5);
     --render-simple-constraint-fail: hsla(0, 85%, 37%, 0.5);    
+    --render-mandatory-role-fill: hsl(280, 49%, 32%);
+    --render-madatory-role-stroke: hsl(280, 91%, 13%);
 }
 
 #editor .fact-role {

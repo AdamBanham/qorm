@@ -13,7 +13,7 @@ import {
     createLine
 } from 'diagram-js/lib/util/RenderUtil';
 
-import { ValueEntity, Entity } from '../model/entities';
+import { ValueEntity, Entity, unitWidth as entityWidth } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
 import { isLabel, isConstraint } from '../model/util';
 
@@ -25,11 +25,14 @@ const ARC_STROKE_COLOUR = "var(--render-arc-stroke)";
 const CONSTRAINT_COLOUR = "var(--render-simple-constraint)";
 const CONSTRAINT_EDIT_COLOUR = "var(--render-simple-constraint-editing)";
 const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
+const MANDATORY_ROLE_COLOUR = "var(--render-mandatory-role-fill)";
+const MANDATORY_ROLE_STROKE = "var(--render-madatory-role-stroke)";
 const SUPPORTED_TYPES = [
     'entity', 'value', 'fact', 'connection', 'label', 'constraint'
 ];
 var RENDER_PRIORITY = 1500;
 const DEBUG = true;
+const DEBUG_OPACITY = 1.0;
 
 export default class TSRenderer extends  BaseRenderer {
     
@@ -76,6 +79,33 @@ export default class TSRenderer extends  BaseRenderer {
             { strokeWidth: 3, stroke: ARC_STROKE_COLOUR, strokeLinecap: 'round',
                 strokeLinejoin: 'round', fill: 'none'}
         );
+
+        // add markers
+        let defs = svgCreate("defs",{});
+        this._setupMarkers(defs);
+        svgAppend(canvas.getActiveLayer(), defs);
+    }
+
+    _setupMarkers(defs){
+        let marker = svgCreate("marker",{
+            id: "mandatory-role",
+            refX: 22,
+            refY: 5,
+            markerHeight: 10,
+            markerWidth: 10,
+            viewbox: '0 0 10 10',
+            orient: 'auto-start-reverse',
+
+        });
+        let mandatory = svgCreate("circle", {
+            cx : 5, 
+            cy : 5,
+            r : 2,
+            fill: "red"
+        });
+        svgAppend(marker, mandatory);
+
+        svgAppend(defs, marker);
     }
 
     canRender(element){
@@ -197,10 +227,12 @@ export default class TSRenderer extends  BaseRenderer {
                     opacity: 0.25
                 });
                 svgAppend(group, dot);
+                // add compontents to group and return
+                svgAttr(group, {
+                    opacity: DEBUG_OPACITY
+                })
             }
            
-            
-            // add compontents to group and return
             svgAppend(visuals, group);
             return group;
     };    
@@ -244,6 +276,8 @@ export default class TSRenderer extends  BaseRenderer {
         return group;
     }
 
+
+
     _drawContraint(visuals, constraint, attrs){
         var group = svgCreate("g", {
             class: "orm-visuals"
@@ -274,23 +308,79 @@ export default class TSRenderer extends  BaseRenderer {
         return group;
     }
 
+    angleBetweenPoints(pos, other){
+        let x = pos.x - other.x 
+        let y = pos.y - other.y 
+        return Math.atan2(y, x) * (180 / Math.PI)
+    }
+
+    _drawMandatory(visuals, connection, line){
+        let angle = this.angleBetweenPoints(
+            connection.waypoints[0],
+            connection.waypoints[1]
+        );
+        // work out the extra need for the corners with the hypo is the longest
+        let between = Math.abs(angle % 90)
+        let extra = 5;
+        if (between > 45){
+            extra = extra * (1 - ((between-45)/45.0));
+        } else {
+            extra = extra * ((between/45.0));
+        }
+        // use a base of 20 (abaritary, feels selected)
+        let marker = svgCreate("marker", {
+            id: "mandatory-role-"+connection.id,
+            refX: 20 + 2 + extra,
+            refY: 5,
+            markerHeight: 10,
+            markerWidth: 10,
+            viewbox: '0 0 10 10',
+            orient: 'auto-start-reverse',
+        })
+        // the role to include
+        svgAppend(marker, svgCreate("circle", {
+            cx : 5, 
+            cy : 5,
+            r : 3,
+            fill: MANDATORY_ROLE_COLOUR,
+            stroke:  MANDATORY_ROLE_STROKE,
+            strokeWidth: 1,
+        }))
+        let defs = svgCreate("defs", {})
+        // append to line
+        svgAppend(defs, marker)
+        svgAppend(visuals, defs)
+        svgAttr(line, {
+            'marker-start': 'url(#mandatory-role-'+connection.id +')'
+        })
+    }
+
     _drawSimpleConnection(visuals, connection, attrs){
         // handle the role that is being targeted
         const entity = connection.source;
         const fact = connection.target;
         let waypoints = Array.from(connection.waypoints);
+        let group = svgCreate("g", {});
 
-
+        if (waypoints.length >= 2){
         // now create the line using the updated waypoints
         var line = createLine(
             waypoints, assign({
                 id: connection.id
             }, 
             this.CONNECTION_STYLE, attrs || {})
-        );
-    
-        svgAppend(visuals, line);
-        return line;
+        );    
+        svgAppend(group, line);
+        
+        if (connection.mandatory){
+            this._drawMandatory(
+                visuals, connection, line
+            );
+        }
+
+        }
+        svgAppend(visuals, group)
+        return visuals;
     }
 
     drawConnection(visuals, connection, attrs) {

@@ -3,6 +3,9 @@ import {
     Connection, Shape, 
     Element, Label } from "diagram-js/lib/model/Types";
 
+export const unitHeight = 75;
+export const unitWidth = 100;
+
 export interface entity extends Shape {
     id: string;
     name: string;

@@ -137,6 +137,11 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
                 fact,
                 "has >"
             ); 
+
+            let c3 = modeling.connectToFact(fact2, s2, 3);
+            modeling.flipMandatoryConstraint(c3);
+            let c4 = modeling.connectToFact(fact2, s1, 0);
+            modeling.flipMandatoryConstraint(c4);
             
             modeling.moveElements([s1,s2,l1,fact,fact2], {x:0,y:0, layout:false});
     }]);
