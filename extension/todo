@@ -1,0 +1,11 @@
+[] export svg
+[] add objectified fact types
+[] fancy directions for labels
+[] keyboard support
+
+[] actually write to file changes as they happen
+    - grammar?
+        - is it xml? or is just the export svg enough?
+        - just use a basic toml or yaml setup?
+[] load file content as first step on webview launch
+[] add verb conventions to bottom of html?
