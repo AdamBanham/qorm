@@ -52,7 +52,8 @@ export default function LabelEditingProvider(
     var that = this;
   
     // listen to dblclick on non-root elements
-    eventBus.on('element.dblclick', function(event) {
+    eventBus.on(
+      ['element.dblclick', 'label.edit.trigger'], function(event) {
       if (isFact(event.element) || isEntity(event.element) || isLabel(event.element)){
         activateDirectEdit(event.element, true);
       }

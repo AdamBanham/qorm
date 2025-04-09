@@ -63,7 +63,6 @@ export default function ExamplePaletteProvider(
               factory.createDummyAttributesForEntities("entity"),
               { x: 200, y: 100,}
             );
-
             create.start(event, s);
           }
         }

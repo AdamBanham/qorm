@@ -74,7 +74,7 @@ export default class OrmLayouter extends BaseLayouter {
         let role = connection.role;
 
         // has the connection been settled?
-        if (!fact || !entity){
+        if (!fact || !entity || role === undefined){
             return super.layoutConnection(connection, hints);
         }
 

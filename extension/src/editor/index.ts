@@ -15,6 +15,7 @@ const ContextPadModule = require('diagram-js/lib/features/context-pad').default;
 const KeyBoardModule = require('diagram-js/lib/features/keyboard').default;
 const LabelSupportModule = require('diagram-js/lib/features/label-support').default;
 const BendpointsModule = require('diagram-js/lib/features/bendpoints').default;
+const SelectionModule = require('diagram-js/lib/features/selection').default;
 
 // additionals modules
 import gridModule from './modules/grid';
@@ -32,6 +33,7 @@ import ormLayouter from "./modules/layout";
 import ormLabelEditing from "./modules/labels";
 import customBendpoints from "./modules/bendpoints";
 import ormConstraints from "./modules/constraints";
+import ormKeyboard from "./modules/keyboard"
 import { unitWidth } from './modules/model/facts';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
@@ -53,7 +55,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ContextPadModule,
         KeyBoardModule,
         LabelSupportModule,
-        BendpointsModule
+        BendpointsModule,
+        SelectionModule
     ];
 
     // additiona modules for the orm-editor
@@ -72,7 +75,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         ormLayouter,
         ormLabelEditing,
         customBendpoints,
-        ormConstraints
+        ormConstraints,
+        ormKeyboard
     ];
 
     var diagram =  new Diagram({

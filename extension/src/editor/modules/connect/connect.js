@@ -180,10 +180,9 @@ export default function OrmConnect(
       if (!canExecute) {
         return;
       }
-
       if (canConnect(entity, fact, role)){
-        let connection = modeling.connectToFact(fact, entity, role);
-        modeling.moveElements([connection,fact,entity], { x: 0, y: 0. });
+        let con = modeling.connectToFact(fact, entity, role);
+        recuriseRemoveMarkers(con);
       } 
     });
 

@@ -1,4 +1,4 @@
-import Modeling from 'diagram-js/lib/features/Modeling/Modeling';
+import Modeling from 'diagram-js/lib/features/modeling/modeling';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
@@ -6,6 +6,7 @@ import { Connection } from 'diagram-js/lib/model';
 
 import { Fact, unitHeight, unitWidth } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
+import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 
 export default class OrmModelling extends Modeling {
 
@@ -20,8 +21,11 @@ export default class OrmModelling extends Modeling {
     }
 
     sendUpdate(element){
-        this.moveElements([element], {x:0,y:0});
-        this._eventBus.fire('element.changed', {element: element, layout:false});
+        if (element !== null){
+            // TODO: I dont think I need this line anymore
+            // this.moveElements([element], {x:0,y:0});
+            this._eventBus.fire('element.changed', {element: element, layout:false});    
+        }
     }
 
     sendUpdates(...elements){
@@ -57,6 +61,15 @@ export default class OrmModelling extends Modeling {
     }
 
     /**
+     * 
+     */
+    clearConnection(con){
+        var fact = con.target;
+        var entity = con.source;
+        fact.clearRole(entity,con.role);
+    }
+
+    /**
      * finds the connection between the fact and the entity
      * and removes it.
      * @param {Fact} fact
@@ -71,9 +84,8 @@ export default class OrmModelling extends Modeling {
             }
         }
         if (con){
-            this.removeConnection(con);
+            this.clearAndRemoveConnection(con)
         }   
-        this.sendUpdates(fact, entity);
     }
 
     /**
@@ -83,7 +95,7 @@ export default class OrmModelling extends Modeling {
      * @param {number} pos
      * @returns {Connection | null} the created connection
      */
-    connectToFact(fact, entity, pos){
+    connectToFact(fact, entity, pos=undefined){
         let added = false;
         if (pos === undefined){
             let ret = fact.setNextMissingRole(entity);
@@ -103,6 +115,7 @@ export default class OrmModelling extends Modeling {
             let attrs = this._elementFactory.createDummyAttributesForConnection(pos);
             con = this.connect(entity, fact, attrs);
             this.sendUpdates(con,fact,entity);
+            this.moveElements([con,fact, entity], {x:0, y:0})
         } else {
             console.error("modeler::connectToFact::",
                 "Could not connect entity to fact.");
@@ -136,6 +149,27 @@ export default class OrmModelling extends Modeling {
      */
     flipMandatoryConstraint(con){
         con.mandatory = !con.mandatory;
+        this.sendUpdate(con);
+    }
+
+    /**
+     * Flips the type of an entity
+     * @param {Entity | ValueEntity} entity 
+     */
+    flipEntityType(entity){
+        entity.flipType()
+        this.sendUpdate(entity)
+    }
+
+    removeElements(elements){
+        elements.forEach(element => {
+            if (isConnection(element)){
+                if (element.role !== undefined){
+                    this.clearConnection(element)
+                }
+            } 
+        });
+        super.removeElements(elements);
     }
         
 }

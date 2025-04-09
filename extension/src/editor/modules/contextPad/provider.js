@@ -75,7 +75,7 @@ export default function ContextPadProvider(
      * @param {*} event 
      */
     ContextPadProvider.prototype.startConnect = function(that, element, event){
-        that._connect.start(event, element, true);
+        that._connect.start(event, element);
     };
 
     /**
@@ -173,11 +173,7 @@ export default function ContextPadProvider(
      * @param {Connection} con the connection to remove.
      */
     ContextPadProvider.prototype.removeConnection = function(that, con){
-        var fact = con.target;
-        var entity = con.source;
-        fact.clearRole(entity,con.role);
-        that._modeling.removeElements([ con ]);
-        that._modeling.sendUpdates(fact, entity);
+        that._modeling.removeElements([con]);
     };
 
     /**
