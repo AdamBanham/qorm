@@ -1,3 +1,5 @@
+import SvgExporter from "../exporters/svgExporter";
+
 export default function ExamplePaletteProvider(
     create, elementFactory, lassoTool, palette, connect, registry,
     modeling, canvas, eventBus) {
@@ -116,7 +118,23 @@ export default function ExamplePaletteProvider(
         title: 'Export SVG',
         action: {
           click: function(event) {
-            console.log("export svg");
+            // Generate the content you want to download as a string
+            const content = new SvgExporter(canvas).save()
+
+            // Create a Blob (Binary Large Object) from the content
+            const blob = new Blob([content], { type: 'text/plain' });
+
+            // Create a link element for downloading the file
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'orm_schema.svg'; // Specify the default filename
+
+            // Trigger a click event on the link to initiate the download
+            a.click();
+
+            // Clean up resources (revoke the URL to free up memory)
+            URL.revokeObjectURL(blob);
+            a.remove()
           }
         }
       },
