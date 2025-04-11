@@ -1,14 +1,14 @@
-import Keyboard from "diagram-js/lib/features/keyboard/keyboard"
-import Canvas from "diagram-js/lib/core/Canvas"
+import Keyboard from "diagram-js/lib/features/keyboard/keyboard";
+import Canvas from "diagram-js/lib/core/Canvas";
 import {
     isCmd,
     isKey,
 } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
-import { isConnection } from "diagram-js/lib/util/ModelUtil"
+import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import EventBus from "diagram-js/lib/core/EventBus";
 
 import { isFact, isEntity } from "../model/util";
-import Modeling from "../modeling/modeler"
+import Modeling from "../modeling/modeler";
 
 const ZoomPunch = 0.25;
 
@@ -56,19 +56,19 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerFactGrowth(that, context);
-        })
+        });
         keyboard.addListener((context) => {
             that.triggerSimpleConstraint(that, context);
-        })
+        });
         keyboard.addListener((context) => {
             that.triggerMandatory(that, context);
-        })
+        });
         keyboard.addListener((context) => {
-            that.triggerSwapEntityType(that, context)
-        })
+            that.triggerSwapEntityType(that, context);
+        });
         keyboard.addListener((context) => {
-            that.triggerConnectTo(that, context)
-        })
+            that.triggerConnectTo(that, context);
+        });
     }
 
     /**
@@ -78,7 +78,7 @@ export default class OrmShortcuts {
      * @param {*} context 
      */
     triggerDelete(that, context){
-        const event = context.keyEvent
+        const event = context.keyEvent;
         if (isKey([ 'Delete', 'Del', ], event)){
             that._modeling.removeElements(that._selection.get());
         }
@@ -94,10 +94,10 @@ export default class OrmShortcuts {
         const event  = context.keyEvent;
         if (event.ctrlKey){
             if (isKey(['+', '=', 'Plus', 'Equal'], event)){
-                const view = that._canvas.viewbox()
-                let scale = view.scale + 0.25
-                that._canvas.zoom(scale)
-                event.stopPropagation()
+                const view = that._canvas.viewbox();
+                let scale = view.scale + 0.25;
+                that._canvas.zoom(scale);
+                event.stopPropagation();
             }
         }
     }
@@ -112,10 +112,10 @@ export default class OrmShortcuts {
         const event  = context.keyEvent;
         if (event.ctrlKey){
             if (isKey(['-', '_', 'Minus'], event)){
-                const view = that._canvas.viewbox()
-                let scale = view.scale - ZoomPunch
-                that._canvas.zoom(scale)
-                event.stopPropagation()
+                const view = that._canvas.viewbox();
+                let scale = view.scale - ZoomPunch;
+                that._canvas.zoom(scale);
+                event.stopPropagation();
             }
         }
     }
@@ -129,8 +129,8 @@ export default class OrmShortcuts {
      triggerLabelEdit(that, context){
         const event  = context.keyEvent;
         if (isKey(['Enter'], event)){
-            const selected = that._selection.get()
-            if (selected.length == 1){
+            const selected = that._selection.get();
+            if (selected.length === 1){
                 const select = selected[0];
                 that._eventbus.fire('label.edit.trigger', {
                     element : select
@@ -187,21 +187,21 @@ export default class OrmShortcuts {
      */
     triggerFactGrowth(that, context){
         const event  = context.keyEvent;
-        const selected = that._selection.get()
-        if (selected.length == 1){
+        const selected = that._selection.get();
+        if (selected.length === 1){
             const select = selected[0];
             if (event.ctrlKey){
                 return;
             }
             if (isFact(select)){
                 if (isKey(['Plus', 'Equal', '+', '='], event)){
-                    event.stopPropagation()
-                    that._modeling.expandFact(select)
+                    event.stopPropagation();
+                    that._modeling.expandFact(select);
                 }
                 else if (isKey(['Minus', '-'], event)){
-                   event.stopPropagation() 
+                   event.stopPropagation(); 
                    if (select.roles > 1){
-                        that._modeling.reduceFact(select)
+                        that._modeling.reduceFact(select);
                    }
                 }
             }
@@ -216,15 +216,15 @@ export default class OrmShortcuts {
      */
     triggerSimpleConstraint(that, context){
         const event  = context.keyEvent;
-        const selected = that._selection.get()
-        if (selected.length == 1){
+        const selected = that._selection.get();
+        if (selected.length === 1){
             const select = selected[0];
             if (event.ctrlKey){
                 return;
             }
             if (isFact(select)){
                 if (isKey(['c', 'C'], event)){
-                    event.stopPropagation()
+                    event.stopPropagation();
                     that._eventbus.fire('fact.create.constraint', 
                         {fact: select, mode: 'simple', originalEvent: event}
                     );
@@ -241,16 +241,16 @@ export default class OrmShortcuts {
      */
     triggerMandatory(that, context){
         const event  = context.keyEvent;
-        const selected = that._selection.get()
-        if (selected.length == 1){
+        const selected = that._selection.get();
+        if (selected.length === 1){
             const select = selected[0];
             if (event.ctrlKey){
                 return;
             }
             if (isConnection(select)){
                 if (isKey(['m', 'M'], event)){
-                    event.stopPropagation()
-                    that._modeling.flipMandatoryConstraint(select)
+                    event.stopPropagation();
+                    that._modeling.flipMandatoryConstraint(select);
                 }
             }
         }
@@ -264,16 +264,16 @@ export default class OrmShortcuts {
      */
     triggerSwapEntityType(that, context){
         const event  = context.keyEvent;
-        const selected = that._selection.get()
-        if (selected.length == 1){
+        const selected = that._selection.get();
+        if (selected.length === 1){
             const select = selected[0];
             if (event.ctrlKey){
                 return;
             }
             if (isEntity(select)){
                 if (isKey(['s', 'S'], event)){
-                    event.stopPropagation()
-                    that._modeling.flipEntityType(select)
+                    event.stopPropagation();
+                    that._modeling.flipEntityType(select);
                 }
             }
         }
@@ -287,8 +287,8 @@ export default class OrmShortcuts {
      */
     triggerConnectTo(that, context){
         const event  = context.keyEvent;
-        const selected = that._selection.get()
-        if (selected.length == 1){
+        const selected = that._selection.get();
+        if (selected.length === 1){
             let select = selected[0];
             if (event.ctrlKey){
                 return;
@@ -318,4 +318,4 @@ OrmShortcuts.$inject = [
     'mouse',
     'create',
     'ormConnect'
-]
+];

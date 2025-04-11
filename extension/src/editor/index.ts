@@ -33,7 +33,7 @@ import ormLayouter from "./modules/layout";
 import ormLabelEditing from "./modules/labels";
 import customBendpoints from "./modules/bendpoints";
 import ormConstraints from "./modules/constraints";
-import ormKeyboard from "./modules/keyboard"
+import ormKeyboard from "./modules/keyboard";
 import { unitWidth } from './modules/model/facts';
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {

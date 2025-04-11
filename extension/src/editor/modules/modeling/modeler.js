@@ -84,7 +84,9 @@ export default class OrmModelling extends Modeling {
             }
         }
         if (con){
-            this.clearAndRemoveConnection(con)
+            this.clearConnection(con);
+            this.removeElements([con]);
+            this.sendUpdates(fact, entity);
         }   
     }
 
@@ -115,7 +117,7 @@ export default class OrmModelling extends Modeling {
             let attrs = this._elementFactory.createDummyAttributesForConnection(pos);
             con = this.connect(entity, fact, attrs);
             this.sendUpdates(con,fact,entity);
-            this.moveElements([con,fact, entity], {x:0, y:0})
+            this.moveElements([con,fact, entity], {x:0, y:0});
         } else {
             console.error("modeler::connectToFact::",
                 "Could not connect entity to fact.");

@@ -58,9 +58,13 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
     }
 
     click(event) {
+        event.stopPropagation();
         let role = event.fact.findNearestRoleUsingPosX(
             event.x
         );
+        if (role < 0) {
+            return;
+        }
         event.constraint.flipRole(role);
         this._rules.allowed('constraint.create', {
             mode: event.mode,
