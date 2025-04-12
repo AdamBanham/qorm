@@ -1,5 +1,7 @@
 [X] export svg
-[] add objectified fact types
+[X] add objectified fact types
+[] add objectified label editing
+[] add objectified connections to roles
 [] fancy directions for facts
 [X] add unit-based reference mode
 [X] keyboard support
