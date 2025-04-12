@@ -19,6 +19,7 @@ const renderColours = `
     --render-simple-constraint-fail: hsla(0, 85%, 37%, 0.5);    
     --render-mandatory-role-fill: hsl(280, 49%, 32%);
     --render-madatory-role-stroke: hsl(280, 91%, 13%);
+    --render-objectified-label-fill: hsl(283, 100%, 68%);
 }
 
 .fact-role {
@@ -48,6 +49,11 @@ const renderColours = `
         .fact-role-filled {
             fill: var(--render-fact-hover-error);
             transition: 0.2s;
+        }
+        .fact-objectified-label {
+            fill: var(--render-objectified-label-fill);
+            font-size: 12px;
+            text-anchor: middle;
         }
     }
 }
