@@ -1,6 +1,7 @@
 [X] export svg
 [] add objectified fact types
 [] fancy directions for labels
+[] add unit-based reference mode
 [X] keyboard support
 
 [] actually write to file changes as they happen
