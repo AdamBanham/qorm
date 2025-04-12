@@ -15,7 +15,7 @@ import {
 
 import { ValueEntity, Entity, unitWidth as entityWidth } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
-import { isLabel, isConstraint } from '../model/util';
+import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference } from '../model/util';
 
 
 const BORDER_COLOUR = "var(--render-border-colour)";
@@ -132,10 +132,11 @@ export default class TSRenderer extends  BaseRenderer {
             let rx = 10 ;
             let strokeWidth = 3;
             let dashType = "";
-            let textLeft = (element.width / 2) - (element.width / 4);
+            let textLeft = Math.floor(element.width * 0.05);
+            let centerText = Math.floor(element.width * 0.5);
             let textUpper = (element.height / 2) - 3.75;
             let textMiddle = (element.height / 2) + 1.25;
-            let textLower = (element.height / 2) + 7.5;
+            let textLower = (element.height / 2) + 15.5;
             if (element.type === 'fact'){
                 rx = 2.5;
                 strokeWidth = 1.5;
@@ -187,32 +188,70 @@ export default class TSRenderer extends  BaseRenderer {
                 svgAppend(group, box);
             }
            
+            const maxTextWidth = Math.floor(element.width * 0.9);
+            const maxLetters = Math.floor(maxTextWidth / 6);
 
+            const adjustText = (text) => {
+                if (text.length > maxLetters){
+                    let newText = text.substring(0, maxLetters - 1) + "...";
+                    return newText;
+                } else {
+                    return text;
+                }
+            };
+            const adjustLowerText = (text) => {
+                if (text.length > maxLetters){
+                    let newText = text.substring(0, maxLetters - 1) + "...)";
+                    return newText;
+                } else {
+                    return text;
+                }
+            };
+
+            let style = "text-align: center;";
+            style += `max-width: ${maxTextWidth}px;`;
+            style += `overflow-x: hidden;`;
+            style += `text-anchor: middle;`;
+            style += `font-size: 12px;`;
             if (element.type !== 'fact'){
-                if (element.type === 'value'){
+                // draw upper text
+                if (isValueReference(element)){
                     let upperText = svgCreate("text", {
-                        x: textLeft, y: textMiddle, style:"text-align: center;",
-                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                        x: centerText, y: textMiddle,
+                        fill: SHAPE_LABEL_COLOUR,
+                        style: style,
                     });
-                    upperText.textContent = element.name;
+                    upperText.textContent = adjustText(element.name);
                     svgAppend(group, upperText);
                 } else {
-                    // draw labels
                     let upperText = svgCreate("text", {
-                        x: textLeft, y: textUpper, style:"text-align: center;",
-                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                        x: centerText, y: textUpper, 
+                        fill: SHAPE_LABEL_COLOUR,
+                        style: style,
                     });
-                    upperText.textContent = element.name;
+                    upperText.textContent = adjustText(element.name);
                     svgAppend(group, upperText);
-
+                }
+                // draw lower text
+                if (isUnitReference(element)){
                     let lowerText = svgCreate("text", {
-                        x: textLeft, y: textLower, style:"text-align: center;",
-                        textLength: element.width / 2, fill: SHAPE_LABEL_COLOUR
+                        x: centerText, y: textLower,
+                        fill: SHAPE_LABEL_COLOUR,
+                        style: style,
+                    });
+                    lowerText.textContent = "("+ element.ref + ":" + element.meta +")";
+                    lowerText.textContent = adjustLowerText(lowerText.textContent);
+                    svgAppend(group, lowerText);
+                } else if (isReferredReference(element)){
+                    let lowerText = svgCreate("text", {
+                        x: centerText, y: textLower,
+                        fill: SHAPE_LABEL_COLOUR,
+                        style: style,
                     });
                     lowerText.textContent = "(."+ element.ref + ")";
+                    lowerText.textContent = adjustLowerText(lowerText.textContent);
                     svgAppend(group, lowerText);
                 }
-                
             }
              
 
@@ -230,7 +269,7 @@ export default class TSRenderer extends  BaseRenderer {
                 // add compontents to group and return
                 svgAttr(group, {
                     opacity: DEBUG_OPACITY
-                })
+                });
             }
            
             svgAppend(visuals, group);
@@ -309,9 +348,9 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     angleBetweenPoints(pos, other){
-        let x = pos.x - other.x 
-        let y = pos.y - other.y 
-        return Math.atan2(y, x) * (180 / Math.PI)
+        let x = pos.x - other.x; 
+        let y = pos.y - other.y; 
+        return Math.atan2(y, x) * (180 / Math.PI);
     }
 
     _drawMandatory(visuals, connection, line){
@@ -320,7 +359,7 @@ export default class TSRenderer extends  BaseRenderer {
             connection.waypoints[1]
         );
         // work out the extra need for the corners with the hypo is the longest
-        let between = Math.abs(angle % 90)
+        let between = Math.abs(angle % 90);
         let extra = 5;
         if (between > 45){
             extra = extra * (1 - ((between-45)/45.0));
@@ -336,7 +375,7 @@ export default class TSRenderer extends  BaseRenderer {
             markerWidth: 10,
             viewbox: '0 0 10 10',
             orient: 'auto-start-reverse',
-        })
+        });
         // the role to include
         svgAppend(marker, svgCreate("circle", {
             cx : 5, 
@@ -345,14 +384,14 @@ export default class TSRenderer extends  BaseRenderer {
             fill: MANDATORY_ROLE_COLOUR,
             stroke:  MANDATORY_ROLE_STROKE,
             strokeWidth: 1,
-        }))
-        let defs = svgCreate("defs", {})
+        }));
+        let defs = svgCreate("defs", {});
         // append to line
-        svgAppend(defs, marker)
-        svgAppend(visuals, defs)
+        svgAppend(defs, marker);
+        svgAppend(visuals, defs);
         svgAttr(line, {
             'marker-start': 'url(#mandatory-role-'+connection.id +')'
-        })
+        });
     }
 
     _drawSimpleConnection(visuals, connection, attrs){
@@ -379,7 +418,7 @@ export default class TSRenderer extends  BaseRenderer {
         }
 
         }
-        svgAppend(visuals, group)
+        svgAppend(visuals, group);
         return visuals;
     }
 

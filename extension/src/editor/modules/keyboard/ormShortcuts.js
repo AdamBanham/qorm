@@ -7,7 +7,7 @@ import {
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import EventBus from "diagram-js/lib/core/EventBus";
 
-import { isFact, isEntity } from "../model/util";
+import { isFact, isEntity, isExactlyEntity } from "../model/util";
 import Modeling from "../modeling/modeler";
 
 const ZoomPunch = 0.25;
@@ -68,6 +68,9 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerConnectTo(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerReferenceFlip(that, context);
         });
     }
 
@@ -298,6 +301,28 @@ export default class OrmShortcuts {
                     const other = that._mouse.getLastMoveEvent();
                     that._connect.start(other, select, true);
                     event.stopPropagation();
+                }
+            }
+        }
+    }
+
+    /**
+     * flips the label reference mode.
+     * @param {OrmShortcuts} that 
+     * @param {*} context 
+     */
+    triggerReferenceFlip(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isExactlyEntity(select)){
+                if (isKey(['r', 'R'], event)){
+                    event.stopPropagation();
+                    that._modeling.flipLabelReference(select);
                 }
             }
         }

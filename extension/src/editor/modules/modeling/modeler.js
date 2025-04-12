@@ -161,19 +161,28 @@ export default class OrmModelling extends Modeling {
      * @param {Entity | ValueEntity} entity 
      */
     flipEntityType(entity){
-        entity.flipType()
-        this.sendUpdate(entity)
+        entity.flipType();
+        this.sendUpdate(entity);
     }
 
     removeElements(elements){
         elements.forEach(element => {
             if (isConnection(element)){
                 if (element.role !== undefined){
-                    this.clearConnection(element)
+                    this.clearConnection(element);
                 }
             } 
         });
         super.removeElements(elements);
+    }
+
+    /**
+     * flips the label reference mode of a given entity.
+     * @param {Entity} entity 
+     */
+    flipLabelReference(entity){
+        entity.flipReferenceMode();
+        this.sendUpdate(entity);
     }
         
 }

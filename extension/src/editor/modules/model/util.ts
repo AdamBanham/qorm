@@ -85,3 +85,41 @@ export function isConstraint(shape: ShapeLike): boolean {
     }
     return false;
 }
+
+/**
+ * Checks whether the reference mode of entity by value
+ * @param {ShapeLike} shape the shape to check
+ * @returns {boolean} whether the shape has a reference and it is a value reference
+ */
+export function isValueReference(shape: ShapeLike): boolean {
+    if (isEntity(shape)){
+        return shape.referenceMode === "value";
+    }
+    return false;
+}
+
+/**
+ * Checks whether the reference mode of entity by unit-based
+ * @param {ShapeLike} shape the shape to check
+ * @returns {boolean} whether the shape has a reference and it is a 
+ * unit-based reference
+ */
+export function isUnitReference(shape: ShapeLike): boolean {
+    if (isEntity(shape)){
+        return shape.referenceMode === "unit-based";
+    }
+    return false;
+}
+
+/**
+ * Checks whether the reference mode of entity by reference
+ * @param {ShapeLike} shape the shape to check
+ * @returns {boolean} whether the shape has a reference and it is a 
+ * referred reference
+ */
+export function isReferredReference(shape: ShapeLike): boolean {
+    if (isEntity(shape)){
+        return shape.referenceMode === "reference";
+    }
+    return false;
+}

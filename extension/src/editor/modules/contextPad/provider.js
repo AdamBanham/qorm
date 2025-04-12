@@ -6,7 +6,7 @@ import  {
 import { ShapeLike, Connection } from "diagram-js/lib/model";
 import { unitHeight, fact,  Fact } from "../model/facts";
 import { Entity, ValueEntity, entity } from "../model/entities";
-import { isFact, isEntity, isConstraint } from "../model/util";
+import { isFact, isEntity, isConstraint, isExactlyEntity } from "../model/util";
 import { constraint } from "../model/constraints";
   
 
@@ -21,6 +21,7 @@ export default function ContextPadProvider(
         this._eventBus = eventBus;
         this._registry = registry;
         this._placement = placementModule;
+        this._pad = contextPad;
         contextPad.registerProvider(this);
     }
 
@@ -32,7 +33,7 @@ export default function ContextPadProvider(
         'modeling',
         'eventBus',
         'elementRegistry',
-        'placementModule'
+        'placementModule',
 
     ];
 
@@ -85,6 +86,7 @@ export default function ContextPadProvider(
      */
     ContextPadProvider.prototype.expandFact = function(that, fact){
         that._modeling.expandFact(fact);
+        that._pad.open(fact, true);
     };
 
     /**
@@ -96,6 +98,7 @@ export default function ContextPadProvider(
         if (fact.roles > 1){
             that._modeling.reduceFact(fact);
         }
+        that._pad.open(fact, true);
     };
 
     /**
@@ -184,8 +187,8 @@ export default function ContextPadProvider(
      */
     ContextPadProvider.prototype.makeMandatory = function(that, con){
         that._modeling.flipMandatoryConstraint(con);
-        that._modeling.sendUpdate(con)
-    }
+        that._modeling.sendUpdate(con);
+    };
 
     /**
      * Builds the current context options from the state of the connection
@@ -196,19 +199,19 @@ export default function ContextPadProvider(
         var that = this;
         var options = {};
 
-        let offMandatory = "circle-off-outline"
-        let onMandatory = "circle"
-        let included = con.mandatory ? offMandatory : onMandatory
+        let offMandatory = "circle-off-outline";
+        let onMandatory = "circle";
+        let included = con.mandatory ? offMandatory : onMandatory;
 
         options['mandatory'] = {
             action : {
-                click: () => {that.makeMandatory(that, con)}
+                click: () => {that.makeMandatory(that, con);}
             },
             className: 'context-pad-mandatory',
             html: '<div class="entry mdi-'+included +' mdi editor-hover"/>',
             title: 'Flip Mandatory?',
             group: 'edit'
-        }
+        };
 
         options['delete'] = {
             action: {
@@ -257,6 +260,17 @@ export default function ContextPadProvider(
     ContextPadProvider.prototype.flipEntity = function(that, entity){
         entity.flipType();
         that._modeling.sendUpdate(entity);
+        that._pad.open(entity, true);
+    };
+
+    /**
+     * Flips the label reference mode of the entity.
+     * @param {ContextPadProvider} that 
+     * @param {Entity} entity 
+     */
+    ContextPadProvider.prototype.flipReferenceMode = function(that, entity){
+        entity.flipReferenceMode();
+        that._modeling.sendUpdate(entity);
     };
 
     /**
@@ -285,9 +299,21 @@ export default function ContextPadProvider(
             },
             className: 'context-pad-flip',
             html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
-            title: 'Flip',
+            title: 'Flip Type',
             group: 'edit'
         };
+
+        if (isExactlyEntity(entity)){
+            options['flip-reference-type'] = {
+                action: {
+                    click: () => {that.flipReferenceMode(that, entity);},
+                },
+                className: 'context-pad-flip-ref',
+                html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
+                title: 'Flip Label Reference',
+                group: 'edit'
+            };
+        }
         
         options['create-fact'] = {
             action: {

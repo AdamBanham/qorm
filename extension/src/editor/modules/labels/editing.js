@@ -2,15 +2,14 @@ import {
     assign
 } from 'min-dash';
 
-import {
-  getConnectionMid
-} from "diagram-js/lib/layout/LayoutUtil";
-
 import  {
   isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
-import { isEntity, isFact, isExactlyEntity, isExactlyValue} from '../model/util';
+import { isEntity, isFact, isExactlyEntity, isExactlyValue, isUnitReference} from '../model/util';
 import { transformToViewbox } from "../utils/canvasUtils";
+import EventBus from 'diagram-js/lib/core/EventBus';
+import Canvas from 'diagram-js/lib/core/Canvas';
+
 
 // helpers //////////
 
@@ -25,12 +24,23 @@ function getLabel(element ,context){
           return element.labels[0].content;
       }
     }
+  } else if (context.touchingMode === 'meta'){
+    return element.meta;
   }
   return "";
 }
   
 var HIGH_PRIORITY = 2000;
-  
+
+/**
+ * 
+ * @param {EventBus} eventBus 
+ * @param {../elements/factory} factory 
+ * @param {Canvas} canvas 
+ * @param {directEditing} directEditing 
+ * @param {../modeling/modeler} modeling 
+ * @param {*} textRenderer 
+ */
 export default function LabelEditingProvider(
       eventBus, factory, canvas, directEditing,
       modeling, textRenderer) {
@@ -230,7 +240,7 @@ export default function LabelEditingProvider(
       element, newLabel,
       activeContextText, bounds) {
     
-    
+    // handle the current label and updating the element
     if (this._context.touchingMode === 'name'){
       element.name = newLabel;
       if (this._context.touchingType === 'entity'){
@@ -239,6 +249,12 @@ export default function LabelEditingProvider(
       }
     } else if (this._context.touchingMode === 'ref'){
       element.ref = newLabel;
+      if (isUnitReference(element)){
+        this._context.touchingMode = 'meta';
+        setTimeout(() => this._directEditing.activate(element), 5 );
+      }
+    } else if (this._context.touchingMode === 'meta'){
+      element.meta = newLabel;
     } else if (this._context.touchingMode === 'label'){
       if (element.labels && element.labels.length > 0){
         let label = element.labels[0];
@@ -246,61 +262,19 @@ export default function LabelEditingProvider(
         setTimeout(() => {
           this._bus.fire('element.changed', {element: label});
         }, 25);
-      } else {
+      }
+      
+      else {
         this._modeling.createLabelForFact(
           element,
           newLabel
         );
       }
     }
+
+    // trigger changes
     setTimeout(() => {
       this._bus.fire('element.changed', {element: element});
     }, 25);
-    // if (isEmptyText(newLabel)) {
-    //   newLabel = "";
-    //   return
-    // }
-    // var position;
-    // if (isState(element)){
-    //   element.stateLabel = newLabel
-    //   this._bus.fire('elements.changed', {elements: [element]})
-    //   return
-    // } else if (isLabel(element)){
-    //   element.text = newLabel
-    //   element.labelTarget.arcLabel = newLabel
-    //   assign(element, this._textRenderer.getTextAnnotationBounds(
-    //     element, newLabel
-    //   ))
-    //   this._bus.fire('elements.changed', 
-    //     {elements: [element,element.labelTarget]})
-    //   return
-    // } else {
-    //   element.arcLabel = newLabel
-    //   this._bus.fire('elements.changed', {elements: [element]})
-    //   position = getConnectionMid(element)
-    // }
-    // if (!element.label){
-    //   var label = this._factory.createLabel({
-    //     text: newLabel,
-    //     width: 50,
-    //     height: 12,
-    //     labelTarget: element,
-    //     x: 0
-    //   })
-    //   assign(label, this._textRenderer.getTextAnnotationBounds(
-    //     label, newLabel
-    //   ))
-    //   this._modeling.createLabel(
-    //     element,
-    //     position,
-    //     label,
-    //     element
-    //   )
-    //   this._bus.fire('action.create', {element: label})
-    // } else {
-    //   element.label.text = newLabel
-    //   this._bus.fire('elements.changed', 
-    //     {elements: [element, element.label]})
-    // }
    
   };
