@@ -105,7 +105,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
             var s2 = Object.assign(
                 factory.createDummyAttributesForEntities("value"),
-                { x: 525, y: 100,}
+                { x: 575, y: 100,}
             );
             s2 = modeling.createShape(
                 s2, {x: s2.x, y:s2.y}, 
@@ -114,7 +114,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
             var fact = Object.assign(
                 factory.createDummyAttributesForFacts(),
-                { x: 400, y: 100,}
+                { x: 415, y: 100,}
             );
             fact = modeling.createShape(
                 fact, {x: fact.x, y:fact.y},
@@ -124,7 +124,7 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
             var fact2 = Object.assign(
                 factory.createDummyAttributesForFacts(),
-                { x: 375, y: 250,}
+                { x: 390, y: 250,}
             );
             fact2 = modeling.createShape(
                 fact2, {x: fact2.x, y:fact2.y},
