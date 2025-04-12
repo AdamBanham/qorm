@@ -184,5 +184,18 @@ export default class OrmModelling extends Modeling {
         entity.flipReferenceMode();
         this.sendUpdate(entity);
     }
+
+    /**
+     * flips the objectification of a fact.
+     * @param {Fact} fact 
+     */
+    flipObjectification(fact){
+        if (fact.objectified){
+            fact.objectified = false;
+        } else {
+            fact.objectified = true;
+        }
+        this.sendUpdate(fact);
+    }
         
 }

@@ -113,6 +113,29 @@ export default function ContextPadProvider(
     };
 
     /**
+     * Triggers objectification of the fact, i.e. relation is has a referenced
+     * entity.
+     * @param {ContextPadProvider} that
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.objectifyFact = function(that, fact){
+        fact.objectified = true; 
+        that._modeling.sendUpdate(fact);
+        that._pad.open(fact, true);
+    };
+
+    /**
+     * Triggers de-objectification of the fact
+     * @param {ContextPadProvider} that
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.deobjectifyFact = function(that, fact){
+        fact.objectified = false; 
+        that._modeling.sendUpdate(fact);
+        that._pad.open(fact, true);
+    };
+
+    /**
      * Builds the current context options from the state of the fact
      * @param {fact} fact 
      * @returns the options 
@@ -155,6 +178,28 @@ export default function ContextPadProvider(
             title: 'Add Constraint',
             group: '2-edit'
         };
+
+        if (!fact.objectified){
+            options['objectify'] = {
+                action: {
+                    click: () => {that.objectifyFact(that, fact);},
+                },
+                className: 'context-pad-objectify',
+                html: '<div class="entry mdi mdi-arrow-up-circle-outline editor-hover"/>',
+                title: 'Objectify',
+                group: '2-edit'
+            };
+        } else {
+            options['de-objectify'] = {
+                action: {
+                    click: () => {that.deobjectifyFact(that, fact);},
+                },
+                className: 'context-pad-objectify',
+                html: '<div class="entry mdi mdi-arrow-down-circle-outline editor-hover"/>',
+                title: 'De-Objectify',
+                group: '2-edit'
+            };
+        }
 
         options['delete'] = {
             action: {
@@ -298,7 +343,7 @@ export default function ContextPadProvider(
                 click: () => {that.flipEntity(that, entity);},
             },
             className: 'context-pad-flip',
-            html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
+            html: '<div class="entry mdi mdi-swap-vertical editor-hover"/>',
             title: 'Flip Type',
             group: 'edit'
         };
@@ -309,7 +354,7 @@ export default function ContextPadProvider(
                     click: () => {that.flipReferenceMode(that, entity);},
                 },
                 className: 'context-pad-flip-ref',
-                html: '<div class="entry mdi mdi-orbit-variant editor-hover"/>',
+                html: '<div class="entry mdi mdi-swap-horizontal editor-hover"/>',
                 title: 'Flip Label Reference',
                 group: 'edit'
             };
@@ -332,7 +377,7 @@ export default function ContextPadProvider(
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
             title: 'Delete',
-            group: 'edit'
+            group: 'del'
         };
 
         return options;

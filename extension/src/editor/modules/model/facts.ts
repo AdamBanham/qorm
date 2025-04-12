@@ -18,6 +18,8 @@ export interface fact {
     y: number;
     hovered?: boolean;
     constraints?: Array<constraint>;
+    objectified?: boolean;
+    objectifiedName?: string;
 }
 
 export function createFact(
@@ -43,6 +45,8 @@ export class Fact implements fact {
     y: number;
     hovered?: boolean;
     constraints: Array<constraint>;
+    objectified?: boolean | undefined;
+    objectifiedName?: string;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -55,6 +59,7 @@ export class Fact implements fact {
         this.y = y;
         this.hovered = false;
         this.constraints = new Array();
+        this.objectifiedName = "foobar";
     }
 
     addRole(){
@@ -241,6 +246,13 @@ export class Fact implements fact {
             keeps.x = this.x;
             curr_y = curr_y - constraintDiff;
         }
+    }
+
+    /**
+     * Makes the fact type objectified.
+     */
+    objectify(): void {
+        this.objectified = true;
     }
 
 }

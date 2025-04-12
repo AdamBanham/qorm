@@ -72,6 +72,9 @@ export default class OrmShortcuts {
         keyboard.addListener((context) => {
             that.triggerReferenceFlip(that, context);
         });
+        keyboard.addListener((context) => {
+            that.triggerObjectifcation(that, context);
+        });
     }
 
     /**
@@ -323,6 +326,28 @@ export default class OrmShortcuts {
                 if (isKey(['r', 'R'], event)){
                     event.stopPropagation();
                     that._modeling.flipLabelReference(select);
+                }
+            }
+        }
+    }
+
+    /**
+     * flips the objecfication of a selected fact.
+     * @param {OrmShortcuts} that 
+     * @param {*} context 
+     */
+    triggerObjectifcation(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isFact(select)){
+                if (isKey(['o', 'O'], event)){
+                    event.stopPropagation();
+                    that._modeling.flipObjectification(select);
                 }
             }
         }

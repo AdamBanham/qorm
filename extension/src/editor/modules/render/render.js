@@ -147,6 +147,23 @@ export default class TSRenderer extends  BaseRenderer {
             
             // draw bounding box
             if (element.type === 'fact'){
+                // draw the objectification
+                if (element.objectified){
+                    let box = svgCreate("rect", {
+                        class: "fact-objectified",
+                        x: -10,
+                        y: -10 - (10 * element.constraints.length),
+                        rx: rx,
+                        width: element.width + 20,
+                        height: element.height + 20 + 15 + (10 * element.constraints.length),
+                        fill: "none",
+                        stroke: BORDER_COLOUR,
+                        strokeWidth: strokeWidth * 2,
+                        'stroke-dasharray': dashType
+                    });
+                    svgAppend(group, box);
+                }
+                // draw the fact roles
                 let x = 0;
                 let y = 0;
                 for (let i = 0; i < element.roles; i++){
@@ -209,8 +226,6 @@ export default class TSRenderer extends  BaseRenderer {
             };
 
             let style = "text-align: center;";
-            style += `max-width: ${maxTextWidth}px;`;
-            style += `overflow-x: hidden;`;
             style += `text-anchor: middle;`;
             style += `font-size: 12px;`;
             if (element.type !== 'fact'){
@@ -251,6 +266,16 @@ export default class TSRenderer extends  BaseRenderer {
                     lowerText.textContent = "(."+ element.ref + ")";
                     lowerText.textContent = adjustLowerText(lowerText.textContent);
                     svgAppend(group, lowerText);
+                }
+            } else {
+                if (element.objectified && element.objectifiedName){
+                    let upperText = svgCreate("text", {
+                        x: centerText, y:  - 10 - (10 * element.constraints.length) - 12.5,
+                        class: "fact-objectified-label",
+                        style: style,
+                    });
+                    upperText.textContent = '"'+element.objectifiedName+'!"';
+                    svgAppend(group, upperText);
                 }
             }
              
