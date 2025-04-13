@@ -8,9 +8,10 @@ import { unitHeight, unitWidth } from "../model/facts";
 export default class OrmLayouter extends BaseLayouter {
 
     tolerance = 0.01;
-    offsetTolerance = Math.max(unitHeight, unitWidth) * 1.2
+    offsetTolerance = Math.max(unitHeight, unitWidth) * 1.2;
 
-    constructer(){
+    constructor(){
+        super();
     }
 
     nearby(pos, other){
@@ -33,31 +34,31 @@ export default class OrmLayouter extends BaseLayouter {
      * prefix or update the last position in the bends array.
      * @param {Array} bends the current wayspoints
      * @param {*} pos a new position
-     * @returns {Array} the new bends
+     * @returns {Array, boolean} the new bends and if we added an item
      */
     suffixOrUpdate(bends, pos){
         if (bends.length === 0){
-            return [pos];
+            return { mids: [pos], added: false};
         }
         if (bends.length === 1){
             let last = bends[0];
             if (this.nearlyEqual(last, pos)){
-                return bends;
+                return { mids:bends, added:false};
             } else {
                 if (this.nearby(last, pos)){
-                    return [pos]
+                    return {mids: [pos], added:false};
                 }
-                return [last, pos];
+                return {mids:[last, pos], added:true};
             }
         }
         let last = bends[bends.length - 1];
         if (this.nearlyEqual(last, pos)){
-            return bends;
+            return {mids:bends, added:false};
         } else {
             if (this.nearby(last, pos)){
-                return [...bends.slice(0,-1), pos]
+                return {mids:[...bends.slice(0,-1), pos], added:true};
             }
-            return [...bends.slice(), pos];
+            return {mids:[...bends.slice(), pos], added:true};
         }
     }
 
@@ -72,6 +73,7 @@ export default class OrmLayouter extends BaseLayouter {
         let fact = connection.target;
         let entity = connection.source;
         let role = connection.role;
+        let lastEdit = connection.lastEdit || undefined;
 
         // has the connection been settled?
         if (!fact || !entity || role === undefined){
@@ -97,57 +99,72 @@ export default class OrmLayouter extends BaseLayouter {
             bends = [];
         }
 
+        let factConnectionPoint = undefined;
+        let mids, added;
         if (fact.roles === 1){
             // if the fact has only one role then put the pivot
-            // to the left or right of the fact
+            // in the middle
             waypoints = [
                     Object.assign({}, srcPos),
                     ...bends,
                     Object.assign({}, tgtPos)
             ];
-        } else if (role === 0){
+        } else {
+            if (role === 0){
             // if its the first role then put the pivot to the left
-
+            factConnectionPoint = { x: tgtPos.x - unitWidth, y: tgtPos.y};
+            } else if (role === fact.roles - 1){
+                // if its the last role then put the pivot to the right
+                factConnectionPoint = { x: tgtPos.x + unitWidth, y: tgtPos.y};
+            } else {
+                // if its a middle role then put the pivot above or below
+                if (tgtPos.y > srcPos.y){
+                    factConnectionPoint =  { x: tgtPos.x, y: tgtPos.y - unitHeight };
+                } else {
+                    factConnectionPoint = { x: tgtPos.x, y: tgtPos.y + unitHeight };
+                }
+            }
+            // update waypoints
+            let ret = this.suffixOrUpdate(bends, 
+                factConnectionPoint
+            );
+            mids = ret.mids;
+            added = ret.added;
             waypoints = 
             [
                 Object.assign({}, srcPos),
-                ...this.suffixOrUpdate(bends, 
-                    { x: tgtPos.x - unitWidth, y: tgtPos.y}
-                ),
+                ...mids,
                 Object.assign({}, tgtPos)
             ];
-        } else if (role === fact.roles - 1){
-            // if its the last role then put the pivot to the right
-            waypoints = 
-                [
-                    Object.assign({}, srcPos),
-                    ...this.suffixOrUpdate(bends,
-                        { x: tgtPos.x + unitWidth, y: tgtPos.y}
-                    ),
-                    Object.assign({}, tgtPos)
-                ];
-        } else {
-            // if its a middle role then put the pivot above or below
-            if (tgtPos.y > srcPos.y){
-                waypoints = 
-                [
-                    Object.assign({}, srcPos),
-                    ...this.suffixOrUpdate(bends,
-                        { x: tgtPos.x, y: tgtPos.y - unitHeight }
-                    ),
-                    Object.assign({}, tgtPos)
-                ];
-            } else {
-                waypoints = 
-                [
-                    Object.assign({}, srcPos),
-                    ...this.suffixOrUpdate(bends,
-                        { x: tgtPos.x, y: tgtPos.y + unitHeight }
-                    ),
-                    Object.assign({}, tgtPos)
-                ];
-            }
         }
+        // handle removing last pivot point for fact
+        if (lastEdit !== undefined){
+            // check that we have a new pivot point and it has added
+            if (factConnectionPoint !== undefined && added){
+                var remove = -1;
+                for (let wp of waypoints){
+                    remove++;
+                    if (this.nearlyEqual(wp, lastEdit)){
+                        break;
+                    }
+                }
+                if (remove >= 0){
+                    waypoints = waypoints.slice(0, remove)
+                        .concat(
+                            waypoints.slice(remove + 1)
+                        );
+                }
+            }
+            
+        }
+        // remember the last pivot point
+        if (factConnectionPoint){
+            connection.lastEdit = factConnectionPoint;
+        }
+
         return waypoints;
     }
 }
+
+OrmLayouter.$inject = [
+];
