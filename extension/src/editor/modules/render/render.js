@@ -209,6 +209,9 @@ export default class TSRenderer extends  BaseRenderer {
             const maxLetters = Math.floor(maxTextWidth / 6);
 
             const adjustText = (text) => {
+                if (!text){
+                    return "";
+                }
                 if (text.length > maxLetters){
                     let newText = text.substring(0, maxLetters - 1) + "...";
                     return newText;
