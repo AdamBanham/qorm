@@ -146,6 +146,21 @@ export default function ContextPadProvider(
     };
 
     /**
+     * 
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact 
+     * @param {"left" | "right"} direction 
+     */
+    ContextPadProvider.prototype.towards = function(that, fact, direction){
+        if (direction){
+            fact.setTowards(direction);
+        } else  {
+            fact.unsetTowards();
+        }
+        that._modeling.sendUpdate(fact);
+    }
+
+    /**
      * Builds the current context options from the state of the fact
      * @param {fact} fact 
      * @returns the options 
@@ -197,6 +212,40 @@ export default function ContextPadProvider(
                 className: 'context-pad-derived',
                 html: '<div class="entry mdi mdi-star-outline editor-hover"/>',
                 title: 'Flip Derived',
+                group: '2-edit'
+            };
+        }
+
+        if (fact.roles > 1){
+            options['towards-left'] = {
+                action: {
+                    click: () => {that.towards(that, fact, 'left');},
+                },
+                className: 'context-pad-towards-left',
+                html: '<div class="entry mdi mdi-arrow-left-thick editor-hover"/>',
+                title: 'Towards Left',
+                group: '2-edit'
+            };
+
+            options['towards-right'] = {
+                action: {
+                    click: () => {that.towards(that, fact, 'right');},
+                },
+                className: 'context-pad-towards-right',
+                html: '<div class="entry mdi mdi-arrow-right-thick editor-hover"/>',
+                title: 'Towards Right',
+                group: '2-edit'
+            };
+        }
+
+        if (fact.towards) {
+            options['unset-towards'] = {
+                action: {
+                    click: () => {that.towards(that, fact);},
+                },
+                className: 'context-pad-towards-none',
+                html: '<div class="entry mdi mdi-arrow-left-right editor-hover"/>',
+                title: 'No Direction',
                 group: '2-edit'
             };
         }

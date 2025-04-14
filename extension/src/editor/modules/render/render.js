@@ -281,6 +281,22 @@ export default class TSRenderer extends  BaseRenderer {
                 }
             }
              
+            // draw arrow for the verbialisation
+            if (element.type === 'fact' && element.towards){
+                let transform = "";
+                if (element.towards === "left"){
+                    transform = transform + "rotate(180) translate(-15, -25) scale(6) ";
+                } else {
+                    transform = transform + `translate(${element.width - 15}, 0) scale(6) `;
+                }
+                let arrowhead = svgCreate("path", {
+                    d: 'm0 0v3.804C0 3.999 0 4 .157 3.864L1.764 2.234C2.002 2.002 2.001 2 1.749 1.749L.078.092C0-.001 0 0 0 .108z',
+                    'stroke-linecap': "round",
+                    class: "fact-verb-arrow",
+                    transform: transform
+                });
+               svgAppend(group, arrowhead);
+            }
 
             if (DEBUG){
                  // draw center for debug
@@ -352,8 +368,6 @@ export default class TSRenderer extends  BaseRenderer {
         svgAppend(visuals, group);
         return group;
     }
-
-
 
     _drawContraint(visuals, constraint, attrs){
         var group = svgCreate("g", {
@@ -434,8 +448,6 @@ export default class TSRenderer extends  BaseRenderer {
 
     _drawSimpleConnection(visuals, connection, attrs){
         // handle the role that is being targeted
-        const entity = connection.source;
-        const fact = connection.target;
         let waypoints = Array.from(connection.waypoints);
         let group = svgCreate("g", {});
 
@@ -465,8 +477,6 @@ export default class TSRenderer extends  BaseRenderer {
             visuals, connection, attrs
         );
     };
-
-    
 }
 
 TSRenderer.$inject = [

@@ -13,6 +13,7 @@
     --render-madatory-role-stroke: hsl(280, 91%, 13%);
     --render-objectified-label-fill: hsl(283, 100%, 68%);
     --render-derived-fact-label-fill: hsl(300, 82%, 32%);
+    --render-fact-verb-arrow-fill: hsl(283, 100%, 68%);
 }
 
 #editor .fact-role {
@@ -56,6 +57,9 @@
             text-anchor: middle;
             box-shadow: 1px 1px 2px var(--render-border-colour);
             text-wrap: pretty;
+        }
+        .fact-verb-arrow {
+            fill: var(--render-simple-constraint);
         }
     }
 }

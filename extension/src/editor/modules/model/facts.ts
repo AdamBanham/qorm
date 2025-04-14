@@ -22,6 +22,7 @@ export interface fact {
     objectifiedName?: string;
     derived?: boolean;
     derivedLabel?: string;
+    towards?: "right" | "left";
 }
 
 export function createFact(
@@ -51,6 +52,7 @@ export class Fact implements fact {
     objectifiedName?: string;
     derived?: boolean | undefined;
     derivedLabel?: string | undefined;
+    towards?: "right" | "left" | undefined;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -82,6 +84,9 @@ export class Fact implements fact {
         this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -1);
         this.width = this.width - unitWidth;
+        if (this.roles === 1){
+            this.unsetTowards();
+        }
         return temp;
     }
 
@@ -258,6 +263,21 @@ export class Fact implements fact {
      */
     objectify(): void {
         this.objectified = true;
+    }
+
+    /**
+     * Sets the direction of the verbialization.
+     * @param {"left" | "right"} towards the direction of the verbialization
+     */
+    setTowards(towards: "right" | "left"): void {
+        this.towards = towards;
+    }
+
+    /**
+     * Removes the direction of verbialization.
+     */
+    unsetTowards(): void {  
+        this.towards = undefined;
     }
 
 }

@@ -78,6 +78,9 @@ export default class OrmShortcuts {
         keyboard.addListener((context) => {
             that.triggerDerived(that, context);
         });
+        keyboard.addListener((context) => {
+            that.triggerTowards(that, context);
+        });
     }
 
     /**
@@ -382,9 +385,31 @@ export default class OrmShortcuts {
         }
     }
 
-    
-    
-
+    triggerTowards(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isFact(select)){
+                if (isKey(['l', 'L'], event)){
+                    event.stopPropagation();
+                    select.setTowards('left');
+                    that._modeling.sendUpdate(select);
+                } else if (isKey(['r', 'R'], event)){
+                    event.stopPropagation();
+                    select.setTowards('right');
+                    that._modeling.sendUpdate(select);
+                } else if (isKey(['u', 'U'], event)){
+                    event.stopPropagation();
+                    select.unsetTowards();
+                    that._modeling.sendUpdate(select);
+                }
+            }
+        }
+    }
 }
 
 OrmShortcuts.$inject = [

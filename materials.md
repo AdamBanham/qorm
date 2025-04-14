@@ -19,3 +19,6 @@
 A bunch of examples of extension setups: https://github.com/microsoft/vscode-extension-samples/tree/main/custom-editor-sample
 bpmn-io-vscode: https://github.com/bpmn-io/vs-code-bpmn-io
 
+## SVG editor
+
+https://yqnn.github.io/svg-path-editor/ (What a champ!)
