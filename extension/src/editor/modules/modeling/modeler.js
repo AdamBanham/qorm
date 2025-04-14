@@ -197,5 +197,42 @@ export default class OrmModelling extends Modeling {
         }
         this.sendUpdate(fact);
     }
+
+    /**
+     * flips the derivation of a fact.
+     * @param {Fact} fact 
+     */
+    flipDerivation(fact){
+        if (fact.derived){
+            fact.derived = false;
+            this.removeDerivedLabel(fact);
+        } else {
+            fact.derived = true;
+            this.makeDerivedLabel(fact, "...");
+        }
+    }
+
+    makeDerivedLabel(fact, label){
+        let attrs = this._elementFactory.createDummyAttributesForDerivedLabel();
+        let ret = this.createLabel(
+            fact,
+            { x: fact.x + fact.width / 2, 
+                y: fact.y + unitHeight * 1.5 + 25
+            },
+            Object.assign(attrs, { content: label})
+        );
+        this.sendUpdates(fact, ...fact.labels);
+        return ret;
+    }
+
+    removeDerivedLabel(fact){
+        for(let labels in fact.labels){
+            if (fact.labels[labels].derived){
+                this.removeElements([fact.labels[labels]]);
+                break;
+            }
+        }
+        this.sendUpdates(fact, ...fact.labels);
+    }
         
 }

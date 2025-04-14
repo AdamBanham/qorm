@@ -1,8 +1,9 @@
 [X] export svg
 [X] add objectified fact types
-[] add objectified label editing
+[X] add objectified label editing
 [] add objectified connections to roles
 [] fancy directions for facts
+[X] add derivable flag
 [X] add unit-based reference mode
 [X] keyboard support
 

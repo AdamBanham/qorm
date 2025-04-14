@@ -136,6 +136,16 @@ export default function ContextPadProvider(
     };
 
     /**
+     * Flips the derviation state of the fact.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.derived = function(that, fact){
+        that._modeling.flipDerivation(fact);
+        that._pad.open(fact, true);
+    };
+
+    /**
      * Builds the current context options from the state of the fact
      * @param {fact} fact 
      * @returns the options 
@@ -167,6 +177,28 @@ export default function ContextPadProvider(
                 group: '1-grow'
             };
     
+        }
+
+        if (fact.derived) {
+            options['remove-derived'] = {
+                action: {
+                    click: () => {that.derived(that, fact);},
+                },
+                className: 'context-pad-derived',
+                html: '<div class="entry mdi mdi-star-off-outline editor-hover"/>',
+                title: 'Flip Derived',
+                group: '2-edit'
+            };
+        } else {
+            options['make-derived'] = {
+                action: {
+                    click: () => {that.derived(that, fact);},
+                },
+                className: 'context-pad-derived',
+                html: '<div class="entry mdi mdi-star-outline editor-hover"/>',
+                title: 'Flip Derived',
+                group: '2-edit'
+            };
         }
 
         options['make-contraint'] = {

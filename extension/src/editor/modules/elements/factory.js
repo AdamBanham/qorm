@@ -109,6 +109,13 @@ export default class OrmElementFactory extends ElementFactory{
         };
     }
 
+    createDummyAttributesForDerivedLabel(){
+        return {
+            content: "*...",
+            derived: true,
+        };
+    }
+
     /**
      * creates dummy attributes for a constraint over a fact.
      * @param {Fact} fact 

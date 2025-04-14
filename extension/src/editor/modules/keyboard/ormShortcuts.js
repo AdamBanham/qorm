@@ -75,6 +75,9 @@ export default class OrmShortcuts {
         keyboard.addListener((context) => {
             that.triggerObjectifcation(that, context);
         });
+        keyboard.addListener((context) => {
+            that.triggerDerived(that, context);
+        });
     }
 
     /**
@@ -137,11 +140,13 @@ export default class OrmShortcuts {
         if (isKey(['Enter'], event)){
             const selected = that._selection.get();
             if (selected.length === 1){
+                event.stopPropagation();
+                event.preventDefault();
                 const select = selected[0];
                 that._eventbus.fire('label.edit.trigger', {
                     element : select
                 });
-                event.stopPropagation();
+                
             }
         }
     }
@@ -348,6 +353,28 @@ export default class OrmShortcuts {
                 if (isKey(['o', 'O'], event)){
                     event.stopPropagation();
                     that._modeling.flipObjectification(select);
+                }
+            }
+        }
+    }
+
+    /**'
+     * flips the derived state on a fact.
+     * @param {OrmShortcuts} that 
+     * @param {*} context 
+     */
+    triggerDerived(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isFact(select)){
+                if (isKey(['d', 'D'], event)){
+                    event.stopPropagation();
+                    that._modeling.flipDerivation(select);
                 }
             }
         }

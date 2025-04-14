@@ -20,6 +20,8 @@ export interface fact {
     constraints?: Array<constraint>;
     objectified?: boolean;
     objectifiedName?: string;
+    derived?: boolean;
+    derivedLabel?: string;
 }
 
 export function createFact(
@@ -47,6 +49,8 @@ export class Fact implements fact {
     constraints: Array<constraint>;
     objectified?: boolean | undefined;
     objectifiedName?: string;
+    derived?: boolean | undefined;
+    derivedLabel?: string | undefined;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -60,6 +64,7 @@ export class Fact implements fact {
         this.hovered = false;
         this.constraints = new Array();
         this.objectifiedName = "foobar";
+        this.derived = false;
     }
 
     addRole(){

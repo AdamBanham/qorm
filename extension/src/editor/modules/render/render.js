@@ -315,15 +315,26 @@ export default class TSRenderer extends  BaseRenderer {
         var group = svgCreate("g", {
             class: "orm-visuals"
         });
+        let className = "fact";
+        if (label.derived){
+            className = className + "-derived-label";
+        } else {
+            className = className + "-label";
+        }
         var text = svgCreate('text',
             {
                 x: 0,
                 y: 3.5,
-                class: 'fact-label'
+                class: className
             }
         );
         if (label.content.length > 0){
             text.textContent = label.content;
+        }
+        if (label.labelTarget.derived && !label.derived){
+            text.textContent = text.textContent+"  *";
+        } else if (label.derived) {
+            text.textContent = "*  "+ text.textContent;
         }
         // draw center for debug
         let dot = svgCreate("circle", {

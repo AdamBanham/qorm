@@ -73,7 +73,7 @@ export class Entity implements entity {
         this.parent = undefined;
         this.attachers = [];
         this.referenceMode = "reference";
-        this.meta = "foo";
+        this.meta = " ";
     }
 
     flipType() {
