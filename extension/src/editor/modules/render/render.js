@@ -1,9 +1,8 @@
 import {
-    classes as svgClasses,
     append as svgAppend,
     attr as svgAttr,
     create as svgCreate,
-    clone as svgClone
+    clone as svgClone,
   } from 'tiny-svg';
 
 import { assign } from 'min-dash';
@@ -300,6 +299,7 @@ export default class TSRenderer extends  BaseRenderer {
                 });
             }
            
+            svgAppend(visuals, this.createShadowForShape(group));
             svgAppend(visuals, group);
             return group;
     };    
@@ -307,9 +307,8 @@ export default class TSRenderer extends  BaseRenderer {
     createShadowForShape(svgElement){
         var svg = svgClone(svgElement);
         svgAttr(svg,{
-            opacity: 0.25,
-            cx: parseFloat(svgElement.attributes.cx.nodeValue) + 2.5,
-            cy: parseFloat(svgElement.attributes.cy.nodeValue) + 2.5
+            opacity: 0.125,
+            transform: "translate(2.5, 3.5)",
         });
         return svg;
     }
