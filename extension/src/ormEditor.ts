@@ -39,6 +39,26 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 		};
 
         webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
+
+        function updateWebview() {
+			webviewPanel.webview.postMessage({
+				type: 'update',
+				text: document.getText(),
+			});
+		}
+
+		const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
+			if (e.document.uri.toString() === document.uri.toString()) {
+				updateWebview();
+			}
+		});
+
+        // Make sure we get rid of the listener when our editor is closed.
+		webviewPanel.onDidDispose(() => {
+			changeDocumentSubscription.dispose();
+		});
+
+        updateWebview();
     }
 
     private getHtmlForWebview(webview: vscode.Webview): string {

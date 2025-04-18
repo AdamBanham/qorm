@@ -112,6 +112,10 @@ export class Entity implements entity {
     setMetaString(meta: string){
         this.meta = meta;
     }
+
+    update() {
+        
+    }
 }
 
 export class ValueEntity extends Entity {

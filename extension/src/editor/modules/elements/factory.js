@@ -25,17 +25,23 @@ export default class OrmElementFactory extends ElementFactory{
     {
         type = attrs.type || type;
         if (type === 'entity') {
-            return createEntity(attrs.label, attrs.ref, 
+            let el = createEntity(attrs.label, attrs.ref, 
                 attrs.type, attrs.width, attrs.height, 
                 attrs.x, attrs.y);
+            el = Object.assign(el, attrs);
+            return el;
         }
         if (type === 'value') {
-            return createEntity(attrs.label, attrs.ref, 
+            let el = createEntity(attrs.label, attrs.ref, 
                 attrs.type, attrs.width, attrs.height, 
                 attrs.x, attrs.y);
+            el = Object.assign(el, attrs);
+            return el;
         }
         if (type === 'fact') {
-            return createFact(attrs.factors, attrs.x, attrs.y);
+            let el = createFact(attrs.factors, attrs.x, attrs.y);
+            el = Object.assign(el, attrs);
+            return el;
         }
         if (type === 'constraint'){
             attrs['type'] = 'constraint';

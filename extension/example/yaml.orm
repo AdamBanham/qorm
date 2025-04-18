@@ -1,0 +1,20 @@
+system: testORM
+entities:
+  - id: entity-1
+    name: entity
+    type: entity
+    ref: id
+  - id: entity-2
+    name: entity
+    type: entity
+    ref: id
+facts:
+  - id: fact-1
+    label: has
+    roles:
+      - entity-1
+      - entity-2
+connections:
+  - id: connection-1
+    src: entity-1
+    tgt: fact-1

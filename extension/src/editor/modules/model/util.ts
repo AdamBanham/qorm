@@ -1,6 +1,6 @@
 import { ShapeLike } from "diagram-js/lib/model/Types";
 import { entity, Entity, ValueEntity } from "./entities";
-import { fact } from "./facts";
+import { Fact } from "./facts";
 
 let id = 0;
 
@@ -18,7 +18,7 @@ export function getNextIdentifier () {
  * @param {ShapeLike} shape 
  * @returns {boolean} whether the shape is a fact type.
  */
-export function isFact(shape: ShapeLike): shape is fact {
+export function isFact(shape: ShapeLike): shape is Fact {
     if (shape.type){
         return shape.type === "fact";
     }
@@ -30,7 +30,7 @@ export function isFact(shape: ShapeLike): shape is fact {
  * @param {ShapeLike} shape 
  * @returns {boolean} whether the shape is an entity type.
  */
-export function isEntity(shape: ShapeLike): shape is entity {
+export function isEntity(shape: ShapeLike): shape is Entity {
     if (shape.type){
         return shape.type === "entity" || shape.type === "value";
     }

@@ -280,5 +280,9 @@ export class Fact implements fact {
         this.towards = undefined;
     }
 
+    update(){
+        this.width = unitWidth * this.roles;
+    }
+
 }
 

@@ -1,0 +1,30 @@
+system ORM testORM {
+    entity {
+        name: entity;
+        type: entity;
+        ref: id
+        id: entity-1
+    };
+
+    entity {
+        name: entity;
+        type: entity;
+        ref: id
+        id: entity-2
+    }
+
+    fact {
+        label: has;
+        id: fact-1;
+        roles {
+            entity-1;
+            entity-2;
+        }
+    }
+
+    connection {
+        id: connection-1;
+        src: entity-1;
+        tgt: fact-1;
+    }
+};
