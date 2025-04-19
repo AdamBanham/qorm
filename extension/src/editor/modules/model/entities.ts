@@ -116,6 +116,21 @@ export class Entity implements entity {
     update() {
         
     }
+
+    buildAttributes(): Map<string, any> {
+        let attributes = new Map<string, any>();
+        attributes.set("id", this.id);
+        attributes.set("type", this.type);
+        attributes.set("name", this.name);
+        attributes.set("ref", this.ref);
+        attributes.set("x", Math.fround(this.x));
+        attributes.set("y", Math.fround(this.y));
+        if (this.type === "entity"){
+            attributes.set("referenceMode", this.referenceMode);
+            attributes.set("meta", this.meta);
+        }
+        return attributes;
+    }
 }
 
 export class ValueEntity extends Entity {

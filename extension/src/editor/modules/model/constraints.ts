@@ -95,4 +95,13 @@ export class SimpleConstraint implements constraint {
             (r) => r < this.roles
         );
     }
+
+    buildAttributes(): any {
+        return {
+            id: this.id,
+            type: this.type,
+            mode: this.mode,
+            over: this.over,
+        };
+    }
 }

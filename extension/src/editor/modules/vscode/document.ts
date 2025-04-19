@@ -107,6 +107,47 @@ export class Document implements document{
     public getNodeById(id: string): DocumentEntity | documentConnection | documentFact | undefined {
         return this.elements.get(id) || this.connections.get(id) || this.facts.get(id);
     }
+
+    public removeNodeById(id: string): void {
+        this.elements.delete(id);
+        this.connections.delete(id);
+        this.facts.delete(id);
+    }
+
+    /**
+     * Converts the current document to a YAML string.
+     * @returns {string} the document in YAML format
+     */
+    public yamlify(): string {
+        const plainObject = {
+            system : {
+                name: this.name,
+                type: this.type,
+                entities: Array.from(this.elements.values()).map(
+                    (element) => (
+                    Object.assign({
+                        id: element.id,
+                    }, Object.fromEntries(element.attributes)
+                    )
+                )),
+                facts: Array.from(this.facts.values()).map(
+                    (fact) => (
+                    Object.assign({
+                        id: fact.id,
+                    }, Object.fromEntries(fact.attributes)
+                    )
+                )),
+                connections: Array.from(this.connections.values()).map(
+                    (connection) => (
+                    Object.assign({
+                        id: connection.id,
+                    }, Object.fromEntries(connection.attributes)
+                    )
+                )),
+            }
+        };
+        return yaml.dump(plainObject);
+    }
 }
 
 export default class DocumentParser {
@@ -125,13 +166,13 @@ export default class DocumentParser {
     public parseDocument(document: string): Document {
         try {
             const data = yaml.load(document) as any;
-            console.log("Parsed data: ", data);
             const parsedDocument = new Document();
-            parsedDocument.setName(data.system || "Unnamed System");
+            let system = data.system;
+            parsedDocument.setName(system.name|| "Unnamed System");
 
             // Parse entities
-            if (data.entities) {
-                data.entities.forEach((entity: any) => {
+            if (system.entities) {
+                system.entities.forEach((entity: any) => {
                     
                     let atttributes = new Map<string, any>();
                     for (const key in entity) {
@@ -143,13 +184,15 @@ export default class DocumentParser {
                     );
                     if (documentEntity.validate()) {
                         parsedDocument.addElement(documentEntity);
+                    } else {
+                        console.warn("Invalid entity:", entity);
                     }
                 });
             }
 
             // Parse facts
-            if (data.facts) {
-                data.facts.forEach((fact: any) => {
+            if (system.facts) {
+                system.facts.forEach((fact: any) => {
                     const documentFact: documentFact = {
                         id: fact.id,
                         attributes: new Map<string, string>(),
@@ -157,13 +200,23 @@ export default class DocumentParser {
                     for (const key in fact) {
                         documentFact.attributes.set(key, fact[key]);
                     }
+                    documentFact.attributes.set("type", "fact");
+                    if (!documentFact.attributes.has("roles")) {
+                        if (!documentFact.attributes.has("factors")) {
+                            documentFact.attributes.set("roles", 0);
+                        } else {
+                            documentFact.attributes.set("roles", 
+                                documentFact.attributes.get("factors").length
+                            );
+                        }
+                    }
                     parsedDocument.addFact(documentFact);
                 });
             }
 
             // Parse connections
-            if (data.connections) {
-                data.connections.forEach((connection: any) => {
+            if (system.connections) {
+                system.connections.forEach((connection: any) => {
                     const documentConnection: documentConnection = {
                         id: connection.id,
                         attributes: new Map<string, string>(),

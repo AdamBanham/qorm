@@ -165,15 +165,9 @@ export default function OrmConnect(
     eventBus.on('connect.end', function(event) {
       var context = event.context,
           canExecute = context.canExecute,
-          connectionStart = context.connectionStart,
-          connectionEnd = {
-            x: event.x,
-            y: event.y
-          },
           entity = context.source,
           role = context.targetRole,
           fact = context.target;
-
       // clear markers
       recuriseRemoveMarkers(entity);
       recuriseRemoveMarkers(fact);
@@ -184,6 +178,7 @@ export default function OrmConnect(
         let con = modeling.connectToFact(fact, entity, role);
         recuriseRemoveMarkers(con);
       } 
+      
     });
 
     
@@ -204,7 +199,7 @@ export default function OrmConnect(
         autoActivate = connectionStart;
         connectionStart = getMid(start);
       }
-  
+      
       dragging.init(event, 'connect', {
         autoActivate: autoActivate,
         data: {

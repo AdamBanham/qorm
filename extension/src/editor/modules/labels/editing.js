@@ -43,7 +43,7 @@ function getLabel(element ,context){
   return "";
 }
   
-var HIGH_PRIORITY = 2000;
+var HIGH_PRIORITY = 2500;
 
 /**
  * 
@@ -77,7 +77,7 @@ export default function LabelEditingProvider(
   
     // listen to dblclick on non-root elements
     eventBus.on(
-      ['element.dblclick', 'label.edit.trigger'], function(event) {
+      ['element.dblclick', 'label.edit.trigger'], HIGH_PRIORITY, function(event) {
       if (isFact(event.element) || isEntity(event.element) || isLabel(event.element)){
         activateDirectEdit(event.element, true);
       }
@@ -96,7 +96,7 @@ export default function LabelEditingProvider(
       }
     });
   
-    eventBus.on('create.end', 500, function(event) {
+    eventBus.on('create.end', HIGH_PRIORITY, function(event) {
   
       var context = event.context,
           element = context.shape,
@@ -115,11 +115,11 @@ export default function LabelEditingProvider(
         return;
       }
   
-      activateDirectEdit(element);
+      setTimeout( () => activateDirectEdit(element), 25);
     });
   
-    eventBus.on('autoPlace.end', 500, function(event) {
-      activateDirectEdit(event.shape);
+    eventBus.on('autoPlace.end', HIGH_PRIORITY, function(event) {
+      setTimeout( () => activateDirectEdit(event.shape), 25);
     });
   
   
@@ -265,7 +265,8 @@ export default function LabelEditingProvider(
 
     // trigger changes
     setTimeout(() => {
-      this._bus.fire('element.changed', {element: element});
+      this._modeling.sendUpdate(element);
+      this._selection.select(element);
     }, 25);
    
   };
@@ -285,9 +286,6 @@ export default function LabelEditingProvider(
       }
     } else if (this._context.touchingMode === 'meta'){
       entity.meta = label;
-      setTimeout(
-        () => this._selection.select(entity), 25
-      );
     }
   };
 
@@ -296,9 +294,6 @@ export default function LabelEditingProvider(
       if (fact.labels && fact.labels.length > 0){
         let factLabel = fact.labels[0];
         factLabel.content = label;
-        setTimeout(() => {
-          this._modeling.sendUpdate(factLabel);
-        }, 25);
       } else {
         this._modeling.createLabelForFact(
           fact,
@@ -311,19 +306,12 @@ export default function LabelEditingProvider(
       } else if (fact.objectified){
         this._context.touchingMode = 'objectified';
         setTimeout(() => this._directEditing.activate(fact), 5 );
-      } else {
-        setTimeout(
-          () => this._selection.select(fact), 25
-        );
-      } 
+      }
     } else if (context.touchingMode === 'derived'){
       let derived = fact.labels.filter(label => label.derived);
       if (derived.length > 0){
         let derivedLabel = derived[0];
         derivedLabel.content = label;
-        setTimeout(() => {
-          this._modeling.sendUpdate(derivedLabel);
-        }, 25);
       } else {
         this._modeling.makeDerivedLabel(
           fact,
@@ -333,18 +321,8 @@ export default function LabelEditingProvider(
       if (fact.objectified){
         this._context.touchingMode = 'objectified';
         setTimeout(() => this._directEditing.activate(fact), 5 );
-      } else {
-        setTimeout(
-          () => this._selection.select(fact), 25
-        );
-      }
+      } 
     } else if (context.touchingMode === 'objectified'){
       fact.objectifiedName = label;
-      setTimeout(() => {
-        this._modeling.sendUpdate(fact);
-      }, 5);
-      setTimeout(
-        () => this._selection.select(fact), 25
-      );
     }
   };

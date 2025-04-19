@@ -1,0 +1,1571 @@
+system:
+  name: yaml for orm
+  type: ORM
+  entities:
+    - id: entity-8
+      type: entity
+      name: System
+      ref: name
+      width: 100
+      height: 75
+      x: 198
+      'y': -188.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-10
+      type: value
+      name: Type
+      ref: id
+      width: 100
+      height: 75
+      x: -72
+      'y': -188.5
+    - id: entity-15
+      type: entity
+      name: Entity
+      ref: id
+      width: 100
+      height: 75
+      x: 637
+      'y': -559
+      referenceMode: reference
+      meta: ' '
+    - id: entity-18
+      type: entity
+      name: Connection
+      ref: id
+      width: 100
+      height: 75
+      x: 489
+      'y': -189.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-29
+      type: entity
+      name: Fact
+      ref: id
+      width: 100
+      height: 75
+      x: 625
+      'y': 196.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-36
+      type: value
+      name: Type
+      ref: id
+      width: 100
+      height: 75
+      x: 562
+      'y': -841.5
+    - id: entity-43
+      type: value
+      name: Type
+      ref: id
+      width: 100
+      height: 75
+      x: 206
+      'y': 468
+    - id: entity-58
+      type: entity
+      name: x
+      ref: nr
+      width: 100
+      height: 75
+      x: 832
+      'y': -187.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-59
+      type: entity
+      name: 'y'
+      ref: nr
+      width: 100
+      height: 75
+      x: 998
+      'y': -187.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-87
+      type: entity
+      name: factors
+      ref: id
+      width: 100
+      height: 75
+      x: 1148
+      'y': -69.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-94
+      type: entity
+      name: uniqueness
+      ref: id
+      width: 100
+      height: 75
+      x: 1148
+      'y': 110.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-104
+      type: value
+      name: type
+      ref: id
+      width: 100
+      height: 75
+      x: 1503
+      'y': -5.5
+    - id: entity-111
+      type: entity
+      name: mode
+      ref: nr
+      width: 100
+      height: 75
+      x: 1503
+      'y': 110.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-118
+      type: entity
+      name: over
+      ref: nr
+      width: 100
+      height: 75
+      x: 1503
+      'y': 239
+      referenceMode: reference
+      meta: ' '
+    - id: entity-125
+      type: value
+      name: roles
+      ref: id
+      width: 100
+      height: 75
+      x: 1148
+      'y': 256
+    - id: entity-145
+      type: value
+      name: label
+      ref: id
+      width: 100
+      height: 75
+      x: 1032
+      'y': 484.5
+    - id: entity-153
+      type: value
+      name: derived
+      ref: id
+      width: 100
+      height: 75
+      x: 918
+      'y': 557
+    - id: entity-154
+      type: value
+      name: derivedLabel
+      ref: id
+      width: 100
+      height: 75
+      x: 781
+      'y': 615
+    - id: entity-155
+      type: value
+      name: objectified
+      ref: id
+      width: 100
+      height: 75
+      x: 489
+      'y': 615.5
+    - id: entity-156
+      type: value
+      name: objectifiedName
+      ref: id
+      width: 100
+      height: 75
+      x: 346
+      'y': 556.5
+    - id: entity-127
+      type: value
+      name: name
+      ref: id
+      width: 100
+      height: 75
+      x: 848
+      'y': -842
+    - id: entity-136
+      type: value
+      name: ref
+      ref: id
+      width: 100
+      height: 75
+      x: 977
+      'y': -746
+    - id: entity-128
+      type: entity
+      name: referenceMode
+      ref: mode
+      x: 1079
+      'y': -605.5
+      referenceMode: reference
+      meta: ' '
+    - id: entity-134
+      type: value
+      name: meta
+      ref: id
+      x: 1090
+      'y': -459
+    - id: entity-137
+      type: value
+      name: towards
+      ref: id
+      x: 1121
+      'y': 385.5
+  facts:
+    - id: fact-32
+      type: fact
+      roles: 2
+      factors:
+        - entity-18
+        - entity-15
+      width: 50
+      height: 25
+      x: 612
+      'y': -316.5
+      label: has source
+      towards: right
+      uniqueness:
+        - id: constraint-29
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-33
+      type: fact
+      roles: 2
+      factors:
+        - entity-18
+        - entity-29
+      width: 50
+      height: 25
+      x: 612
+      'y': -28.5
+      label: has target
+      towards: right
+      uniqueness:
+        - id: constraint-33
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-60
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-58
+      width: 50
+      height: 25
+      x: 742
+      'y': -28.5
+      label: is placed at
+      uniqueness:
+        - id: constraint-37
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      towards: right
+    - id: fact-66
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-59
+      width: 50
+      height: 25
+      x: 843
+      'y': -7
+      label: is placed at
+      towards: right
+      uniqueness:
+        - id: constraint-41
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-74
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-58
+      width: 50
+      height: 25
+      x: 758
+      'y': -316.5
+      label: is placed at
+      towards: right
+      uniqueness:
+        - id: constraint-45
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-75
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-59
+      width: 50
+      height: 25
+      x: 902
+      'y': -338.5
+      label: is placed at
+      towards: right
+      uniqueness:
+        - id: constraint-49
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-88
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-87
+      width: 50
+      height: 25
+      x: 926
+      'y': 60
+      towards: right
+      label: has role with
+      uniqueness:
+        - id: constraint-53
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+    - id: fact-105
+      type: fact
+      roles: 2
+      factors:
+        - entity-94
+        - entity-104
+      width: 50
+      height: 25
+      x: 1359
+      'y': 20
+      label: has
+      towards: right
+      uniqueness:
+        - id: constraint-57
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-112
+      type: fact
+      roles: 2
+      factors:
+        - entity-94
+        - entity-111
+      width: 50
+      height: 25
+      x: 1359
+      'y': 135.5
+      label: has
+      towards: right
+      uniqueness:
+        - id: constraint-61
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-126
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-125
+      width: 50
+      height: 25
+      x: 926
+      'y': 223
+      uniqueness:
+        - id: constraint-63
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      label: has
+      towards: right
+    - id: fact-135
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-137
+      width: 50
+      height: 25
+      x: 926
+      'y': 303.5
+      uniqueness:
+        - id: constraint-69
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      label: is verbialised towards
+    - id: fact-146
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-145
+      width: 50
+      height: 25
+      x: 889
+      'y': 396
+      label: is labeled with
+      towards: right
+      uniqueness:
+        - id: constraint-73
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-163
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-153
+      width: 50
+      height: 25
+      x: 808
+      'y': 464
+      label: is derivable
+      uniqueness:
+        - id: constraint-77
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      towards: right
+    - id: fact-164
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-154
+      width: 50
+      height: 25
+      x: 738
+      'y': 514
+      label: has derivation of
+      uniqueness:
+        - id: constraint-81
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      towards: right
+    - id: fact-166
+      type: fact
+      roles: 2
+      factors:
+        - entity-156
+        - entity-29
+      width: 50
+      height: 25
+      x: 499
+      'y': 451
+      label: has objectified name of
+      uniqueness:
+        - id: constraint-85
+          type: constraint
+          mode: 0
+          over:
+            - 1
+      towards: left
+    - id: fact-167
+      type: fact
+      roles: 2
+      factors:
+        - entity-43
+        - entity-29
+      width: 50
+      height: 25
+      x: 454
+      'y': 373
+      uniqueness:
+        - id: constraint-89
+          type: constraint
+          mode: 0
+          over:
+            - 1
+      label: has
+      towards: left
+    - id: fact-188
+      type: fact
+      roles: 2
+      factors:
+        - entity-155
+        - entity-29
+      width: 50
+      height: 25
+      x: 586
+      'y': 512.5
+      label: is objectified
+      uniqueness:
+        - id: constraint-93
+          type: constraint
+          mode: 0
+          over:
+            - 1
+      towards: left
+    - id: fact-94
+      type: fact
+      roles: 2
+      factors:
+        - entity-8
+        - entity-18
+      x: 395
+      'y': -165
+      uniqueness:
+        - id: constraint-97
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      label: has
+      towards: right
+    - id: fact-93
+      type: fact
+      roles: 2
+      factors:
+        - entity-29
+        - entity-94
+      x: 1047
+      'y': 135
+      uniqueness:
+        - id: constraint-101
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+      label: has uniqueness constraints
+    - id: fact-99
+      type: fact
+      roles: 2
+      factors:
+        - entity-94
+        - entity-118
+      x: 1358
+      'y': 264
+      label: is over
+      towards: right
+      uniqueness:
+        - id: constraint-105
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+    - id: fact-101
+      type: fact
+      roles: 2
+      factors:
+        - entity-10
+        - entity-8
+      x: 91
+      'y': -163.5
+      label: is
+      uniqueness:
+        - id: constraint-109
+          type: constraint
+          mode: 0
+          over:
+            - 1
+      towards: left
+    - id: fact-107
+      type: fact
+      roles: 2
+      factors:
+        - entity-8
+        - entity-29
+      x: 395
+      'y': 222
+      uniqueness:
+        - id: constraint-113
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+      towards: right
+      label: has
+    - id: fact-113
+      type: fact
+      roles: 2
+      factors:
+        - entity-8
+        - entity-15
+      x: 371
+      'y': -533
+      uniqueness:
+        - id: constraint-117
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+      label: has
+      towards: right
+    - id: fact-120
+      type: fact
+      roles: 2
+      factors:
+        - entity-36
+        - entity-15
+      x: 624
+      'y': -701
+      towards: left
+      uniqueness:
+        - id: constraint-121
+          type: constraint
+          mode: 0
+          over:
+            - 1
+      label: has
+    - id: fact-129
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-128
+      x: 975
+      'y': -533
+      towards: right
+      label: is in mode
+      uniqueness:
+        - id: constraint-125
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-136
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-134
+      x: 965
+      'y': -436.5
+      uniqueness:
+        - id: constraint-119
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      towards: right
+      label: has
+    - id: fact-133
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-136
+      x: 900
+      'y': -649
+      label: is referenced by
+      uniqueness:
+        - id: constraint-133
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      towards: right
+    - id: fact-139
+      type: fact
+      roles: 2
+      factors:
+        - entity-15
+        - entity-127
+      x: 807
+      'y': -700.5
+      towards: right
+      label: has
+      uniqueness:
+        - id: constraint-123
+          type: constraint
+          mode: 0
+          over:
+            - 0
+  connections:
+    - id: connection-28
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 674.5
+        'y': -304.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 674.5
+          'y': -304.5
+        - x: 649.5
+          'y': -304.5
+      source: entity-15
+      target: fact-32
+      type: connection
+    - id: connection-35
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 729.5
+        'y': -16.5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 729.5
+          'y': -16.5
+        - x: 754.5
+          'y': -16.5
+      source: entity-29
+      target: fact-60
+      type: connection
+    - id: connection-39
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 830.5
+        'y': 5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 830.5
+          'y': 5
+        - x: 855.5
+          'y': 5
+      source: entity-29
+      target: fact-66
+      type: connection
+    - id: connection-40
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1654.5
+        'y': 52
+      waypoints:
+        - x: 1048
+          'y': -150
+        - x: 905.5
+          'y': 8
+        - x: 880.5
+          'y': 8
+      source: entity-59
+      target: fact-66
+      type: connection
+    - id: connection-31
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 599.5
+        'y': -16.5
+      waypoints:
+        - x: 539
+          'y': -152
+        - x: 599.5
+          'y': -16.5
+        - x: 624.5
+          'y': -16.5
+      source: entity-18
+      target: fact-33
+      type: connection
+    - id: connection-27
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 599.5
+        'y': -304.5
+      waypoints:
+        - x: 539
+          'y': -152
+        - x: 599.5
+          'y': -304.5
+        - x: 624.5
+          'y': -304.5
+      source: entity-18
+      target: fact-32
+      type: connection
+    - id: connection-63
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 913.5
+        'y': 235
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 913.5
+          'y': 235
+        - x: 938.5
+          'y': 235
+      source: entity-29
+      target: fact-126
+      type: connection
+    - id: connection-68
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1737.5
+        'y': 363
+      waypoints:
+        - x: 1171
+          'y': 423
+        - x: 988.5
+          'y': 319
+        - x: 963.5
+          'y': 319
+      source: entity-137
+      target: fact-135
+      type: connection
+    - id: connection-87
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 441.5
+        'y': 387
+      waypoints:
+        - x: 256
+          'y': 506
+        - x: 441.5
+          'y': 387
+        - x: 466.5
+          'y': 387
+      source: entity-43
+      target: fact-167
+      type: connection
+    - id: connection-83
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 486.5
+        'y': 464.5
+      waypoints:
+        - x: 396
+          'y': 594
+        - x: 486.5
+          'y': 464.5
+        - x: 511.5
+          'y': 464.5
+      source: entity-156
+      target: fact-166
+      type: connection
+    - id: connection-92
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 648.5
+        'y': 524.5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 648.5
+          'y': 524.5
+        - x: 623.5
+          'y': 524.5
+      source: entity-29
+      target: fact-188
+      type: connection
+    - id: connection-119
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 611.5
+        'y': -688.5
+      waypoints:
+        - x: 612
+          'y': -804
+        - x: 611.5
+          'y': -688.5
+        - x: 636.5
+          'y': -688.5
+      source: entity-36
+      target: fact-120
+      type: connection
+    - id: connection-128
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1787.5
+        'y': -379.5
+      waypoints:
+        - x: 1140
+          'y': -421
+        - x: 1062.5
+          'y': -422.5
+        - x: 1037.5
+          'y': -422.5
+      source: entity-134
+      target: fact-136
+      type: connection
+    - id: connection-75
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 795.5
+        'y': 476
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 795.5
+          'y': 476
+        - x: 820.5
+          'y': 476
+      source: entity-29
+      target: fact-163
+      type: connection
+    - id: connection-72
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1127.5
+        'y': 1047.5
+      waypoints:
+        - x: 1082
+          'y': 522
+        - x: 951.5
+          'y': 410.5
+        - x: 926.5
+          'y': 410.5
+      source: entity-145
+      target: fact-146
+      type: connection
+    - id: connection-84
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 561.5
+        'y': 463
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 561.5
+          'y': 463
+        - x: 536.5
+          'y': 463
+      source: entity-29
+      target: fact-166
+      type: connection
+    - id: connection-88
+      mandatory: true
+      role: 1
+      lastEdit:
+        x: 516.5
+        'y': 385
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 516.5
+          'y': 385
+        - x: 491.5
+          'y': 385
+      source: entity-29
+      target: fact-167
+      type: connection
+    - id: connection-76
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1046.5
+        'y': 1116.5
+      waypoints:
+        - x: 968
+          'y': 595
+        - x: 870.5
+          'y': 478.5
+        - x: 845.5
+          'y': 478.5
+      source: entity-153
+      target: fact-163
+      type: connection
+    - id: connection-80
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 976.5
+        'y': 1165.5
+      waypoints:
+        - x: 831
+          'y': 653
+        - x: 800.5
+          'y': 528
+        - x: 775.5
+          'y': 528
+      source: entity-154
+      target: fact-164
+      type: connection
+    - id: connection-91
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 749.5
+        'y': 1165.5
+      waypoints:
+        - x: 539
+          'y': 653
+        - x: 573.5
+          'y': 527.5
+        - x: 598.5
+          'y': 527.5
+      source: entity-155
+      target: fact-188
+      type: connection
+    - id: connection-44
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1569.5
+        'y': -259
+      waypoints:
+        - x: 882
+          'y': -150
+        - x: 820.5
+          'y': -302.5
+        - x: 795.5
+          'y': -302.5
+      source: entity-58
+      target: fact-74
+      type: connection
+    - id: connection-60
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1421.5
+        'y': 148
+      waypoints:
+        - x: 1553
+          'y': 148
+        - x: 1421.5
+          'y': 148
+        - x: 1396.5
+          'y': 148
+      source: entity-111
+      target: fact-112
+      type: connection
+    - id: connection-32
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 674.5
+        'y': -16.5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 674.5
+          'y': -16.5
+        - x: 649.5
+          'y': -16.5
+      source: entity-29
+      target: fact-33
+      type: connection
+    - id: connection-71
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 876.5
+        'y': 408
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 876.5
+          'y': 408
+        - x: 901.5
+          'y': 408
+      source: entity-29
+      target: fact-146
+      type: connection
+    - id: connection-51
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 913.5
+        'y': 72
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 913.5
+          'y': 72
+        - x: 938.5
+          'y': 72
+      source: entity-29
+      target: fact-88
+      type: connection
+    - id: connection-47
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 889.5
+        'y': -326.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 889.5
+          'y': -326.5
+        - x: 914.5
+          'y': -326.5
+      source: entity-15
+      target: fact-75
+      type: connection
+    - id: connection-115
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 370.5
+        'y': -521
+      waypoints:
+        - x: 248
+          'y': -151
+        - x: 248
+          'y': -520
+        - x: 395.5
+          'y': -521
+      source: entity-8
+      target: fact-113
+      type: connection
+    - id: connection-56
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1421.5
+        'y': 32
+      waypoints:
+        - x: 1553
+          'y': 32
+        - x: 1421.5
+          'y': 32
+        - x: 1396.5
+          'y': 32
+      source: entity-104
+      target: fact-105
+      type: connection
+    - id: connection-108
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 153.5
+        'y': -151
+      waypoints:
+        - x: 248
+          'y': -151
+        - x: 153.5
+          'y': -151
+        - x: 128.5
+          'y': -151
+      source: entity-8
+      target: fact-101
+      type: connection
+    - id: connection-131
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 899.5
+        'y': -637
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 899.5
+          'y': -637
+        - x: 924.5
+          'y': -637
+      source: entity-15
+      target: fact-133
+      type: connection
+    - id: connection-116
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 445.5
+        'y': -521
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 445.5
+          'y': -521
+        - x: 420.5
+          'y': -521
+      source: entity-15
+      target: fact-113
+      type: connection
+    - id: connection-52
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1725.5
+        'y': 118.5
+      waypoints:
+        - x: 1198
+          'y': -32
+        - x: 988.5
+          'y': 75
+        - x: 963.5
+          'y': 75
+      source: entity-87
+      target: fact-88
+      type: connection
+    - id: connection-120
+      mandatory: true
+      role: 1
+      lastEdit:
+        x: 686.5
+        'y': -688.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 686.5
+          'y': -688.5
+        - x: 661.5
+          'y': -688.5
+      source: entity-15
+      target: fact-120
+      type: connection
+    - id: connection-48
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1713.5
+        'y': -281
+      waypoints:
+        - x: 1048
+          'y': -150
+        - x: 964.5
+          'y': -324.5
+        - x: 939.5
+          'y': -324.5
+      source: entity-59
+      target: fact-75
+      type: connection
+    - id: connection-104
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1420.5
+        'y': 276.5
+      waypoints:
+        - x: 1553
+          'y': 277
+        - x: 1420.5
+          'y': 276.5
+        - x: 1395.5
+          'y': 276.5
+      source: entity-118
+      target: fact-99
+      type: connection
+    - id: connection-127
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 964.5
+        'y': -424.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 964.5
+          'y': -424.5
+        - x: 989.5
+          'y': -424.5
+      source: entity-15
+      target: fact-136
+      type: connection
+    - id: connection-79
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 725.5
+        'y': 526
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 725.5
+          'y': 526
+        - x: 750.5
+          'y': 526
+      source: entity-29
+      target: fact-164
+      type: connection
+    - id: connection-132
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 950.5
+        'y': -636
+      waypoints:
+        - x: 1027
+          'y': -709
+        - x: 962.5
+          'y': -636.5
+        - x: 937.5
+          'y': -636.5
+      source: entity-136
+      target: fact-133
+      type: connection
+    - id: connection-67
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 913.5
+        'y': 315.5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 913.5
+          'y': 315.5
+        - x: 938.5
+          'y': 315.5
+      source: entity-29
+      target: fact-135
+      type: connection
+    - id: connection-107
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 78.5
+        'y': -151
+      waypoints:
+        - x: -22
+          'y': -151
+        - x: 78.5
+          'y': -151
+        - x: 103.5
+          'y': -151
+      source: entity-10
+      target: fact-101
+      type: connection
+    - id: connection-99
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 1046.5
+        'y': 147
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 1046.5
+          'y': 147
+        - x: 1071.5
+          'y': 147
+      source: entity-29
+      target: fact-93
+      type: connection
+    - id: connection-43
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 745.5
+        'y': -304.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 745.5
+          'y': -304.5
+        - x: 770.5
+          'y': -304.5
+      source: entity-15
+      target: fact-74
+      type: connection
+    - id: connection-64
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 988.5
+        'y': 235.5
+      waypoints:
+        - x: 1198
+          'y': 294
+        - x: 988.5
+          'y': 235.5
+        - x: 963.5
+          'y': 235.5
+      source: entity-125
+      target: fact-126
+      type: connection
+    - id: connection-103
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 1345.5
+        'y': 276.5
+      waypoints:
+        - x: 1198
+          'y': 148
+        - x: 1345.5
+          'y': 276.5
+        - x: 1370.5
+          'y': 276.5
+      source: entity-94
+      target: fact-99
+      type: connection
+    - id: connection-36
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 804.5
+        'y': -15
+      waypoints:
+        - x: 882
+          'y': -150
+        - x: 804.5
+          'y': -15
+        - x: 779.5
+          'y': -15
+      source: entity-58
+      target: fact-60
+      type: connection
+    - id: connection-135
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 806.5
+        'y': -688.5
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 806.5
+          'y': -688.5
+        - x: 831.5
+          'y': -688.5
+      source: entity-15
+      target: fact-139
+      type: connection
+    - id: connection-59
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 1346.5
+        'y': 148
+      waypoints:
+        - x: 1198
+          'y': 148
+        - x: 1346.5
+          'y': 148
+        - x: 1371.5
+          'y': 148
+      source: entity-94
+      target: fact-112
+      type: connection
+    - id: connection-55
+      mandatory: true
+      role: 0
+      lastEdit:
+        x: 1346.5
+        'y': 32
+      waypoints:
+        - x: 1198
+          'y': 148
+        - x: 1346.5
+          'y': 32
+        - x: 1371.5
+          'y': 32
+      source: entity-94
+      target: fact-105
+      type: connection
+    - id: connection-100
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 1097.5
+        'y': 148
+      waypoints:
+        - x: 1198
+          'y': 148
+        - x: 1097.5
+          'y': 148
+        - x: 1072.5
+          'y': 148
+      source: entity-94
+      target: fact-93
+      type: connection
+    - id: connection-123
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 974.5
+        'y': -521
+      waypoints:
+        - x: 687
+          'y': -521
+        - x: 974.5
+          'y': -521
+        - x: 999.5
+          'y': -521
+      source: entity-15
+      target: fact-129
+      type: connection
+    - id: connection-111
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 382.5
+        'y': 234.5
+      waypoints:
+        - x: 248
+          'y': -151
+        - x: 248
+          'y': 235
+        - x: 407.5
+          'y': 234.5
+      source: entity-8
+      target: fact-107
+      type: connection
+    - id: connection-96
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 433.5
+        'y': -151.5
+      waypoints:
+        - x: 539
+          'y': -152
+        - x: 433.5
+          'y': -151.5
+        - x: 408.5
+          'y': -151.5
+      source: entity-18
+      target: fact-94
+      type: connection
+    - id: connection-95
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 382.5
+        'y': -152.5
+      waypoints:
+        - x: 248
+          'y': -151
+        - x: 382.5
+          'y': -152.5
+        - x: 407.5
+          'y': -152.5
+      source: entity-8
+      target: fact-94
+      type: connection
+    - id: connection-112
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 457.5
+        'y': 234.5
+      waypoints:
+        - x: 675
+          'y': 234
+        - x: 457.5
+          'y': 234.5
+        - x: 432.5
+          'y': 234.5
+      source: entity-29
+      target: fact-107
+      type: connection

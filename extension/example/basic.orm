@@ -1,30 +1,167 @@
-system ORM testORM {
-    entity {
-        name: entity;
-        type: entity;
-        ref: id
-        id: entity-1
-    };
-
-    entity {
-        name: entity;
-        type: entity;
-        ref: id
-        id: entity-2
-    }
-
-    fact {
-        label: has;
-        id: fact-1;
-        roles {
-            entity-1;
-            entity-2;
-        }
-    }
-
-    connection {
-        id: connection-1;
-        src: entity-1;
-        tgt: fact-1;
-    }
-};
+system:
+  name: Unnamed System
+  type: ORM
+  entities:
+    - id: entity-5
+      type: entity
+      name: Foobar
+      ref: id
+      x: 282
+      'y': 146
+      referenceMode: reference
+      meta: ' '
+    - id: entity-7
+      type: entity
+      name: Foobar
+      ref: id
+      x: 648
+      'y': 147
+      referenceMode: reference
+      meta: ' '
+    - id: entity-17
+      type: value
+      name: Foobar
+      ref: id
+      x: 282
+      'y': 500
+    - id: entity-18
+      type: value
+      name: Foobar
+      ref: id
+      x: 648
+      'y': 500
+  facts:
+    - id: fact-6
+      type: fact
+      roles: 2
+      factors:
+        - entity-5
+        - entity-7
+      x: 506
+      'y': 171
+      uniqueness:
+        - id: constraint-24
+          type: constraint
+          mode: 0
+          over:
+            - 0
+      derivedLabel: 1 + 21
+      derived: true
+      label: has
+    - id: fact-12
+      type: fact
+      roles: 4
+      factors:
+        - entity-5
+        - entity-17
+        - entity-18
+        - entity-7
+      x: 481
+      'y': 347
+      uniqueness:
+        - id: constraint-23
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
+            - 2
+      objectified: true
+      objectifiedName: foobar
+  connections:
+    - id: connection-9
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 493.5
+        'y': 183.5
+      waypoints:
+        - x: 332
+          'y': 184
+        - x: 493.5
+          'y': 183.5
+        - x: 518.5
+          'y': 183.5
+      source: entity-5
+      target: fact-6
+      type: connection
+    - id: connection-11
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 568.5
+        'y': 183.5
+      waypoints:
+        - x: 698
+          'y': 185
+        - x: 568.5
+          'y': 183.5
+        - x: 543.5
+          'y': 183.5
+      source: entity-7
+      target: fact-6
+      type: connection
+    - id: connection-14
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 468.5
+        'y': 359.5
+      waypoints:
+        - x: 332
+          'y': 184
+        - x: 468.5
+          'y': 359.5
+        - x: 493.5
+          'y': 359.5
+      source: entity-5
+      target: fact-12
+      type: connection
+    - id: connection-16
+      mandatory: false
+      role: 3
+      lastEdit:
+        x: 593.5
+        'y': 359.5
+      waypoints:
+        - x: 698
+          'y': 185
+        - x: 593.5
+          'y': 359.5
+        - x: 568.5
+          'y': 359.5
+      source: entity-7
+      target: fact-12
+      type: connection
+    - id: connection-20
+      mandatory: false
+      role: 2
+      lastEdit:
+        x: 543.5
+        'y': 384.5
+      waypoints:
+        - x: 698
+          'y': 538
+        - x: 543.5
+          'y': 384.5
+        - x: 543.5
+          'y': 359.5
+      source: entity-18
+      target: fact-12
+      type: connection
+    - id: connection-22
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 518.5
+        'y': 384.5
+      waypoints:
+        - x: 332
+          'y': 538
+        - x: 518.5
+          'y': 384.5
+        - x: 518.5
+          'y': 359.5
+      source: entity-17
+      target: fact-12
+      type: connection

@@ -51,7 +51,6 @@ export class Fact implements fact {
     objectified?: boolean | undefined;
     objectifiedName?: string;
     derived?: boolean | undefined;
-    derivedLabel?: string | undefined;
     towards?: "right" | "left" | undefined;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
@@ -282,6 +281,42 @@ export class Fact implements fact {
 
     update(){
         this.width = unitWidth * this.roles;
+    }
+
+    buildAttributes(): Map<string, any> {
+        var that:any = this;
+        let attributes = new Map<string, any>();
+        attributes.set("id", this.id);
+        attributes.set("type", this.type);
+        attributes.set("roles", this.roles);
+        attributes.set("factors", this.factors.map((i) => i ? i.id : null));
+        attributes.set("x", Math.fround(this.x,));
+        attributes.set("y", Math.fround(this.y));
+        if (that.labels){
+            for(let labeler of that.labels){
+                if (labeler.derived){
+                    attributes.set("derivedLabel", labeler.content);
+                } else {
+                    attributes.set("label", labeler.content);
+                }
+            }
+        }
+        if (this.derived){
+            attributes.set("derived", this.derived);
+        }
+        if (this.objectified){
+            attributes.set("objectified", this.objectified);
+            attributes.set("objectifiedName", this.objectifiedName);
+        }
+        if (this.towards){
+            attributes.set("towards", this.towards);
+        }
+        if (this.constraints.length > 0){
+            attributes.set("uniqueness", this.constraints.map((i) => {
+                return i.buildAttributes();
+            }));
+        }
+        return attributes;
     }
 
 }

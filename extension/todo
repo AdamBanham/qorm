@@ -7,15 +7,21 @@
 [X] add unit-based reference mode
 [X] keyboard support
 
-[] actually write to file changes as they happen
-[] hook up to element.changed or elements.change 
+[X] actually write to file changes as they happen
+[X] hook up to element.changed or elements.change 
     - update the document
     - reyaml document and send back to vscode to add to file
-[] grammar? trying with yaml
-        - is it xml? or is just the export svg enough?
-        - just use a basic toml or yaml setup?
+[X] grammar? trying with yaml
 [X] get updates from a file
 [] add validation about what comes from the file updates
-[] handle updates gracefully
-[] load file content as first step on webview launch
+[X] handle updates gracefully
+[X] load file content as first step on webview launch
 [] add verb conventions to bottom of html?
+
+
+Bugfixes
+[X] deleting a connection does not clear the role on the fact.
+[] svg export: direction of verbilisation is not coloured.
+[] deleting a fact does not remove the constraints
+[] bug with derived label not updating.
+[] bug with the fact labels, trigger derived without label, labels wont change

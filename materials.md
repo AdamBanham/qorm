@@ -22,3 +22,7 @@ bpmn-io-vscode: https://github.com/bpmn-io/vs-code-bpmn-io
 ## SVG editor
 
 https://yqnn.github.io/svg-path-editor/ (What a champ!)
+
+## YAML in js
+
+https://github.com/nodeca/js-yaml#readme

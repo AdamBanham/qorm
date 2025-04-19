@@ -11,8 +11,9 @@ import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts
  * @type ElementFactory
  */
 export default class OrmElementFactory extends ElementFactory{
-    constructor() {
+    constructor(eventBus) {
         super();
+        this._eventBus = eventBus;
     }
 
     /**
@@ -29,6 +30,7 @@ export default class OrmElementFactory extends ElementFactory{
                 attrs.type, attrs.width, attrs.height, 
                 attrs.x, attrs.y);
             el = Object.assign(el, attrs);
+            this._eventBus.fire('factory.create', { element: el });
             return el;
         }
         if (type === 'value') {
@@ -36,34 +38,31 @@ export default class OrmElementFactory extends ElementFactory{
                 attrs.type, attrs.width, attrs.height, 
                 attrs.x, attrs.y);
             el = Object.assign(el, attrs);
+            this._eventBus.fire('factory.create', { element: el });
             return el;
         }
         if (type === 'fact') {
             let el = createFact(attrs.factors, attrs.x, attrs.y);
             el = Object.assign(el, attrs);
+            this._eventBus.fire('factory.create', { element: el });
             return el;
         }
         if (type === 'constraint'){
             attrs['type'] = 'constraint';
-            return createConstraint(
+            let el = createConstraint(
                 attrs.x, attrs.y, 
                 attrs.width, attrs.height,
                 attrs.over, attrs.roles
             );
+            this._eventBus.fire('factory.create', { element: el });
+            return el;
         }
         if (type === 'connection'){
             attrs['type'] = 'connection';
-            let basic = super.create(type, attrs)
-            // TODO: workout how to extend a connection
-            // let mine = createConnection(
-            //     attrs.waypoints ? attrs.waypoints : [],
-            //     attrs.role,
-            //     attrs.mandatory ? attrs.mandatory : false
-            // );
-            // if (!attrs.waypoints || attrs.waypoints.length < 1){
-            //     mine.waypoints = undefined
-            // }
-            return basic; 
+            let el = createConnection(attrs.role, attrs.mandatory);
+            el.setByAttributes(attrs);
+            this._eventBus.fire('factory.create', { element: el });
+            return el; 
         }
         if (type === 'label'){
             attrs['type'] = 'label';
@@ -152,3 +151,7 @@ export default class OrmElementFactory extends ElementFactory{
         };
     }
 }
+
+OrmElementFactory.$inject = [
+    'eventBus',
+];
