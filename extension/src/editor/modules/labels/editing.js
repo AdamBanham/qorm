@@ -205,7 +205,6 @@ export default function LabelEditingProvider(
       options: options,
       style: style
     });
-  
     return context;
   };
   
@@ -220,7 +219,7 @@ export default function LabelEditingProvider(
   LabelEditingProvider.prototype.getEditingBBox = function(element) {
     var canvas = this._canvas;
   
-    var target = element.label || element;
+    var target = element;
   
     var bbox = canvas.getAbsoluteBBox(target);
     const vbox = canvas.viewbox();
