@@ -7,6 +7,7 @@ import { Connection } from 'diagram-js/lib/model';
 import { Fact, unitHeight, unitWidth } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
+import { isFact } from '../model/util';
 
 export default class OrmModelling extends Modeling {
 
@@ -244,6 +245,21 @@ export default class OrmModelling extends Modeling {
     removeShape(element){
         super.removeShape(element);
         this._eventBus.fire('shape.removed', {element: element});
+    }
+
+    /**
+     * Removes all extra entities as required when a fact is removed.
+     * @param {Fact} fact 
+     */
+    removeFact(fact){
+        if (isFact(fact)){
+            if (fact.constraints.length > 0){
+                for(let constraint of fact.constraints){
+                    this.removeShape(constraint);
+                }
+            }
+            this.removeShape(fact);
+        }
     }
 
     updateWaypoints(con, waypoints, hints){

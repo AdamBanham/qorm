@@ -23,5 +23,7 @@ Bugfixes
 [X] deleting a connection does not clear the role on the fact.
 [] svg export: direction of verbilisation is not coloured.
 [] deleting a fact does not remove the constraints
+[] after adding constraint, fact is not reselected
+[] connections still in file after being deleted
 [] bug with derived label not updating.
 [] bug with the fact labels, trigger derived without label, labels wont change

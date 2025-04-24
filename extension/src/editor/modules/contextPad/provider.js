@@ -161,6 +161,15 @@ export default function ContextPadProvider(
     }
 
     /**
+     * Removes the fact from the current ORM schema.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.removeFact = function(that, fact){
+        that._modeling.removeFact(fact);
+    }
+
+    /**
      * Builds the current context options from the state of the fact
      * @param {fact} fact 
      * @returns the options 
@@ -284,7 +293,7 @@ export default function ContextPadProvider(
 
         options['delete'] = {
             action: {
-                click: () => {that.removeElement(that, fact);},
+                click: () => {that.removeFact(that, fact);},
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',
