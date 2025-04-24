@@ -20,6 +20,8 @@ const renderColours = `
     --render-mandatory-role-fill: hsl(280, 49%, 32%);
     --render-madatory-role-stroke: hsl(280, 91%, 13%);
     --render-objectified-label-fill: hsl(283, 100%, 68%);
+    --render-derived-fact-label-fill: hsl(300, 82%, 32%);
+    --render-fact-verb-arrow-fill: hsl(283, 100%, 68%);
 }
 
 .fact-role {
@@ -54,6 +56,18 @@ const renderColours = `
             fill: var(--render-objectified-label-fill);
             font-size: 12px;
             text-anchor: middle;
+        }
+        .fact-derived-label {
+            fill: var(--render-derived-fact-label-fill);
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            text-anchor: middle;
+            box-shadow: 1px 1px 2px var(--render-border-colour);
+            text-wrap: pretty;
+        }
+        .fact-verb-arrow {
+            fill: var(--render-simple-constraint);
         }
     }
 }
