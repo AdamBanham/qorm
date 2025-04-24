@@ -413,12 +413,11 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
     canvas.removeMarker(canvas.getRootElement(), DRAG_ACTIVE_CLS);
 
     // restore selection, unless it has changed
-    var previousSelection = context.payload.previousSelection;
-
-    if (restore !== false && previousSelection && !selection.get().length) {
-      restoreSelection(previousSelection);
+    var previousSelection = context.data.fact;
+    // always restore the selection back to the fact.
+    if (previousSelection){
+      restoreSelection([previousSelection]);
     }
-
     previousContext = context;
 
     context = null;
