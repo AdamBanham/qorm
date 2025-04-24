@@ -114,6 +114,19 @@ export class Document implements document{
         this.facts.delete(id);
     }
 
+    public findConnectionBetween(src:string, tgt:string, role:number): documentConnection | undefined{
+        let ret;
+        for(let con of this.connections.values()){
+            if (con.attributes.get('source') == src &&
+                con.attributes.get('target') == tgt &&
+                con.attributes.get('role') == role){
+                    ret = con;
+                    break;
+                }
+        }
+        return ret;
+    }
+
     /**
      * Converts the current document to a YAML string.
      * @returns {string} the document in YAML format

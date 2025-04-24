@@ -311,7 +311,7 @@ export default function ContextPadProvider(
      * @param {Connection} con the connection to remove.
      */
     ContextPadProvider.prototype.removeConnection = function(that, con){
-        that._modeling.removeElements([con]);
+        that._modeling.removeConnection(con);
     };
 
     /**

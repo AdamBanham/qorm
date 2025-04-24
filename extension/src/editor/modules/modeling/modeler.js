@@ -238,13 +238,13 @@ export default class OrmModelling extends Modeling {
     }
 
     removeElements(elements){
-        super.removeElements(elements);
         this._eventBus.fire('elements.removed', {elements: elements});
+        super.removeElements(elements);
     }
 
     removeShape(element){
-        super.removeShape(element);
         this._eventBus.fire('shape.removed', {element: element});
+        super.removeShape(element);
     }
 
     /**
@@ -269,8 +269,8 @@ export default class OrmModelling extends Modeling {
     }
 
     removeConnection(con){
-        this.clearConnection(con);
         this._eventBus.fire('shape.removed', {element: con});   
+        this.clearConnection(con);
         super.removeConnection(con);
     }
 

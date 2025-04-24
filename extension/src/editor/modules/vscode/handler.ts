@@ -455,7 +455,9 @@ export default  class VscodeMessageHandler {
                 if (!element.source || !element.target) {
                     return;
                 }
-                let connection = this.currentDocument.getNodeById(element.id);
+                let connection = this.currentDocument.findConnectionBetween(
+                    element.source.id, element.target.id, element.role
+                );
                 if (connection) {
                     connection.attributes = new Map<string, any>([
                         ...connection.attributes,
@@ -507,12 +509,26 @@ export default  class VscodeMessageHandler {
     }
 
     removeElementsOnDocument(elements: Array<any>) {
+        
         if (this.state.status === "working") {
             console.warn("Document is being updated, skipping...");
             return;
         }
         elements.forEach((element) => {
-            this.currentDocument.removeNodeById(element.id);
+            if (isConnection(element)){
+                let temp = this.currentDocument.findConnectionBetween(
+                    element.source.id, element.target.id, element.role
+                );
+                if (!temp){
+                    console.warn(`Unable to find connection to delete ${element.id}`, element);
+                } else {
+                    this.currentDocument.removeNodeById(
+                        temp.id
+                    );
+                }
+            } else {
+                this.currentDocument.removeNodeById(element.id);
+            }
         });
 
         this.triggerVscodeUpdate();
