@@ -1,71 +1,38 @@
-# qorm3 README
+# qORMa - An ORM editor for vscode
 
-This is the README for your extension "qorm3". After writing up a brief description, we recommend including the following sections.
+This extension is a simple and "lightweight" implementation of the ORM schema. The project is a work in progress and aims to capture the minimum features of the full ORM language. It provides a diagram interface suited to ORM models. It builds on top of the Camunda framework [diagram-js](https://github.com/bpmn-io/diagram-js).
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+At this stage, we support the following components of the ORM language:
+- Entities
+    - Referenced or unit-based referenced
+- Value Entities
+    - with a single name
+- Facts
+    - of any desired arity
+    - uniqueness constraints
+    - derivation labels
+    - objectified (limited support)
+    - connections between facts and entities
+        - mandatory roles on connections
 
-For example if there is an image subfolder under your extension project workspace:
+For instance, you can see the graphical representation of these elements in the following snippet:
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![image](/extension/extension-assets/entities-and-values.png)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+The editor does not require installation. If you have vscode installed, then you have everything you need.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+We currently do not expose any settings for the extension.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+The following section capture the most recent releases.
 
-### 1.0.0
+### 0.1.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release of the ORM editor for testing purposes.

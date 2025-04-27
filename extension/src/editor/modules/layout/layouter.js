@@ -1,5 +1,4 @@
 import BaseLayouter from "diagram-js/lib/layout/BaseLayouter";
-import { Connection } from "diagram-js/lib/model/Types";
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 
 import { isEntity, isFact } from "../model/util";

@@ -16,8 +16,8 @@
     - reyaml document and send back to vscode to add to file
 [X] grammar? trying with yaml
 [X] get updates from a file
-[] show a helpful error on file parse error
-[] add validation about what comes from the file updates
+[X] show a helpful error on file parse error
+[X] add validation about what comes from the file updates
 [X] handle updates gracefully
 [X] load file content as first step on webview launch
 [] add verb conventions to bottom of html?
@@ -33,5 +33,4 @@ Bugfixes
 [X] bug with derived label not updating.
 [X] connections not connecting with facts, layout may not be considering last edit correctly
 [X] document parse error, after an inital document is loaded and a new save trigger occurs; error in canvas finding the same entity.
-
 [X] bug with the fact labels, trigger derived without label, labels wont change

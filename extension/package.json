@@ -1,8 +1,13 @@
 {
-  "name": "qorm",
-  "displayName": "qorm",
-  "description": "",
-  "version": "0.0.1",
+  "name": "qorma",
+  "displayName": "qORMa",
+  "description": "A custom editor for ORM files.",
+  "publisher": "qorma",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdamBanham/qorm"
+  },
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -14,19 +19,13 @@
   "contributes": {
     "customEditors": [
       {
-        "viewType": "qorm.ormEditor",
-        "displayName": "qORM Editor",
+        "viewType": "qorma.ormEditor",
+        "displayName": "qORMa Editor",
         "selector": [
           {
             "filenamePattern": "*.orm"
           }
         ]
-      }
-    ],
-    "commands": [
-      {
-        "command": "qorm.helloWorld",
-        "title": "qORM - Hello World!"
       }
     ]
   },

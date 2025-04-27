@@ -24,7 +24,6 @@ import { isKey } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 import { isWithinShape,transformToViewbox } from '../utils/canvasUtils';
 
 /**
- * @typedef {import('diagram-js/lib/util/Types').Point} Point
  * @typedef {import('diagram-js/lib/features/dragging/Dragging').default} Dragging
  * @typedef {import('diagram-js/lib/core/Canvas').default} Canvas
  * @typedef {import('diagram-js/lib/core/ElementRegistry').default} ElementRegistry
