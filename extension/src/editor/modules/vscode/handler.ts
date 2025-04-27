@@ -1,7 +1,7 @@
 
 import DocuementParser from "./document";
 import { Document } from "./document";
-import { documentNode, DocumentEntity, documentFact, documentConnection } from "./document";
+import { documentNode, DocumentEntity, DocumentFact, documentConnection } from "./document";
 import { isEqualSets } from "../utils/sets";
 import { isEntity, isFact } from "../model/util";
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
@@ -10,9 +10,9 @@ import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts
 import { transformToViewbox } from "../utils/canvasUtils";
 
 interface differences {
-    changes: Array<DocumentEntity | documentFact | documentConnection>;
-    removals: Array<DocumentEntity | documentFact | documentConnection>;
-    additions: Array<DocumentEntity | documentFact | documentConnection>;
+    changes: Array<DocumentEntity | DocumentFact | documentConnection>;
+    removals: Array<DocumentEntity | DocumentFact | documentConnection>;
+    additions: Array<DocumentEntity | DocumentFact | documentConnection>;
 }
 
 interface handlerState {
@@ -123,9 +123,9 @@ export default  class VscodeMessageHandler {
     }
 
     _findChangedElements(newDoc: Document): differences {
-        const changedNodes = new Array<DocumentEntity | documentFact | documentConnection>();
-        const removedNodes = new Array<DocumentEntity | documentFact | documentConnection>();
-        const addedNodes = new Array<DocumentEntity | documentFact | documentConnection>();
+        const changedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
+        const removedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
+        const addedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
         const oldDoc = this.oldDocuments.get(newDoc.name) || new Document();
 
         // Compare elements
@@ -230,6 +230,7 @@ export default  class VscodeMessageHandler {
                     pos,
                     this._canvas.getRootElement()
                 );
+                element.update();
                 this._handleCreationForFact(element, node.attributes);
                 this._modeling.sendUpdate(element);
             } else if (node.attributes.get('type') === 'value') {
@@ -489,10 +490,11 @@ export default  class VscodeMessageHandler {
         if (isFact(element)) {
             let id = element.id;
             let attributes = element.buildAttributes();
-            this.currentDocument.addFact({
-                id: id,
-                attributes: attributes
-            }
+            this.currentDocument.addFact(
+            new DocumentFact(
+                id,
+                attributes
+            )
             );
         }
         if (isConnection(element)) {

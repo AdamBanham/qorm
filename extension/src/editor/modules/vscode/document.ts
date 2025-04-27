@@ -10,8 +10,39 @@ export interface documentConnection extends documentNode {
 
 }
 
-export interface documentFact extends documentNode {
+export class DocumentFact implements documentNode {
+    id: string;
+    attributes: Map<string, any>;
 
+    constructor(id: string, attributes?: Map<string, any>) {
+        this.id = id;
+        this.attributes = new Map<string, any>();
+        if (attributes) {
+            attributes.forEach((value, key) => {
+                this.attributes.set(key, value);
+            });
+        } 
+
+        if (this.validate()) {
+            if (!this.attributes.has("roles")) {
+                this.attributes.set("roles", 
+                    this.attributes.get("factors").length
+                );
+            }
+        }
+        
+    }
+
+    validate(): boolean {
+        if (
+            this.attributes.has("x") && 
+            this.attributes.has("y")  &&
+            this.attributes.has("factors") 
+        ){
+            return  this.attributes.get("type") === "fact";
+        }
+        return false;
+    }
 }
 
 export class DocumentEntity implements documentNode{
@@ -44,7 +75,7 @@ export class DocumentEntity implements documentNode{
 
 export interface document {
     elements:Map<string, DocumentEntity>;
-    facts: Map<string, documentFact>;
+    facts: Map<string, DocumentFact>;
     connections: Map<string, documentConnection>;
     name: string;
     type: "ORM";
@@ -52,7 +83,7 @@ export interface document {
 
 export class Document implements document{
     elements: Map<string, DocumentEntity>;
-    facts: Map<string, documentFact>;
+    facts: Map<string, DocumentFact>;
     connections: Map<string, documentConnection>;
     name: string;
     type: "ORM";
@@ -60,7 +91,7 @@ export class Document implements document{
 
     constructor() {
         this.elements = new Map<string, DocumentEntity>();
-        this.facts = new Map<string, documentFact>();
+        this.facts = new Map<string, DocumentFact>();
         this.connections = new Map<string, documentConnection>();
         this.name = "";
         this.type = "ORM";
@@ -71,12 +102,12 @@ export class Document implements document{
     }
 
     public addNode(type: string, 
-        node: DocumentEntity | documentConnection | documentFact) {
+        node: DocumentEntity | documentConnection | DocumentFact) {
 
     }
 
     public updateNode(type: string,
-        node: DocumentEntity | documentConnection | documentFact) {
+        node: DocumentEntity | documentConnection | DocumentFact) {
 
     }
 
@@ -88,11 +119,11 @@ export class Document implements document{
         this.elements.delete(node.id);
     }
 
-    public addFact(node: documentFact) {
+    public addFact(node: DocumentFact) {
         this.facts.set(node.id, node);
     }
 
-    public removeFact(node: documentFact) {
+    public removeFact(node: DocumentFact) {
         this.facts.delete(node.id);
     }
 
@@ -104,7 +135,7 @@ export class Document implements document{
         this.connections.delete(node.id);
     }
 
-    public getNodeById(id: string): DocumentEntity | documentConnection | documentFact | undefined {
+    public getNodeById(id: string): DocumentEntity | documentConnection | DocumentFact | undefined {
         return this.elements.get(id) || this.connections.get(id) || this.facts.get(id);
     }
 
@@ -199,6 +230,7 @@ export default class DocumentParser {
                         parsedDocument.addElement(documentEntity);
                     } else {
                         console.warn("Invalid entity:", entity);
+                        throw new Error("Invalid entity :: " + entity.id);
                     }
                 });
             }
@@ -206,24 +238,20 @@ export default class DocumentParser {
             // Parse facts
             if (system.facts) {
                 system.facts.forEach((fact: any) => {
-                    const documentFact: documentFact = {
-                        id: fact.id,
-                        attributes: new Map<string, string>(),
-                    };
+                    let atttributes = new Map<string, any>();
                     for (const key in fact) {
-                        documentFact.attributes.set(key, fact[key]);
+                        atttributes.set(key, fact[key]);
                     }
-                    documentFact.attributes.set("type", "fact");
-                    if (!documentFact.attributes.has("roles")) {
-                        if (!documentFact.attributes.has("factors")) {
-                            documentFact.attributes.set("roles", 0);
-                        } else {
-                            documentFact.attributes.set("roles", 
-                                documentFact.attributes.get("factors").length
-                            );
-                        }
+                    const documentFact = new DocumentFact(
+                        fact.id,
+                        atttributes,
+                    );
+                    if (documentFact.validate()) {
+                        parsedDocument.addFact(documentFact);
+                    } else {
+                        console.warn("Invalid fact:", fact);
+                        throw new Error("Invalid fact :: " + fact.id);
                     }
-                    parsedDocument.addFact(documentFact);
                 });
             }
 
