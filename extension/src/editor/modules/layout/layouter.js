@@ -142,13 +142,16 @@ export default class OrmLayouter extends BaseLayouter {
             // check that we have a new pivot point and it has added
             if (factConnectionPoint !== undefined && added){
                 var remove = -1;
+                var found = false;
                 for (let wp of waypoints){
                     remove++;
                     if (this.nearlyEqual(wp, lastEdit)){
+                        found = true;
                         break;
                     }
                 }
-                if (remove >= 0){
+                // if we found the previous pivot then remove it.
+                if (found){
                     waypoints = waypoints.slice(0, remove)
                         .concat(
                             waypoints.slice(remove + 1)
@@ -161,7 +164,6 @@ export default class OrmLayouter extends BaseLayouter {
         if (factConnectionPoint){
             connection.lastEdit = factConnectionPoint;
         }
-
         return waypoints;
     }
 }
