@@ -43,6 +43,10 @@ export class DocumentFact implements documentNode {
         }
         return false;
     }
+
+    requires(): string {
+        return "x,y,factors=[],type=fact";
+    }
 }
 
 export class DocumentEntity implements documentNode{
@@ -63,13 +67,18 @@ export class DocumentEntity implements documentNode{
     validate(): boolean {
         if (
             this.attributes.has("name") && 
-            this.attributes.has("ref")  &&
-            this.attributes.has("type") 
+            this.attributes.has("type") &&
+            this.attributes.has("x") &&
+            this.attributes.has("y")
         ){
             return  this.attributes.get("type") === "entity" ||
                     this.attributes.get("type") === "value";
         }
         return false;
+    }
+
+    requires(): string {
+        return "name,x,y,type=entity|value";
     }
 }
 
@@ -99,16 +108,6 @@ export class Document implements document{
 
     public setName(name: string) {  
         this.name = name;
-    }
-
-    public addNode(type: string, 
-        node: DocumentEntity | documentConnection | DocumentFact) {
-
-    }
-
-    public updateNode(type: string,
-        node: DocumentEntity | documentConnection | DocumentFact) {
-
     }
 
     public addElement(node: DocumentEntity) {
@@ -216,8 +215,7 @@ export default class DocumentParser {
 
             // Parse entities
             if (system.entities) {
-                system.entities.forEach((entity: any) => {
-                    
+                for(let entity of system.entities){                    
                     let atttributes = new Map<string, any>();
                     for (const key in entity) {
                         atttributes.set(key, entity[key]);
@@ -230,14 +228,18 @@ export default class DocumentParser {
                         parsedDocument.addElement(documentEntity);
                     } else {
                         console.warn("Invalid entity:", entity);
-                        throw new Error("Invalid entity :: " + entity.id);
+                        throw new Error("Invalid entity :: " 
+                            + entity.id
+                            + " requires: "
+                            + documentEntity.requires()
+                        );
                     }
-                });
+                }
             }
 
             // Parse facts
             if (system.facts) {
-                system.facts.forEach((fact: any) => {
+                for(let fact of system.facts){
                     let atttributes = new Map<string, any>();
                     for (const key in fact) {
                         atttributes.set(key, fact[key]);
@@ -250,14 +252,18 @@ export default class DocumentParser {
                         parsedDocument.addFact(documentFact);
                     } else {
                         console.warn("Invalid fact:", fact);
-                        throw new Error("Invalid fact :: " + fact.id);
+                        throw new Error("Invalid fact :: " 
+                            + fact.id
+                            + " requires: "
+                            + documentFact.requires()
+                        );
                     }
-                });
+                }
             }
 
             // Parse connections
             if (system.connections) {
-                system.connections.forEach((connection: any) => {
+                for(let connection of system.connections){
                     const documentConnection: documentConnection = {
                         id: connection.id,
                         attributes: new Map<string, string>(),
@@ -266,13 +272,13 @@ export default class DocumentParser {
                         documentConnection.attributes.set(key, connection[key]);
                     }
                     parsedDocument.addConnection(documentConnection);
-                });
+                }
             }
 
             return parsedDocument;
-        } catch (error) {
-            console.error("Error parsing YAML document:", error);
-            throw new Error("Failed to parse document");
+        } catch (error: any) {
+            console.warn("Error parsing YAML document:", error);
+            throw new Error(error.message);
         }
     }
 }

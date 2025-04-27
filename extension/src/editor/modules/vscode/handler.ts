@@ -8,6 +8,7 @@ import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 import { transformToViewbox } from "../utils/canvasUtils";
+import VscodeMessager from "./messager";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | documentConnection>;
@@ -25,6 +26,7 @@ export default  class VscodeMessageHandler {
     currentDocument: Document;
     pushInterval: NodeJS.Timeout | null;
     vscodeInterval: NodeJS.Timeout | null;
+    _messager: VscodeMessager;
     _modeling: any;
     _elementRegistry: any;
     _elementFactory: any;
@@ -32,10 +34,11 @@ export default  class VscodeMessageHandler {
     _canvas: any;
     _api: any;
     _seenCons: Set<any>;
+    _first_load: boolean = true;
     state: handlerState;
 
     constructor(eventBus:any, modeling:any, elementRegistry:any, 
-                elementFactory:any, canvas:any) {
+                elementFactory:any, canvas:any, messager:any) {
         this.oldDocuments = new Map<string, Document>();
         this.pushInterval = null;
         this.vscodeInterval = null;
@@ -45,6 +48,7 @@ export default  class VscodeMessageHandler {
         this._eventBus = eventBus;
         this._canvas = canvas;
         this._api = null;
+        this._messager = messager;
         this._seenCons = new Set<any>();
         this.state = {
             status: "idle"
@@ -112,11 +116,17 @@ export default  class VscodeMessageHandler {
             this._fireChangedElementsinDocument(changed);
             this.oldDocuments.set(parsedDocument.name, parsedDocument);
             this.currentDocument = parsedDocument;
+            if (this._first_load) {
+                this.triggerVscodeUpdate();
+                this._first_load = false;
+            }
             this.state.status = "idle";
-            this.triggerVscodeUpdate();
             return;
-        } catch (e) {
-            console.error('Error parsing document:', e);
+        } catch (e: any) {
+            console.warn('Error parsing document:', e);
+            this._messager.sendWarningMessage(
+                "Error parsing document: " + e.message
+            );
             this.state.status = "idle";
             return;
         }
@@ -544,4 +554,5 @@ VscodeMessageHandler.$inject = [
     'elementRegistry',
     'elementFactory',
     'canvas',
+    'vscodeMessager'
 ];

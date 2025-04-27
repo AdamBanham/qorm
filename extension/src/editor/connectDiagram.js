@@ -18,7 +18,9 @@ export default (function () {
      * @description The message handler for the vscode extension.
      */
     const handler = editor.get('vscodeMessageHandler');
+    const messager = editor.get('vscodeMessager');
     handler.setApi(vscode);
+    messager.setApi(vscode);
 
     // handle messages from the extension
     window.addEventListener('message', async (event) => {

@@ -76,7 +76,17 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                     break;
                 case 'vscode.alert':
                     // Handle alert message
-                    vscode.window.showInformationMessage(message.text);
+                    switch (message.alert) {
+                        case 'info':
+                            vscode.window.showInformationMessage(message.message);
+                            break;
+                        case 'error':
+                            vscode.window.showErrorMessage(message.message);
+                            break;
+                        case 'warning':
+                            vscode.window.showWarningMessage(message.message);
+                            break;
+                    }
                     break;
                 default:
                     console.warn(`Unknown message type: ${message.type}`);
