@@ -265,7 +265,7 @@ export default function LabelEditingProvider(
 
     // trigger changes
     setTimeout(() => {
-      this._modeling.sendUpdate(element);
+      this._modeling.sendUpdates(element, ...element.labels);
       this._selection.select(element);
     }, 25);
    
