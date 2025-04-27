@@ -13,7 +13,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         return providerRegistration;
     }
 
-    private static readonly viewType = 'qorm.ormEditor';
+    private static readonly viewType = 'qorma.ormEditor';
     // private editor:Diagram;
 
     constructor(

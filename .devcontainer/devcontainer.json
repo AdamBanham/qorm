@@ -12,7 +12,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "apt-get install -y inotify-tools",
+	"postCreateCommand": "npm install -g @vscode/vsce"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

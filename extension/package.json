@@ -3,6 +3,8 @@
   "displayName": "qORMa",
   "description": "A custom editor for ORM files.",
   "publisher": "qorma",
+  "icon" : "extension-assets/logo.png",
+  "pricing" : "Free",
   "repository": {
     "type": "git",
     "url": "https://github.com/AdamBanham/qorm"
@@ -12,7 +14,7 @@
     "vscode": "^1.98.0"
   },
   "categories": [
-    "Other"
+    "Other", "Visualization", "Education"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
