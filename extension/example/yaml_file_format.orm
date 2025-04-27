@@ -36,8 +36,8 @@ system:
       ref: id
       width: 100
       height: 75
-      x: 489
-      'y': -189.5
+      x: 475
+      'y': -190
       referenceMode: reference
       meta: ' '
     - id: entity-29
@@ -65,7 +65,7 @@ system:
       width: 100
       height: 75
       x: 206
-      'y': 468
+      'y': 468.5
     - id: entity-58
       type: entity
       name: x
@@ -227,8 +227,8 @@ system:
         - entity-15
       width: 50
       height: 25
-      x: 587
-      'y': -317
+      x: 562
+      'y': -317.5
       label: has source
       towards: right
       uniqueness:
@@ -245,8 +245,8 @@ system:
         - entity-29
       width: 50
       height: 25
-      x: 587
-      'y': -29
+      x: 537
+      'y': -30.5
       label: has target
       towards: right
       uniqueness:
@@ -263,8 +263,8 @@ system:
         - entity-58
       width: 50
       height: 25
-      x: 717
-      'y': -29
+      x: 705
+      'y': -30
       label: is placed at
       uniqueness:
         - id: constraint-37
@@ -281,8 +281,8 @@ system:
         - entity-59
       width: 50
       height: 25
-      x: 818
-      'y': -7.5
+      x: 877
+      'y': -8.5
       label: is placed at
       towards: right
       uniqueness:
@@ -335,8 +335,8 @@ system:
         - entity-87
       width: 50
       height: 25
-      x: 926
-      'y': 60
+      x: 964
+      'y': 59.5
       towards: right
       label: has role with
       uniqueness:
@@ -354,8 +354,8 @@ system:
         - entity-104
       width: 50
       height: 25
-      x: 1359
-      'y': 20
+      x: 1334
+      'y': 19.5
       label: has
       towards: right
       uniqueness:
@@ -372,8 +372,8 @@ system:
         - entity-111
       width: 50
       height: 25
-      x: 1359
-      'y': 135.5
+      x: 1334
+      'y': 135
       label: has
       towards: right
       uniqueness:
@@ -390,16 +390,20 @@ system:
         - entity-125
       width: 50
       height: 25
-      x: 926
-      'y': 223
+      x: 915
+      'y': 222
       uniqueness:
-        - id: constraint-63
+        - id: constraint-65
           type: constraint
           mode: 0
           over:
             - 0
       label: has
       towards: right
+      derivedLabel: roles = num(factors)
+      derived: true
+      objectified: true
+      objectifiedName: foobar
     - id: fact-135
       type: fact
       roles: 2
@@ -408,8 +412,8 @@ system:
         - entity-137
       width: 50
       height: 25
-      x: 926
-      'y': 303.5
+      x: 902
+      'y': 327.5
       uniqueness:
         - id: constraint-69
           type: constraint
@@ -425,8 +429,8 @@ system:
         - entity-145
       width: 50
       height: 25
-      x: 889
-      'y': 396
+      x: 864
+      'y': 395.5
       label: is labeled with
       towards: right
       uniqueness:
@@ -479,8 +483,8 @@ system:
         - entity-29
       width: 50
       height: 25
-      x: 499
-      'y': 451
+      x: 449
+      'y': 450
       label: has objectified name of
       uniqueness:
         - id: constraint-85
@@ -497,8 +501,8 @@ system:
         - entity-29
       width: 50
       height: 25
-      x: 454
-      'y': 373
+      x: 404
+      'y': 372
       uniqueness:
         - id: constraint-89
           type: constraint
@@ -531,7 +535,7 @@ system:
       factors:
         - entity-8
         - entity-18
-      x: 395
+      x: 354
       'y': -165
       uniqueness:
         - id: constraint-97
@@ -539,7 +543,7 @@ system:
           mode: 0
           over:
             - 0
-      label: has
+      label: has connections
       towards: right
     - id: fact-93
       type: fact
@@ -547,8 +551,8 @@ system:
       factors:
         - entity-29
         - entity-94
-      x: 1047
-      'y': 135
+      x: 939
+      'y': 148
       uniqueness:
         - id: constraint-101
           type: constraint
@@ -556,15 +560,15 @@ system:
           over:
             - 0
             - 1
-      label: has uniqueness constraints
+      label: ... is unique over ...
     - id: fact-99
       type: fact
       roles: 2
       factors:
         - entity-94
         - entity-118
-      x: 1358
-      'y': 264
+      x: 1345
+      'y': 263.5
       label: is over
       towards: right
       uniqueness:
@@ -596,8 +600,8 @@ system:
       factors:
         - entity-8
         - entity-29
-      x: 395
-      'y': 222
+      x: 354
+      'y': 222.5
       uniqueness:
         - id: constraint-113
           type: constraint
@@ -606,15 +610,15 @@ system:
             - 0
             - 1
       towards: right
-      label: has
+      label: has facts
     - id: fact-113
       type: fact
       roles: 2
       factors:
         - entity-8
         - entity-15
-      x: 371
-      'y': -533
+      x: 367
+      'y': -533.5
       uniqueness:
         - id: constraint-117
           type: constraint
@@ -622,7 +626,7 @@ system:
           over:
             - 0
             - 1
-      label: has
+      label: has entities
       towards: right
     - id: fact-120
       type: fact
@@ -630,8 +634,8 @@ system:
       factors:
         - entity-36
         - entity-15
-      x: 624
-      'y': -701
+      x: 611
+      'y': -701.5
       towards: left
       uniqueness:
         - id: constraint-121
@@ -662,8 +666,8 @@ system:
       factors:
         - entity-15
         - entity-134
-      x: 952
-      'y': -437
+      x: 939
+      'y': -437.5
       uniqueness:
         - id: constraint-129
           type: constraint
@@ -725,15 +729,15 @@ system:
       mandatory: true
       role: 0
       lastEdit:
-        x: 729.5
-        'y': -16.5
+        x: 692.5
+        'y': -17.5
       waypoints:
         - x: 675
           'y': 234
-        - x: 729.5
-          'y': -16.5
-        - x: 754.5
-          'y': -16.5
+        - x: 692.5
+          'y': -17.5
+        - x: 717.5
+          'y': -17.5
       source: entity-29
       target: fact-60
       type: connection
@@ -741,15 +745,15 @@ system:
       mandatory: true
       role: 0
       lastEdit:
-        x: 830.5
-        'y': 5
+        x: 864.5
+        'y': 4
       waypoints:
         - x: 675
           'y': 234
-        - x: 830.5
-          'y': 5
-        - x: 855.5
-          'y': 5
+        - x: 864.5
+          'y': 4
+        - x: 889.5
+          'y': 4
       source: entity-29
       target: fact-66
       type: connection
@@ -757,15 +761,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 880.5
-        'y': 5
+        x: 939.5
+        'y': 4
       waypoints:
         - x: 1047
-          'y': -153
-        - x: 880.5
-          'y': 5
-        - x: 855.5
-          'y': 5
+          'y': -154
+        - x: 939.5
+          'y': 4
+        - x: 914.5
+          'y': 4
       source: entity-59
       target: fact-66
       type: connection
@@ -773,15 +777,15 @@ system:
       mandatory: true
       role: 0
       lastEdit:
-        x: 599.5
-        'y': -16.5
+        x: 524.5
+        'y': -18
       waypoints:
-        - x: 539
+        - x: 525
           'y': -152
-        - x: 599.5
-          'y': -16.5
-        - x: 624.5
-          'y': -16.5
+        - x: 524.5
+          'y': -18
+        - x: 549.5
+          'y': -18
       source: entity-18
       target: fact-33
       type: connection
@@ -789,15 +793,15 @@ system:
       mandatory: true
       role: 0
       lastEdit:
-        x: 599.5
-        'y': -304.5
+        x: 524.5
+        'y': -305.5
       waypoints:
-        - x: 539
+        - x: 525
           'y': -152
-        - x: 599.5
-          'y': -304.5
-        - x: 624.5
-          'y': -304.5
+        - x: 524.5
+          'y': -305.5
+        - x: 549.5
+          'y': -305.5
       source: entity-18
       target: fact-32
       type: connection
@@ -805,15 +809,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 913.5
-        'y': 235
+        x: 902.5
+        'y': 234.5
       waypoints:
         - x: 675
           'y': 234
-        - x: 913.5
-          'y': 235
-        - x: 938.5
-          'y': 235
+        - x: 902.5
+          'y': 234.5
+        - x: 927.5
+          'y': 234.5
       source: entity-29
       target: fact-126
       type: connection
@@ -821,15 +825,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 1737.5
-        'y': 363
+        x: 964.5
+        'y': 340
       waypoints:
         - x: 1171
           'y': 423
-        - x: 988.5
-          'y': 319
-        - x: 963.5
-          'y': 319
+        - x: 964.5
+          'y': 340
+        - x: 939.5
+          'y': 340
       source: entity-137
       target: fact-135
       type: connection
@@ -837,15 +841,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 441.5
-        'y': 387
+        x: 366.5
+        'y': 384
       waypoints:
         - x: 256
           'y': 506
-        - x: 441.5
-          'y': 387
-        - x: 466.5
-          'y': 387
+        - x: 366.5
+          'y': 384
+        - x: 391.5
+          'y': 384
       source: entity-43
       target: fact-167
       type: connection
@@ -1061,15 +1065,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 674.5
-        'y': -16.5
+        x: 624.5
+        'y': -17.5
       waypoints:
         - x: 675
           'y': 234
-        - x: 674.5
-          'y': -16.5
-        - x: 649.5
-          'y': -16.5
+        - x: 624.5
+          'y': -17.5
+        - x: 599.5
+          'y': -17.5
       source: entity-29
       target: fact-33
       type: connection
@@ -1093,14 +1097,14 @@ system:
       mandatory: true
       role: 0
       lastEdit:
-        x: 913.5
+        x: 951.5
         'y': 72
       waypoints:
         - x: 675
           'y': 234
-        - x: 913.5
+        - x: 951.5
           'y': 72
-        - x: 938.5
+        - x: 976.5
           'y': 72
       source: entity-29
       target: fact-88
@@ -1125,14 +1129,14 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 370.5
+        x: 354.5
         'y': -521
       waypoints:
         - x: 248
           'y': -151
         - x: 248
           'y': -520
-        - x: 395.5
+        - x: 354.5
           'y': -521
       source: entity-8
       target: fact-113
@@ -1189,14 +1193,14 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 445.5
+        x: 429.5
         'y': -521
       waypoints:
         - x: 687
+          'y': -522
+        - x: 429.5
           'y': -521
-        - x: 445.5
-          'y': -521
-        - x: 420.5
+        - x: 404.5
           'y': -521
       source: entity-15
       target: fact-113
@@ -1205,15 +1209,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 1725.5
-        'y': 118.5
+        x: 1026.5
+        'y': 72
       waypoints:
         - x: 1198
           'y': -32
-        - x: 988.5
-          'y': 75
-        - x: 963.5
-          'y': 75
+        - x: 1026.5
+          'y': 72
+        - x: 1001.5
+          'y': 72
       source: entity-87
       target: fact-88
       type: connection
@@ -1317,15 +1321,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 913.5
-        'y': 315.5
+        x: 889.5
+        'y': 340
       waypoints:
         - x: 675
           'y': 234
-        - x: 913.5
-          'y': 315.5
-        - x: 938.5
-          'y': 315.5
+        - x: 889.5
+          'y': 340
+        - x: 914.5
+          'y': 340
       source: entity-29
       target: fact-135
       type: connection
@@ -1349,15 +1353,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 1046.5
-        'y': 147
+        x: 926.5
+        'y': 160.5
       waypoints:
         - x: 675
           'y': 234
-        - x: 1046.5
-          'y': 147
-        - x: 1071.5
-          'y': 147
+        - x: 926.5
+          'y': 160.5
+        - x: 951.5
+          'y': 160.5
       source: entity-29
       target: fact-93
       type: connection
@@ -1381,15 +1385,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 988.5
-        'y': 235.5
+        x: 977.5
+        'y': 234.5
       waypoints:
         - x: 1198
-          'y': 294
-        - x: 988.5
-          'y': 235.5
-        - x: 963.5
-          'y': 235.5
+          'y': 293
+        - x: 977.5
+          'y': 234.5
+        - x: 952.5
+          'y': 234.5
       source: entity-125
       target: fact-126
       type: connection
@@ -1413,15 +1417,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 779.5
-        'y': -16.5
+        x: 767.5
+        'y': -17.5
       waypoints:
         - x: 875
-          'y': -153
-        - x: 779.5
-          'y': -16.5
-        - x: 754.5
-          'y': -16.5
+          'y': -154
+        - x: 767.5
+          'y': -17.5
+        - x: 742.5
+          'y': -17.5
       source: entity-58
       target: fact-60
       type: connection
@@ -1477,15 +1481,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 1097.5
-        'y': 148
+        x: 1001.5
+        'y': 160.5
       waypoints:
         - x: 1198
           'y': 148
-        - x: 1097.5
-          'y': 148
-        - x: 1072.5
-          'y': 148
+        - x: 1001.5
+          'y': 160.5
+        - x: 976.5
+          'y': 160.5
       source: entity-94
       target: fact-93
       type: connection
@@ -1509,15 +1513,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 382.5
-        'y': 234.5
+        x: 341.5
+        'y': 235
       waypoints:
         - x: 248
           'y': -151
         - x: 248
           'y': 235
-        - x: 407.5
-          'y': 234.5
+        - x: 341.5
+          'y': 235
       source: entity-8
       target: fact-107
       type: connection
@@ -1525,15 +1529,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 433.5
-        'y': -151.5
+        x: 416.5
+        'y': -152.5
       waypoints:
-        - x: 539
+        - x: 525
           'y': -152
-        - x: 433.5
-          'y': -151.5
-        - x: 408.5
-          'y': -151.5
+        - x: 416.5
+          'y': -152.5
+        - x: 391.5
+          'y': -152.5
       source: entity-18
       target: fact-94
       type: connection
@@ -1541,15 +1545,15 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 382.5
-        'y': -152.5
+        x: 354.5
+        'y': -152
       waypoints:
         - x: 248
           'y': -151
-        - x: 382.5
-          'y': -152.5
-        - x: 407.5
-          'y': -152.5
+        - x: 354.5
+          'y': -152
+        - x: 379.5
+          'y': -152
       source: entity-8
       target: fact-94
       type: connection
@@ -1557,15 +1561,15 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 457.5
-        'y': 234.5
+        x: 416.5
+        'y': 235
       waypoints:
         - x: 675
           'y': 234
-        - x: 457.5
-          'y': 234.5
-        - x: 432.5
-          'y': 234.5
+        - x: 416.5
+          'y': 235
+        - x: 391.5
+          'y': 235
       source: entity-29
       target: fact-107
       type: connection

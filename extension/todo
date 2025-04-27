@@ -26,5 +26,6 @@ Bugfixes
 [X] after adding constraint, fact is not reselected
 [X] connections still in file after being deleted
 [] bug with derived label not updating.
+[] connections not connecting with facts, layout may not be considering last edit correctly
 [] document parse error, after an inital document is loaded and a new save trigger occurs; error in canvas finding the same entity.
 [] bug with the fact labels, trigger derived without label, labels wont change
