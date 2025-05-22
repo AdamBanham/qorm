@@ -8,9 +8,10 @@
 [X] add unit-based reference mode
 [X] keyboard support
 [] "general" reference modes
-[] add subtpying (a connection between entities)
+[-] add subtpying (a connection between entities)
 [] add keyboard shortcut menu
 [] add value sets for entities
+[] add extension setting for debug rendering
 
 
 [X] actually write to file changes as they happen

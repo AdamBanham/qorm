@@ -1,6 +1,7 @@
-import { ShapeLike } from "diagram-js/lib/model/Types";
+import { ConnectionLike, ShapeLike } from "diagram-js/lib/model/Types";
 import { entity, Entity, ValueEntity } from "./entities";
 import { Fact } from "./facts";
+import { OrmSubtypeConnection, SUBTYPE_NAME } from "./subtypes";
 
 let id = 0;
 
@@ -35,6 +36,18 @@ export function isEntity(shape: ShapeLike): shape is Entity {
         return shape.type === "entity" || shape.type === "value";
     }
     return false;
+}
+
+/**
+ * Checks whether a given connection is subtyping
+ * @param {ConnectionLike} connection 
+ * @returns {boolean} whether the connection is a subtype connection
+ */
+export function isSubtype(connection: ConnectionLike): connection is OrmSubtypeConnection {
+    if (connection.type){
+        return connection.type === SUBTYPE_NAME
+    }
+    return false
 }
 
 /**
@@ -76,8 +89,8 @@ export function isLabel(shape: ShapeLike): boolean {
 
 /**
  * Determines if the shape is a constraint type.    
- * @param shape the shape to check
- * @returns whether the shape is a constraint type
+ * @param {ShapeLike} shape the shape to check
+ * @returns {boolean} whether the shape is a constraint type
  */
 export function isConstraint(shape: ShapeLike): boolean {
     if (shape.type){

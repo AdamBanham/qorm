@@ -408,6 +408,11 @@ export default function ContextPadProvider(
         that._modeling.sendUpdate(entity);
     };
 
+    ContextPadProvider.prototype.addSubtyping = function(that, entity){
+        // TODO: trigger connect for subtyping
+        console.log("triggering connection via subtyping")
+    }
+
     /**
      * Creates the usable options for the given Entity type.
      * @param {Entity} entity 
@@ -448,6 +453,15 @@ export default function ContextPadProvider(
                 title: 'Flip Label Reference',
                 group: 'edit'
             };
+            options['subtype'] = {
+                action : {
+                    click: () => {that.addSubtyping(that, entity);}
+                },
+                className: 'context-pad-subtyping',
+                html: '<div class="entry mdi mdi-swap-horizontal editor-hover"/>',
+                title: 'Subtype of',
+                group: 'add'
+            }
         }
         
         options['create-fact'] = {
