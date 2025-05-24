@@ -9,7 +9,7 @@
 [X] keyboard support
 [] "general" reference modes
 [X] add subtpying (a connection between entities)
-[] change all context pad icons to letters
+[X] change all context pad icons to letters
 [] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering

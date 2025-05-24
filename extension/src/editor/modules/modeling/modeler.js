@@ -225,6 +225,23 @@ export default class OrmModelling extends Modeling {
         }
     }
 
+    /**
+     * Changes the label of the derviation of the fact
+     * @param {Fact} fact 
+     * @param {string} label 
+     */
+    changeDerivedLabel(fact, label){
+        if (isFact(fact) && fact.derived) {
+            for(let labels in fact.labels){
+                if (fact.labels[labels].derived){
+                    fact.labels[labels].content = label;
+                    this.sendUpdate(fact);
+                    return;
+                }
+            }
+        }
+    }
+
     makeDerivedLabel(fact, label){
         let attrs = this._elementFactory.createDummyAttributesForDerivedLabel();
         let ret = this.createLabel(

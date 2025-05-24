@@ -1,4 +1,3 @@
-import { ShapeLike } from "diagram-js/lib/model/Types";
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 import { constraint } from "./constraints";
@@ -309,11 +308,13 @@ export class Fact implements fact {
                 }
             }
         }
-        if (this.derived){
-            attributes.set("derived", this.derived);
+        if (this.derived !== undefined){
+            let derivedValue = this.derived;
+            attributes.set("derived", derivedValue);
         }
-        if (this.objectified){
-            attributes.set("objectified", this.objectified);
+        if (this.objectified !== undefined){
+            let objectifiedValue = this.objectified;
+            attributes.set("objectified", objectifiedValue);
             attributes.set("objectifiedName", this.objectifiedName);
         }
         if (this.towards){

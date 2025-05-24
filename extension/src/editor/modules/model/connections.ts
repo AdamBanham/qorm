@@ -60,7 +60,7 @@ export class OrmConnection implements connection {
             }
           });
           labelRefs.bind(this, 'labels');
-          this.paraent = null;
+          this.parent = undefined;
           parentRefs.bind(this, 'parent');
           this.outgoing = [];
           outgoingRefs.bind(this, 'outgoing');
@@ -135,9 +135,11 @@ export class OrmConnection implements connection {
 
     buildAttributes(): Map<string, any> {
         const attributes = new Map<string, any>();
-        attributes.set("mandatory", this.mandatory);
+        if (this.mandatory !== undefined) {
+            attributes.set("mandatory", this.mandatory);
+        }
         attributes.set("role", this.role);
-        if (this.lastEdit) {
+        if (this.lastEdit !== undefined) {
             attributes.set("lastEdit", this.lastEdit);
         }
         attributes.set("waypoints", this.waypoints.map((i) => {

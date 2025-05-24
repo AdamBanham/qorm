@@ -285,8 +285,6 @@ export default  class VscodeMessageHandler {
             let element = this._elementRegistry.get(node.id);
             if (element) {
                 this._modeling.removeElements([element]);
-            } else {
-                console.error("Element not found: ", node.id);
             }
         });
     }
@@ -353,9 +351,17 @@ export default  class VscodeMessageHandler {
         return null;
     }
 
+    /**
+     * Handles the creation of the extra parts around fact elements.
+     * @param {Fact} element the current fact being created
+     * @param {Map<string, any>} attributes the attributes from document
+     */
     _handleCreationForFact(element:any, attributes:Map<string, any>) {
         element.factors = new Array(element.roles).fill(null);
         let factors = attributes.get('factors') || [null];
+        let factLabel = attributes.get('label') || false;
+        let derived = attributes.get('derived') || false;
+        let derivedLabel = attributes.get('derivedLabel') || undefined;
         
         factors.forEach((role: any, id: number) => {
             if (role === null) {
@@ -369,18 +375,15 @@ export default  class VscodeMessageHandler {
             this._modeling.connectToFact(element,entity, id);
         });
 
-        if (element.label) {
+        if (factLabel) {
             this._modeling.createLabelForFact(
-                element, element.label
+                element, factLabel
             );
             this._modeling.sendUpdate(...element.labels);
         }
 
-        if (element.derivedLabel){
-            this._modeling.makeDerivedLabel(
-                element, element.derivedLabel
-            );
-            this._modeling.sendUpdate(...element.labels);
+        if (derived){
+            this._modeling.makeDerivedLabel(element,derivedLabel);
         }
 
         if (element.uniqueness){
@@ -419,12 +422,21 @@ export default  class VscodeMessageHandler {
             }
         }
 
-        if (element.derived && !attributes.get('derived')) {
-            this._modeling.removeDerivedLabel(element);
-        }
-        if (!element.derived && attributes.get('derived')) {
-            this._modeling.makeDerivedLabel(element, attributes.get('derivedLabel'));
-        }
+        // if (!attributes.get('derived')) {
+        //     if (element.derived === false) {
+        //         console.warn("Removing derived label for: ", element.id);
+        //         this._modeling.flipDerivation(element);
+        //     }
+        // }
+        // if (attributes.get('derived') === true) {
+        //     let labelName = attributes.get('derivedLabel') || "...";
+        //     if (element.derived) {
+        //         this._modeling.changeDerivedLabel(labelName);
+        //     } else {
+        //         this._modeling.flipDerivation(element);
+        //         this._modeling.changeDerivedLabel(labelName);
+        //     }
+        // }
 
     }
 
@@ -487,8 +499,6 @@ export default  class VscodeMessageHandler {
                         ...docElement.attributes,
                         ...element.buildAttributes()
                     ]);
-                } else {
-                    console.error("Element not found: ", element.id);
                 }
             }
             if (isConnection(element)) {
@@ -504,8 +514,6 @@ export default  class VscodeMessageHandler {
                         ...element.buildAttributes()
                     ]);
                 } else {
-                    console.log("Connection not found: ", element.id);
-                    console.log("Adding connection to document: ", element);
                     this.addElementToDocument(element);
                 }
             }
