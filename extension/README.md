@@ -9,6 +9,7 @@ If you are after a more verbose and powerful tool to explore the full extent of 
 At this stage, we support the following components of the ORM language:
 - Entities
     - Referenced or unit-based referenced
+    - subtyping for entities
 - Value Entities
     - with a single name
 - Facts
