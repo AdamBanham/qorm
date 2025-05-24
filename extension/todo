@@ -13,6 +13,7 @@
 [] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering
+[] revisit file_format.orm and update to reflect current data model
 
 
 [X] actually write to file changes as they happen
