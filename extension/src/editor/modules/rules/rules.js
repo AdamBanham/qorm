@@ -37,6 +37,18 @@ export default class OrmRules extends RuleProvider{
         }
         return false;
     }
+
+    /**
+     * Checks whether the subtype connection is valid
+     * @param {context.source} source the source of the connection
+     * @param {context.target} target the target of the connection 
+     * @return {boolean} whether the subtyping is valid
+     */
+    checkSubtypeCreation(context) {
+        var src = context.source;
+        var tgt = context.target;
+        return isEntity(src) && isEntity(tgt);
+    }
         
     /**
      * Add the rules for valid and legal connections
@@ -50,6 +62,11 @@ export default class OrmRules extends RuleProvider{
             DEFAULT_PRIORITY,
             that.checkConnectionCreation
         );
+        this.addRule(
+            'subtype.create',
+            DEFAULT_PRIORITY,
+            that.checkSubtypeCreation
+        )
     }
 
     /**
