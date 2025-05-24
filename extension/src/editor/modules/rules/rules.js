@@ -1,7 +1,7 @@
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import Rules from 'diagram-js/lib/features/rules/Rules';
-import { isEntity, isFact } from '../model/util';
+import { isEntity, isExactlyEntity, isFact } from '../model/util';
 
 const DEFAULT_PRIORITY = 1000;
 
@@ -47,7 +47,14 @@ export default class OrmRules extends RuleProvider{
     checkSubtypeCreation(context) {
         var src = context.source;
         var tgt = context.target;
-        return isEntity(src) && isEntity(tgt);
+        // check if the src is already a subtype of the tgt
+        if (src.isSubtypeOf(tgt)){
+            return false;
+        }
+        if (isExactlyEntity(src) && isExactlyEntity(tgt)){
+            return isEntity(src) && isEntity(tgt) && src.id !== tgt.id;
+        }
+        return false;
     }
         
     /**
@@ -66,7 +73,7 @@ export default class OrmRules extends RuleProvider{
             'subtype.create',
             DEFAULT_PRIORITY,
             that.checkSubtypeCreation
-        )
+        );
     }
 
     /**

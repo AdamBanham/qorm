@@ -6,13 +6,14 @@ import  {
 import { ShapeLike, Connection } from "diagram-js/lib/model";
 import { unitHeight, fact,  Fact } from "../model/facts";
 import { Entity, ValueEntity, entity } from "../model/entities";
-import { isFact, isEntity, isConstraint, isExactlyEntity } from "../model/util";
+import { isFact, isEntity, isConstraint, isExactlyEntity, isSubtype } from "../model/util";
 import { constraint } from "../model/constraints";
   
 
 export default function ContextPadProvider(
         create, elementFactory, connect, contextPad, 
-        modeling, eventBus, registry, placementModule
+        modeling, eventBus, registry, placementModule,
+        subtyping
     ) {
         this._create = create;
         this._elementFactory = elementFactory;
@@ -21,6 +22,7 @@ export default function ContextPadProvider(
         this._eventBus = eventBus;
         this._registry = registry;
         this._placement = placementModule;
+        this._subtyping = subtyping;
         this._pad = contextPad;
         contextPad.registerProvider(this);
     }
@@ -34,6 +36,7 @@ export default function ContextPadProvider(
         'eventBus',
         'elementRegistry',
         'placementModule',
+        'ormSubtyping'
 
     ];
 
@@ -338,15 +341,20 @@ export default function ContextPadProvider(
         let onMandatory = "circle";
         let included = con.mandatory ? offMandatory : onMandatory;
 
-        options['mandatory'] = {
-            action : {
-                click: () => {that.makeMandatory(that, con);}
-            },
-            className: 'context-pad-mandatory',
-            html: '<div class="entry mdi-'+included +' mdi editor-hover"/>',
-            title: 'Flip Mandatory?',
-            group: 'edit'
-        };
+        if (isSubtype(con)){
+            // TODO: add the subtype connection options
+           
+        } else {
+             options['mandatory'] = {
+                action : {
+                    click: () => {that.makeMandatory(that, con);}
+                },
+                className: 'context-pad-mandatory',
+                html: '<div class="entry mdi-'+included +' mdi editor-hover"/>',
+                title: 'Flip Mandatory?',
+                group: 'edit'
+            };
+        }
 
         options['delete'] = {
             action: {
@@ -408,10 +416,17 @@ export default function ContextPadProvider(
         that._modeling.sendUpdate(entity);
     };
 
-    ContextPadProvider.prototype.addSubtyping = function(that, entity){
+    /**
+     * Triggers connection for subtyping for a given entity
+     * @param {ContextPadProvider} that 
+     * @param {object} event the triggering event
+     * @param {Entity} entity the source of the subtyping 
+     */
+    ContextPadProvider.prototype.addSubtyping = function(that, event, entity){
         // TODO: trigger connect for subtyping
-        console.log("triggering connection via subtyping")
-    }
+        console.log("triggering connection via subtyping");
+        that._subtyping.start(event, entity);
+    };
 
     /**
      * Creates the usable options for the given Entity type.
@@ -438,7 +453,7 @@ export default function ContextPadProvider(
                 click: () => {that.flipEntity(that, entity);},
             },
             className: 'context-pad-flip',
-            html: '<div class="entry mdi mdi-swap-vertical editor-hover"/>',
+            html: '<div class="entry mdi mdi-alpha-t-box-outline editor-hover"/>',
             title: 'Flip Type',
             group: 'edit'
         };
@@ -455,10 +470,10 @@ export default function ContextPadProvider(
             };
             options['subtype'] = {
                 action : {
-                    click: () => {that.addSubtyping(that, entity);}
+                    click: (event) => {that.addSubtyping(that, event, entity);}
                 },
                 className: 'context-pad-subtyping',
-                html: '<div class="entry mdi mdi-swap-horizontal editor-hover"/>',
+                html: '<div class="entry mdi mdi-alpha-s-box-outline editor-hover"/>',
                 title: 'Subtype of',
                 group: 'add'
             }

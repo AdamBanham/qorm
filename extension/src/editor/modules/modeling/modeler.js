@@ -3,11 +3,13 @@ import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 import { Connection } from 'diagram-js/lib/model';
+import { SUBTYPE_NAME } from '../model/subtypes';
 
 import { Fact, unitHeight, unitWidth } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
-import { isFact } from '../model/util';
+import { isFact, isSubtype } from '../model/util';
+import { OrmConnection } from '../model/connections';
 
 export default class OrmModelling extends Modeling {
 
@@ -64,9 +66,18 @@ export default class OrmModelling extends Modeling {
     }
 
     /**
-     * 
+     * Handles the attributes of the source and target of the connection
+     * to ensure that the data model is updated correctly.
+     * @param {OrmConnection} con the connection to layout
      */
     clearConnection(con){
+        if (isSubtype(con)){
+            // TODO: remove subtype connection
+            if (con.source && con.target){
+                con.source.removeSubtype(con.target);
+            }
+            return;
+        }
         var fact = con.target;
         var entity = con.source;
         fact.clearRole(entity,con.role);
@@ -272,6 +283,24 @@ export default class OrmModelling extends Modeling {
         this._eventBus.fire('shape.removed', {element: con});   
         this.clearConnection(con);
         super.removeConnection(con);
+    }
+
+    /**
+     * Creates a subtype relationship between two entities.
+     * @param {Entity} src 
+     * @param {Entity} tgt 
+     */
+    createSubtypeBetween(src, tgt){
+        let con = this.connect(src, tgt, {
+            type: SUBTYPE_NAME,
+            source: src,
+            target: tgt
+        });
+        src.addSubtype(tgt);
+        this.layoutConnection(con);
+        this.sendUpdates(con,src,tgt);
+        this.moveElements([con,src,tgt], {x:0,y:0});
+        return con;
     }
 
 }

@@ -61,12 +61,37 @@ export default class OrmLayouter extends BaseLayouter {
         }
     }
 
+    layoutConnection(connection, hints) {
+        switch (connection.type) {
+            case 'connection':
+                return this.handleEntityToFact(connection, hints);
+            default:
+                return this.defaultWithBends(connection, hints);
+        }
+    }
+
+    defaultWithBends(connection, hints) {
+        // has the connection been settled?
+        if (connection.target === undefined || connection.source === undefined) {
+            return super.layoutConnection(connection, hints);
+        }
+
+        let bends = connection.waypoints || [];
+        bends = bends.slice(1, -1);
+
+        return [
+            getMid(connection.source),
+            ...bends,
+            getMid(connection.target)
+        ];
+    }
+
     /**
      * 
      * @param {Connection} connection 
      * @param {*} hints 
      */
-    layoutConnection(connection, hints){
+    handleEntityToFact(connection, hints){
         hints = hints || {};
 
         let fact = connection.target;
@@ -165,6 +190,8 @@ export default class OrmLayouter extends BaseLayouter {
         }
         return waypoints;
     }
+
+
 }
 
 OrmLayouter.$inject = [

@@ -88,6 +88,10 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                             break;
                     }
                     break;
+                case 'ready':
+                    // Handle ready message
+                    updateWebview();
+                    break;
                 default:
                     console.warn(`Unknown message type: ${message.type}`);
             }

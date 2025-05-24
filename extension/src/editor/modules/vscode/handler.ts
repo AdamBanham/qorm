@@ -3,7 +3,7 @@ import DocuementParser from "./document";
 import { Document } from "./document";
 import { documentNode, DocumentEntity, DocumentFact, documentConnection } from "./document";
 import { isEqualSets } from "../utils/sets";
-import { isEntity, isFact } from "../model/util";
+import { isEntity, isExactlyEntity, isFact } from "../model/util";
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
@@ -52,8 +52,14 @@ export default  class VscodeMessageHandler {
         this._seenCons = new Set<any>();
         this.state = {
             status: "idle"
-        }
+        };
         this.currentDocument = new Document();
+
+        this._eventBus.on(['element.changed', 'shape.move'], (e:any) => {
+            if (this.state.status !== "working") {
+                this.updateElementsOnDocument([e.element]);
+            }
+        });
 
         this._eventBus.on('elements.changed', (e:any) => {
             if (this.state.status !== "working") {
@@ -302,6 +308,9 @@ export default  class VscodeMessageHandler {
                 }
             }
         }
+        // most connections are creasted when facts are included
+        // so the next step checks that existing connections have the 
+        // same attributes as the doc
         if (con){
             if (this._seenCons.has(con.id)){
                 console.warn("Connection already seen: ", attributes.get("id"));
@@ -321,6 +330,26 @@ export default  class VscodeMessageHandler {
             );
             return con;
         }
+        // handling for subtyping
+        else {
+            if ( isExactlyEntity(src) && isExactlyEntity(target) ){
+                let con = this._modeling.createSubtypeBetween(
+                    src,
+                    target
+                );
+                con.waypoints = attributes.get('waypoints');
+                this._seenCons.add(con.id);
+                this._modeling.layoutConnection(con);
+                    this._modeling.moveElements([con,con.source,con.target], 
+                        {x: 0, y: 0}
+                );
+                return con;
+            }
+        }
+        console.warn(
+            "[vscode.handler] Unable to make new connection for :: ",
+             attributes.get('id')
+        );
         return null;
     }
 

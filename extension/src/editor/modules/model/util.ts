@@ -45,9 +45,9 @@ export function isEntity(shape: ShapeLike): shape is Entity {
  */
 export function isSubtype(connection: ConnectionLike): connection is OrmSubtypeConnection {
     if (connection.type){
-        return connection.type === SUBTYPE_NAME
+        return connection.type === SUBTYPE_NAME;
     }
-    return false
+    return false;
 }
 
 /**

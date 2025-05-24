@@ -55,7 +55,9 @@ export class Entity implements entity {
     children: Shape[];
     attachers: Shape[];
     referenceMode: "reference" | "unit-based" | "value";
+    subtypeOf: string[];
     meta?: string | undefined;
+    
     
     constructor(name: string, ref: string, width: number, height: number, x: number, y: number) {
         this.id = "entity-" + getNextIdentifier();
@@ -74,6 +76,7 @@ export class Entity implements entity {
         this.attachers = [];
         this.referenceMode = "reference";
         this.meta = " ";
+        this.subtypeOf = [];
     }
 
     flipType() {
@@ -111,6 +114,31 @@ export class Entity implements entity {
      */
     setMetaString(meta: string){
         this.meta = meta;
+    }
+
+    /**
+     * adds a subtype to the entity.
+     * @param subtyp the subtyp to add
+     */
+    addSubtype(subtyp: Entity){
+        this.subtypeOf?.push(subtyp.id);
+    }
+
+    /**
+     * removes a subtype from the entity.
+     * @param subtype the subtype to remove
+     */
+    removeSubtype(subtype: Entity){
+        this.subtypeOf = this.subtypeOf?.filter((id) => id !== subtype.id);
+    }
+
+    /**
+     * Checks if the entity is subtyping the given entity.
+     * @param entity the entity to check against
+     * @returns true if the entity is a subtype, false otherwise
+     */
+    isSubtypeOf(entity: Entity): boolean {
+        return this.subtypeOf.includes(entity.id);
     }
 
     update() {

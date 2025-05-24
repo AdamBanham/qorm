@@ -4,6 +4,7 @@ import { createEntity, entity} from "../model/entities";
 import { createFact, fact } from "../model/facts";
 import { createConstraint } from "../model/constraints";
 import { createConnection } from "../model/connections";
+import { SUBTYPE_NAME, createSubtype } from "../model/subtypes";
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 
@@ -60,6 +61,13 @@ export default class OrmElementFactory extends ElementFactory{
         if (type === 'connection'){
             attrs['type'] = 'connection';
             let el = createConnection(attrs.role, attrs.mandatory);
+            el.setByAttributes(attrs);
+            this._eventBus.fire('factory.create', { element: el });
+            return el; 
+        }
+        if (type === SUBTYPE_NAME){
+            attrs['type'] = SUBTYPE_NAME;
+            let el = createSubtype();
             el.setByAttributes(attrs);
             this._eventBus.fire('factory.create', { element: el });
             return el; 

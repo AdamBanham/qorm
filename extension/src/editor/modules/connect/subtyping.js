@@ -11,8 +11,9 @@ import {
 import { isEntity } from '../model/util';
 
 const MARKER_OK = 'connect-ok',
-      MARKER_NOT_OK = 'connect-not-ok',
-      EMIT_NAME = "subtyping";
+      MARKER_NOT_OK = 'connect-not-ok';
+
+export const EMIT_NAME = "subtyping";
 
 export default function OrmSubtyping(
     eventBus, dragging, modeling, rules, canvas) {
@@ -38,7 +39,7 @@ export default function OrmSubtyping(
       if (!start) {
         return;
       }
-      removeMarkers(start);
+      recuriseRemoveMarkers(start);
       if (canExecute) {
         canvas.addMarker(start, MARKER_OK);
       } else {
@@ -153,7 +154,7 @@ export default function OrmSubtyping(
         return;
       }
       if (canConnect(src, tgt)){
-        let con = modeling.connectToFact(fact, entity, role);
+        let con = modeling.createSubtypeBetween(src, tgt);
         recuriseRemoveMarkers(con);
       } 
       
@@ -191,21 +192,10 @@ export default function OrmSubtyping(
     };
   }
   
-  OrmConnect.$inject = [
+  OrmSubtyping.$inject = [
     'eventBus',
     'dragging',
     'modeling',
     'rules',
     'canvas'
   ];
-  
-  
-  // helpers //////////
-  
-  export function isReverse(context) {
-    var hover = context.hover,
-        source = context.source,
-        target = context.target;
-  
-    return hover && source && hover === source && source !== target;
-  }

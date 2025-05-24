@@ -7,7 +7,7 @@ import {
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import EventBus from "diagram-js/lib/core/EventBus";
 
-import { isFact, isEntity, isExactlyEntity } from "../model/util";
+import { isFact, isEntity, isExactlyEntity, isSubtype } from "../model/util";
 import Modeling from "../modeling/modeler";
 
 const ZoomPunch = 0.25;
@@ -28,7 +28,10 @@ export default class OrmShortcuts {
      * @param {*} mouse
      * @param {*} create
      */
-    constructor(eventbus, keyboard, selection, elementFactory, modeling, canvas, mouse, create, connect){
+    constructor(
+        eventbus, keyboard, selection, elementFactory, 
+        modeling, canvas, mouse, create, 
+        connect, subtyping){
         this._selection = selection;
         this._modeling = modeling;
         this._canvas = canvas;
@@ -37,6 +40,7 @@ export default class OrmShortcuts {
         this._factory = elementFactory;
         this._mouse = mouse;
         this._connect = connect;
+        this._csubtyping = subtyping;
         var that = this;
 
         keyboard.addListener((context) =>{
@@ -80,6 +84,9 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerTowards(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerSubtypeConnect(that, context);
         });
     }
 
@@ -274,7 +281,7 @@ export default class OrmShortcuts {
 
     /**
      * Will flip the type of an entity on the following keydowns:
-     * 's'
+     * 't', 'T'
      * @param {OrmShortcuts} that 
      * @param {*} context 
      */
@@ -287,7 +294,7 @@ export default class OrmShortcuts {
                 return;
             }
             if (isEntity(select)){
-                if (isKey(['s', 'S'], event)){
+                if (isKey(['t', 'T'], event)){
                     event.stopPropagation();
                     that._modeling.flipEntityType(select);
                 }
@@ -410,6 +417,29 @@ export default class OrmShortcuts {
             }
         }
     }
+
+    /**
+     * Triggers subtyping on a selected entity on the following keydowns:
+     * 's', 'S'
+     * @param {OrmShortcuts} that 
+     * @param {*} context 
+     */
+    triggerSubtypeConnect(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            let select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isExactlyEntity(select)){
+                if (isKey(['s', 'S'], event)){
+                    const other = that._mouse.getLastMoveEvent();
+                    that._csubtyping.start(other, select);
+                }
+            }
+        }
+    }
 }
 
 OrmShortcuts.$inject = [
@@ -421,5 +451,6 @@ OrmShortcuts.$inject = [
     'canvas',
     'mouse',
     'create',
-    'ormConnect'
+    'ormConnect',
+    'ormSubtyping'
 ];

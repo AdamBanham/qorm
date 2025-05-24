@@ -14,8 +14,8 @@ import {
 
 import { ValueEntity, Entity, unitWidth as entityWidth } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
-import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference } from '../model/util';
-
+import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype } from '../model/util';
+import { SUBTYPE_NAME } from '../model/subtypes';
 
 const BORDER_COLOUR = "var(--render-border-colour)";
 const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
@@ -27,7 +27,8 @@ const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
 const MANDATORY_ROLE_COLOUR = "var(--render-mandatory-role-fill)";
 const MANDATORY_ROLE_STROKE = "var(--render-madatory-role-stroke)";
 const SUPPORTED_TYPES = [
-    'entity', 'value', 'fact', 'connection', 'label', 'constraint'
+    'entity', 'value', 'fact', 'connection', 'label', 'constraint',
+    SUBTYPE_NAME
 ];
 var RENDER_PRIORITY = 1500;
 const DEBUG = true;
@@ -68,6 +69,9 @@ export default class TSRenderer extends  BaseRenderer {
                 attrs = context.attrs;
 
             if (self.canRender(element)) {
+                if ( isSubtype(element)){
+                    return self.drawSubtypeConnection(visuals, element, attrs);
+                }
                 return self.drawConnection(visuals, element, attrs);
             } else {
                 theconection(visuals, element, attrs);
@@ -76,6 +80,10 @@ export default class TSRenderer extends  BaseRenderer {
 
         this.CONNECTION_STYLE = styles.style(
             { strokeWidth: 3, stroke: ARC_STROKE_COLOUR, strokeLinecap: 'round',
+                strokeLinejoin: 'round', fill: 'none'}
+        );
+        this.SUBTYPE_STYLE = styles.style(
+            { strokeWidth: 5, stroke: MANDATORY_ROLE_STROKE, strokeLinecap: 'round',
                 strokeLinejoin: 'round', fill: 'none'}
         );
 
@@ -103,6 +111,24 @@ export default class TSRenderer extends  BaseRenderer {
             fill: "red"
         });
         svgAppend(marker, mandatory);
+
+        let arrowMarker = svgCreate("marker", {
+            id: "arrowhead",
+            refX: 32.5,
+            refY: 5,
+            markerWidth: 4,
+            markerHeight: 4,
+            orient: 'auto-start-reverse',
+            viewBox: "0 0 10 10"
+        });
+
+        let arrowPath = svgCreate("path", {
+            d: "M 0 0 L 10 5 L 0 10 z",
+            fill: MANDATORY_ROLE_STROKE
+        });
+
+        svgAppend(arrowMarker, arrowPath);
+        svgAppend(defs, arrowMarker);
 
         svgAppend(defs, marker);
     }
@@ -476,6 +502,25 @@ export default class TSRenderer extends  BaseRenderer {
         return this._drawSimpleConnection(
             visuals, connection, attrs
         );
+    };
+
+    drawSubtypeConnection(visuals, connection, attrs) {
+        let waypoints = Array.from(connection.waypoints);
+        let group = svgCreate("g", {});
+        if (waypoints.length >= 2){
+            var line = createLine(
+                waypoints, assign({
+                    id: connection.id
+                }, 
+                this.SUBTYPE_STYLE, attrs || {})
+            );    
+            svgAttr(line, {
+                'marker-end': 'url(#arrowhead)'
+            });
+            svgAppend(group, line);
+        }
+        svgAppend(visuals, group);
+        return visuals;
     };
 }
 

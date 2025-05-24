@@ -71,10 +71,11 @@ export class OrmConnection implements connection {
           this.waypoints = new Array<Point>();
         // customware
         this.id = "connection-" + getNextIdentifier();
-        this.role = role
+        this.role = role;
         this.mandatory = mandatory;
         this.touched = false;
         this.lastEdit = null;
+        this.waypoints = [];
     }
     
     setByAttributes(attributes: any){

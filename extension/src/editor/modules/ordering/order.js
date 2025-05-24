@@ -1,5 +1,5 @@
 import OrderingProvider from "diagram-js/lib/features/ordering/OrderingProvider.js"
-import  { isConnection } from "diagram-js/lib/util/ModelUtil";
+import { isConnection} from "diagram-js/lib/util/ModelUtil";
 
 class OrmOrderingProvider extends OrderingProvider{
 
