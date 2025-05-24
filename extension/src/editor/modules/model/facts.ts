@@ -273,6 +273,14 @@ export class Fact implements fact {
     }
 
     /**
+     * Checks whether the fact type is verbalised towards a direction.
+     * @returns {boolean} whether the fact type is directed
+     */
+    isTowards(): boolean {
+        return this.towards !== undefined;
+    }
+
+    /**
      * Removes the direction of verbialization.
      */
     unsetTowards(): void {  

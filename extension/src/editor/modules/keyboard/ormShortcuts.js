@@ -31,7 +31,7 @@ export default class OrmShortcuts {
     constructor(
         eventbus, keyboard, selection, elementFactory, 
         modeling, canvas, mouse, create, 
-        connect, subtyping){
+        connect, subtyping, placement){
         this._selection = selection;
         this._modeling = modeling;
         this._canvas = canvas;
@@ -41,6 +41,7 @@ export default class OrmShortcuts {
         this._mouse = mouse;
         this._connect = connect;
         this._csubtyping = subtyping;
+        this._placement = placement;
         var that = this;
 
         keyboard.addListener((context) =>{
@@ -87,6 +88,9 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerSubtypeConnect(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerConnectFactOnEntity(that, context);
         });
     }
 
@@ -409,7 +413,7 @@ export default class OrmShortcuts {
                     event.stopPropagation();
                     select.setTowards('right');
                     that._modeling.sendUpdate(select);
-                } else if (isKey(['u', 'U'], event)){
+                } else if (isKey(['n', 'N'], event)){
                     event.stopPropagation();
                     select.unsetTowards();
                     that._modeling.sendUpdate(select);
@@ -440,6 +444,37 @@ export default class OrmShortcuts {
             }
         }
     }
+
+    triggerConnectFactOnEntity(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            let select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isEntity(select)){
+                if (isKey(['f', 'F'], event)){
+                    var fact = Object.assign(
+                    that._factory.createDummyAttributesForFacts(),
+                        { x: select.x+select.width+ 100, 
+                        y: select.y+select.height/2,}
+                    );
+                    fact = that._modeling.createShape(
+                        fact, {x: fact.x, y:fact.y}, 
+                        select.parent
+                    );
+                    // find a free position
+                    let pos = that._placement.place(select, fact);
+                    fact.x = pos.x;
+                    fact.y = pos.y;
+                    // add entity as a role to the fact
+                    let con = that._modeling.connectToFact(fact, select, 0);
+                    that._modeling.sendUpdates(con,fact,select);
+                }
+            }
+        }
+    }
 }
 
 OrmShortcuts.$inject = [
@@ -452,5 +487,6 @@ OrmShortcuts.$inject = [
     'mouse',
     'create',
     'ormConnect',
-    'ormSubtyping'
+    'ormSubtyping',
+    'placementModule'
 ];

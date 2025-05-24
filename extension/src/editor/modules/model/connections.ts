@@ -137,7 +137,9 @@ export class OrmConnection implements connection {
         const attributes = new Map<string, any>();
         attributes.set("mandatory", this.mandatory);
         attributes.set("role", this.role);
-        attributes.set("lastEdit", this.lastEdit);
+        if (this.lastEdit) {
+            attributes.set("lastEdit", this.lastEdit);
+        }
         attributes.set("waypoints", this.waypoints.map((i) => {
             return {x: Math.fround(i.x), y: Math.fround(i.y)};
         }));

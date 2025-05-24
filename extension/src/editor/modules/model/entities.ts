@@ -141,6 +141,14 @@ export class Entity implements entity {
         return this.subtypeOf.includes(entity.id);
     }
 
+    /**
+     * Checks if the entity is subtyping any other entity.
+     * @returns true if the entity is subtyping, false otherwise
+     */
+    isSubtyping(): boolean {
+        return this.subtypeOf.length > 0;
+    }
+
     update() {
         
     }

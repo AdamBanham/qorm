@@ -8,7 +8,8 @@
 [X] add unit-based reference mode
 [X] keyboard support
 [] "general" reference modes
-[-] add subtpying (a connection between entities)
+[X] add subtpying (a connection between entities)
+[] change all context pad icons to letters
 [] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering

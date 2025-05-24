@@ -174,7 +174,7 @@ export default function ContextPadProvider(
 
     /**
      * Builds the current context options from the state of the fact
-     * @param {fact} fact 
+     * @param {Fact} fact 
      * @returns the options 
      */
     ContextPadProvider.prototype.getFactOptions = function(fact){
@@ -212,8 +212,8 @@ export default function ContextPadProvider(
                     click: () => {that.derived(that, fact);},
                 },
                 className: 'context-pad-derived',
-                html: '<div class="entry mdi mdi-star-off-outline editor-hover"/>',
-                title: 'Flip Derived',
+                html: '<div class="entry mdi mdi-alpha-d-box editor-hover"/>',
+                title: 'Remove Derivation',
                 group: '2-edit'
             };
         } else {
@@ -222,41 +222,46 @@ export default function ContextPadProvider(
                     click: () => {that.derived(that, fact);},
                 },
                 className: 'context-pad-derived',
-                html: '<div class="entry mdi mdi-star-outline editor-hover"/>',
-                title: 'Flip Derived',
+                html: '<div class="entry mdi mdi-alpha-d-box-outline editor-hover"/>',
+                title: 'Add Derivation',
                 group: '2-edit'
             };
         }
 
         if (fact.roles > 1){
-            options['towards-left'] = {
-                action: {
-                    click: () => {that.towards(that, fact, 'left');},
-                },
-                className: 'context-pad-towards-left',
-                html: '<div class="entry mdi mdi-arrow-left-thick editor-hover"/>',
-                title: 'Towards Left',
-                group: '2-edit'
-            };
 
-            options['towards-right'] = {
-                action: {
-                    click: () => {that.towards(that, fact, 'right');},
-                },
-                className: 'context-pad-towards-right',
-                html: '<div class="entry mdi mdi-arrow-right-thick editor-hover"/>',
-                title: 'Towards Right',
-                group: '2-edit'
-            };
+            if (fact.towards !== 'left'){
+                options['towards-left'] = {
+                    action: {
+                        click: () => {that.towards(that, fact, 'left');},
+                    },
+                    className: 'context-pad-towards-left',
+                    html: '<div class="entry mdi mdi-alpha-l-box-outline editor-hover"/>',
+                    title: 'Towards Left',
+                    group: '2-edit'
+                };
+            }
+
+            if (fact.towards !== 'right'){
+                options['towards-right'] = {
+                    action: {
+                        click: () => {that.towards(that, fact, 'right');},
+                    },
+                    className: 'context-pad-towards-right',
+                    html: '<div class="entry mdi mdi-alpha-r-box-outline editor-hover"/>',
+                    title: 'Towards Right',
+                    group: '2-edit'
+                };
+            }
         }
 
-        if (fact.towards) {
+        if (fact.isTowards()) {
             options['unset-towards'] = {
                 action: {
                     click: () => {that.towards(that, fact);},
                 },
                 className: 'context-pad-towards-none',
-                html: '<div class="entry mdi mdi-arrow-left-right editor-hover"/>',
+                html: '<div class="entry mdi mdi-alpha-n-box-outline editor-hover"/>',
                 title: 'No Direction',
                 group: '2-edit'
             };
@@ -267,7 +272,7 @@ export default function ContextPadProvider(
                 click: (event) => {that.createConstraint(that, fact, event);},
             },
             className: 'context-pad-delete',
-            html: '<div class="entry mdi-minus mdi editor-hover"/>',
+            html: '<div class="entry mdi-alpha-c-box-outline mdi editor-hover"/>',
             title: 'Add Constraint',
             group: '2-edit'
         };
@@ -278,7 +283,7 @@ export default function ContextPadProvider(
                     click: () => {that.objectifyFact(that, fact);},
                 },
                 className: 'context-pad-objectify',
-                html: '<div class="entry mdi mdi-arrow-up-circle-outline editor-hover"/>',
+                html: '<div class="entry mdi mdi-alpha-o-box-outline editor-hover"/>',
                 title: 'Objectify',
                 group: '2-edit'
             };
@@ -288,7 +293,7 @@ export default function ContextPadProvider(
                     click: () => {that.deobjectifyFact(that, fact);},
                 },
                 className: 'context-pad-objectify',
-                html: '<div class="entry mdi mdi-arrow-down-circle-outline editor-hover"/>',
+                html: '<div class="entry mdi mdi-alpha-o-box editor-hover"/>',
                 title: 'De-Objectify',
                 group: '2-edit'
             };
@@ -337,9 +342,9 @@ export default function ContextPadProvider(
         var that = this;
         var options = {};
 
-        let offMandatory = "circle-off-outline";
-        let onMandatory = "circle";
-        let included = con.mandatory ? offMandatory : onMandatory;
+        let offMandatory = "alpha-m-box-outline";
+        let onMandatory = "alpha-m-box";
+        let included = con.mandatory ? onMandatory : offMandatory;
 
         if (isSubtype(con)){
             // TODO: add the subtype connection options
@@ -443,28 +448,31 @@ export default function ContextPadProvider(
                 dragstart: (event,) => {that.startConnect(that,entity, event,);}
             },
             className: 'context-pad-contect',
-            html: '<div class="entry mdi-arrow-right-thick mdi editor-hover"/>',
+            html: '<div class="entry mdi-alpha-c-box-outline mdi editor-hover"/>',
             title: 'Connect',
             group: 'join'
         };
 
-        options['flip-entity-type'] = {
-            action: {
-                click: () => {that.flipEntity(that, entity);},
-            },
-            className: 'context-pad-flip',
-            html: '<div class="entry mdi mdi-alpha-t-box-outline editor-hover"/>',
-            title: 'Flip Type',
-            group: 'edit'
-        };
+        if (!entity.isSubtyping()){
+            options['flip-entity-type'] = {
+                action: {
+                    click: () => {that.flipEntity(that, entity);},
+                },
+                className: 'context-pad-flip',
+                html: '<div class="entry mdi mdi-alpha-t-box-outline editor-hover"/>',
+                title: 'Flip Type',
+                group: 'edit'
+            };
+        }
 
         if (isExactlyEntity(entity)){
+            
             options['flip-reference-type'] = {
                 action: {
                     click: () => {that.flipReferenceMode(that, entity);},
                 },
                 className: 'context-pad-flip-ref',
-                html: '<div class="entry mdi mdi-swap-horizontal editor-hover"/>',
+                html: '<div class="entry mdi mdi-alpha-r-box-outline editor-hover"/>',
                 title: 'Flip Label Reference',
                 group: 'edit'
             };
@@ -475,8 +483,8 @@ export default function ContextPadProvider(
                 className: 'context-pad-subtyping',
                 html: '<div class="entry mdi mdi-alpha-s-box-outline editor-hover"/>',
                 title: 'Subtype of',
-                group: 'add'
-            }
+                group: 'join'
+            };
         }
         
         options['create-fact'] = {
