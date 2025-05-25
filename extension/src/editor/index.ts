@@ -35,6 +35,7 @@ import customBendpoints from "./modules/bendpoints";
 import ormConstraints from "./modules/constraints";
 import ormKeyboard from "./modules/keyboard";
 import ormVscodeHandler from "./modules/vscode";
+import ormDragging from "./modules/dragging";
 
 export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
 
@@ -77,7 +78,8 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         customBendpoints,
         ormConstraints,
         ormKeyboard,
-        ormVscodeHandler
+        ormVscodeHandler,
+        ormDragging
     ];
 
     var diagram =  new Diagram({

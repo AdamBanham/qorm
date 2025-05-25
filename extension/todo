@@ -10,6 +10,7 @@
 [] "general" reference modes
 [X] add subtpying (a connection between entities)
 [X] change all context pad icons to letters
+[] link save button on palette to vscode api
 [] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering
@@ -26,6 +27,7 @@
 [X] add validation about what comes from the file updates
 [X] handle updates gracefully
 [X] load file content as first step on webview launch
+[ ] make file format compatible with norma
 [] add verb conventions to bottom of html?
 
 
@@ -40,3 +42,7 @@ Bugfixes
 [X] connections not connecting with facts, layout may not be considering last edit correctly
 [X] document parse error, after an inital document is loaded and a new save trigger occurs; error in canvas finding the same entity.
 [X] bug with the fact labels, trigger derived without label, labels wont change
+[X] bugfix, element.out on dragging not progatting on default priority 
+[ ] labels on facts are not reactive; create derivation label; change base label content; no change
+[ ] positions of elements seem to change when reading in a document (only one or two arent or are offset)
+

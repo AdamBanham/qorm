@@ -429,7 +429,6 @@ export default function ContextPadProvider(
      */
     ContextPadProvider.prototype.addSubtyping = function(that, event, entity){
         // TODO: trigger connect for subtyping
-        console.log("triggering connection via subtyping");
         that._subtyping.start(event, entity);
     };
 
