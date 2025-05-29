@@ -4,10 +4,33 @@ const yaml = require('js-yaml');
 export interface documentNode {
     id: string;
     attributes: Map<string, any>;
+    validate: () => boolean;
+    requires: () => string;
 }
 
-export interface documentConnection extends documentNode {
+export class DocumentConnection implements documentNode {
+    id: string;
+    attributes: Map<string, any>;
 
+    constructor(id: string, attributes?: Map<string, any>) {
+        this.id = id;
+        this.attributes = new Map<string, any>();
+        if (attributes) {
+            attributes.forEach((value, key) => {
+                this.attributes.set(key, value);
+            });
+        }
+    } 
+
+    validate() {
+        // todo
+        return true
+    }
+
+    requires() {
+        // todo
+        return "id,"
+    }
 }
 
 export class DocumentFact implements documentNode {
@@ -85,7 +108,7 @@ export class DocumentEntity implements documentNode{
 export interface document {
     elements:Map<string, DocumentEntity>;
     facts: Map<string, DocumentFact>;
-    connections: Map<string, documentConnection>;
+    connections: Map<string, DocumentConnection>;
     name: string;
     type: "ORM";
 }
@@ -93,7 +116,7 @@ export interface document {
 export class Document implements document{
     elements: Map<string, DocumentEntity>;
     facts: Map<string, DocumentFact>;
-    connections: Map<string, documentConnection>;
+    connections: Map<string, DocumentConnection>;
     name: string;
     type: "ORM";
     
@@ -101,7 +124,7 @@ export class Document implements document{
     constructor() {
         this.elements = new Map<string, DocumentEntity>();
         this.facts = new Map<string, DocumentFact>();
-        this.connections = new Map<string, documentConnection>();
+        this.connections = new Map<string, DocumentConnection>();
         this.name = "";
         this.type = "ORM";
     }
@@ -126,15 +149,15 @@ export class Document implements document{
         this.facts.delete(node.id);
     }
 
-    public addConnection(node: documentConnection) {
+    public addConnection(node: DocumentConnection) {
         this.connections.set(node.id, node);
     }
 
-    public removeConnection(node: documentConnection) {
+    public removeConnection(node: DocumentConnection) {
         this.connections.delete(node.id);
     }
 
-    public getNodeById(id: string): DocumentEntity | documentConnection | DocumentFact | undefined {
+    public getNodeById(id: string): DocumentEntity | DocumentConnection | DocumentFact | undefined {
         return this.elements.get(id) || this.connections.get(id) || this.facts.get(id);
     }
 
@@ -144,7 +167,7 @@ export class Document implements document{
         this.facts.delete(id);
     }
 
-    public findConnectionBetween(src:string, tgt:string, role:number): documentConnection | undefined{
+    public findConnectionBetween(src:string, tgt:string, role:number): DocumentConnection | undefined{
         let ret;
         for(let con of this.connections.values()){
             if (con.attributes.get('source') == src &&
@@ -264,14 +287,25 @@ export default class DocumentParser {
             // Parse connections
             if (system.connections) {
                 for(let connection of system.connections){
-                    const documentConnection: documentConnection = {
-                        id: connection.id,
-                        attributes: new Map<string, string>(),
-                    };
+                    let attributes = new Map<string, any>();
                     for (const key in connection) {
-                        documentConnection.attributes.set(key, connection[key]);
+                        attributes.set(key, connection[key]);
                     }
-                    parsedDocument.addConnection(documentConnection);
+                    const documentConnection = new DocumentConnection(
+                        connection.id,
+                        attributes,
+                    );
+                    if (documentConnection.validate()){
+                        parsedDocument.addConnection(documentConnection);
+                    } else {
+                        console.warn("Invalid fact:", connection);
+                        throw new Error("Invalid fact :: " 
+                            + connection.id
+                            + " requires: "
+                            + documentConnection.requires()
+                        );
+                    }
+                    
                 }
             }
 

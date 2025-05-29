@@ -1,7 +1,7 @@
 
 import DocuementParser from "./document";
 import { Document } from "./document";
-import { documentNode, DocumentEntity, DocumentFact, documentConnection } from "./document";
+import { documentNode, DocumentEntity, DocumentFact, DocumentConnection } from "./document";
 import { isEqualSets } from "../utils/sets";
 import { isEntity, isExactlyEntity, isFact } from "../model/util";
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
@@ -11,9 +11,9 @@ import { transformToViewbox } from "../utils/canvasUtils";
 import VscodeMessager from "./messager";
 
 interface differences {
-    changes: Array<DocumentEntity | DocumentFact | documentConnection>;
-    removals: Array<DocumentEntity | DocumentFact | documentConnection>;
-    additions: Array<DocumentEntity | DocumentFact | documentConnection>;
+    changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
+    removals: Array<DocumentEntity | DocumentFact | DocumentConnection>;
+    additions: Array<DocumentEntity | DocumentFact | DocumentConnection>;
 }
 
 interface handlerState {
@@ -139,9 +139,9 @@ export default  class VscodeMessageHandler {
     }
 
     _findChangedElements(newDoc: Document): differences {
-        const changedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
-        const removedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
-        const addedNodes = new Array<DocumentEntity | DocumentFact | documentConnection>();
+        const changedNodes = new Array<DocumentEntity | DocumentFact | DocumentConnection>();
+        const removedNodes = new Array<DocumentEntity | DocumentFact | DocumentConnection>();
+        const addedNodes = new Array<DocumentEntity | DocumentFact | DocumentConnection>();
         const oldDoc = this.oldDocuments.get(newDoc.name) || new Document();
 
         // Compare elements
@@ -271,6 +271,8 @@ export default  class VscodeMessageHandler {
 
         diff.changes.forEach((node) => {
             let element = this._elementRegistry.get(node.id);
+            console.log("diff-element ::", element)
+            console.log("diff-attributes ::", node.attributes)
             element = Object.assign(
                 element,
                 Object.fromEntries(node.attributes)
@@ -550,10 +552,10 @@ export default  class VscodeMessageHandler {
                 return;
             }
             let attributes = element.buildAttributes();
-            this.currentDocument.addConnection({
-                id: id,
-                attributes: attributes
-            });
+            this.currentDocument.addConnection(new DocumentConnection(
+                id,
+                attributes
+            ));
         }
     }
 
