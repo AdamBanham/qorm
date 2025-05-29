@@ -28,10 +28,15 @@
 [X] handle updates gracefully
 [X] load file content as first step on webview launch
 [ ] make file format compatible with norma
+    [ ] understand norma xml files for types
+    [ ] entities xml 
+    [ ] fact xml 
+    [ ] connections? 
 [] add verb conventions to bottom of html?
 
 
 Bugfixes
+[X] parse error on connection differences
 [X] deleting a connection does not clear the role on the fact.
 [X] svg export: direction of verbilisation is not coloured.
 [X] deleting a fact does not remove the constraints
