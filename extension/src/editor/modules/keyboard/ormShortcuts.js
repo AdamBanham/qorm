@@ -92,6 +92,9 @@ export default class OrmShortcuts {
         keyboard.addListener((context) => {
             that.triggerConnectFactOnEntity(that, context);
         });
+        keyboard.addListener((context) => {
+            that.triggerKeyboardHelpMenu(that, context);
+        });
     }
 
     /**
@@ -472,6 +475,22 @@ export default class OrmShortcuts {
                     let con = that._modeling.connectToFact(fact, select, 0);
                     that._modeling.sendUpdates(con,fact,select);
                 }
+            }
+        }
+    }
+
+    /**
+     * Toggles the keyboard help menu on the following keydowns:
+     * 'ctrl + k', 'ctrl + K'
+     * @param {*} that 
+     * @param {*} context 
+     */
+    triggerKeyboardHelpMenu(that, context){
+        const event = context.keyEvent;
+        if (event.ctrlKey){
+            if (isKey(['k', 'K'], event)){
+                that._eventbus.fire('keyboard.controls.toggle');
+                event.stopPropagation();
             }
         }
     }
