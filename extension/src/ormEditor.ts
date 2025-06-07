@@ -141,6 +141,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                 <link href="${djsStyles}" rel="stylesheet" />
                 <link href="${mdiStyles}" rel="stylesheet" />
                 <link href="${renderStyles}" rel="stylesheet" />
+                <meta http-equiv="Content-Security-Policy" content="media-src 'self' script-src 'self' default-src 'self';">
                 <title>qORM - Editor</title>
             </head>
             <body>
