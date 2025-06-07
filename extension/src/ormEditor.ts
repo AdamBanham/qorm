@@ -68,11 +68,23 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                     isUpdatingDocument = true; // Suppress onDidChangeTextDocument temporarily
                     updater =  updater.then(
                     () => {
-                        return this.updateDocumentContent(document, message.content)
+                        return this.updateDocumentContent(document, message.content);
                     }).then(() => {
                         isUpdatingDocument = false; // Re-enable after update
                     }).catch(err => {
                         console.error('Error updating document:', err);
+                        isUpdatingDocument = false; // Re-enable even on error
+                    });
+                    break;
+                case 'vscode.save':
+                    // Handle save message
+                    isUpdatingDocument = true; // Suppress onDidChangeTextDocument temporarily
+                    updater = updater.then(() => {
+                        return document.save();
+                    }).then(() => {
+                        isUpdatingDocument = false; // Re-enable after save
+                    }).catch(err => {
+                        console.error('Error saving document:', err);
                         isUpdatingDocument = false; // Re-enable even on error
                     });
                     break;

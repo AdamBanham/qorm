@@ -1,8 +1,8 @@
 
 export interface vsCodeMesage {
     type: string;
-    alert: string;
-    message: string;
+    alert?: string;
+    message?: string;
 }
 
 const EXT_STUB = "qORMa Editor\n";
@@ -57,6 +57,11 @@ export default class VscodeMessager {
         });
     };
 
+    sendDocumentSave() {
+        this.sendMessage({
+            type: "vscode.save",
+        });
+    }
 
 }
 

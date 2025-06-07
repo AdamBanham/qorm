@@ -2,7 +2,7 @@ import SvgExporter from "../exporters/svgExporter";
 
 export default function ExamplePaletteProvider(
     create, elementFactory, lassoTool, palette, connect, registry,
-    modeling, canvas, eventBus) {
+    modeling, canvas, eventBus, vscodeMessager) {
     this._create = create;
     this._elementFactory = elementFactory;
     this._lassoTool = lassoTool;
@@ -12,6 +12,7 @@ export default function ExamplePaletteProvider(
     this._modeling = modeling;
     this._canvas = canvas;
     this._bus = eventBus;
+    this._vscodeMessager = vscodeMessager;
   
     palette.registerProvider(this);
   }
@@ -26,6 +27,7 @@ export default function ExamplePaletteProvider(
     'modeling',
     'canvas',
     'eventBus',
+    'vscodeMessager'
   ];
   
   
@@ -36,7 +38,8 @@ export default function ExamplePaletteProvider(
         registry = this._registry,
         modeling = this._modeling,
         canvas = this._canvas,
-        bus = this._bus;
+        bus = this._bus,
+        vscodeMessager = this._vscodeMessager;
   
     return {
       'lasso-tool': {
@@ -107,7 +110,7 @@ export default function ExamplePaletteProvider(
         title: 'Save Schema',
         action: {
           click: function(event) {
-            console.log("save schema");
+            vscodeMessager.sendDocumentSave();
           }
         }
       },
