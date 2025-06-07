@@ -7,17 +7,19 @@
 [X] add derivable flag
 [X] add unit-based reference mode
 [X] keyboard support
-[] "general" reference modes
+[] "general" reference modes (probably not)
 [X] add subtpying (a connection between entities)
 [X] change all context pad icons to letters
 [] link save button on palette to vscode api
-[] add keyboard shortcut menu
+[X] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering
 [] revisit file_format.orm and update to reflect current data model
 
 
 [X] actually write to file changes as they happen
+[X] added a new command create a new ORM model
+[X] added a debug version of create/find orm model.
 [X] hook up to element.changed or elements.change 
     - update the document
     - reyaml document and send back to vscode to add to file
