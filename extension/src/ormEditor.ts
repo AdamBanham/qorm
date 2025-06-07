@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import  { getNonce } from './util';
+const fs = require('fs');
+const path = require('path');
 
 export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 
@@ -38,7 +40,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             enableScripts: true,
         };
 
-        webviewPanel.webview.html = this.getHtmlForWebview(webviewPanel.webview);
+        webviewPanel.webview.html = await this.getHtmlForWebview(webviewPanel.webview);
 
         let isUpdatingDocument = false; // Flag to prevent feedback loop
 
@@ -112,7 +114,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         await vscode.workspace.applyEdit(workspaceEdit);
     }
 
-    private getHtmlForWebview(webview: vscode.Webview): string {
+    private async getHtmlForWebview(webview: vscode.Webview): Promise<string> {
         // Local path to script and css for the webview
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(
             this.context.extensionUri, 'dist', 'connectDiagram.js'));
@@ -130,28 +132,36 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             this.context.extensionUri, "media", "@mdi", "font", "css", "materialdesignicons.css"
         ));
         // Use a nonce to whitelist which scripts can be run
-		const nonce = getNonce();
+        const nonce = getNonce();
+
+        // Read keyboard shortcuts content synchronously using Node.js fs
+        const keyboardShortcutsPath = path.join(this.context.extensionPath, 'media', 'html', 'keyboard-controls.html');
+        const keyboardShortcutsContent = fs.readFileSync(keyboardShortcutsPath, 'utf-8');
 
         return `<!DOCTYPE>
         <html lang="en">
             <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link href="${styles}" rel="stylesheet" />
-                <link href="${djsStyles}" rel="stylesheet" />
-                <link href="${mdiStyles}" rel="stylesheet" />
-                <link href="${renderStyles}" rel="stylesheet" />
-                <meta http-equiv="Content-Security-Policy" content="media-src 'self' script-src 'self' default-src 'self';">
-                <title>qORM - Editor</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link nonce="${getNonce()}" href="${styles}" rel="stylesheet" />
+            <link nonce="${getNonce()}" href="${djsStyles}" rel="stylesheet" />
+            <link nonce="${getNonce()}" href="${mdiStyles}" rel="stylesheet" />
+            <link nonce="${getNonce()}" href="${renderStyles}" rel="stylesheet" />
+            <title>qORM - Editor</title>
             </head>
             <body>
-                <div class="content" data-vscode-context='{"webviewSection": "main", "mouseCount": 4, "preventDefaultContextMenuItems": true}'>
-                    <h1> Qwery Object-Role-Modelling (ORM) Editor </h1>
-                    <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'></div>
-                    <h2> Elementary Facts </h2>
-                    <div class="facts" id="facts" data-vscode-context='{"webviewSection": "facts"}'></div>
-                    <script nonce="${nonce}" src="${scriptUri}"></script>
+            <div class="content" data-vscode-context='{"webviewSection": "main", "mouseCount": 4, "preventDefaultContextMenuItems": true}'>
+                <h1> Qwery Object-Role-Modelling (ORM) Architect </h1>
+                
+                <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'>
+                    <!-- The editor will be rendered here -->
+
+                    ${keyboardShortcutsContent}
                 </div>
+                <h2> Elementary Facts </h2>
+                <div class="facts" id="facts" data-vscode-context='{"webviewSection": "facts"}'></div>
+                <script nonce="${nonce}" src="${scriptUri}"></script>
+            </div>
             </body>
         </html>
         `;

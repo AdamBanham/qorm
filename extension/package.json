@@ -29,6 +29,18 @@
           }
         ]
       }
+    ],
+    "commands": [
+      {
+        "command": "qorma.Create",
+        "title": "qORMa: Create new ORM Diagram",
+        "category": "qORMa"
+      },
+      {
+        "command": "qorma.Create.debug",
+        "title": "qORMa: (debug) Create new ORM Diagram",
+        "category": "qORMa"
+      }
     ]
   },
   "scripts": {
