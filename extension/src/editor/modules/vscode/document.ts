@@ -24,12 +24,12 @@ export class DocumentConnection implements documentNode {
 
     validate() {
         // todo
-        return true
+        return true;
     }
 
     requires() {
         // todo
-        return "id,"
+        return "id,";
     }
 }
 
