@@ -10,7 +10,7 @@
 [] "general" reference modes (probably not)
 [X] add subtpying (a connection between entities)
 [X] change all context pad icons to letters
-[] link save button on palette to vscode api
+[X] link save button on palette to vscode api
 [X] add keyboard shortcut menu
 [] add value sets for entities
 [] add extension setting for debug rendering
