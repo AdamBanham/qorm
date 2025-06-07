@@ -271,8 +271,16 @@ export default  class VscodeMessageHandler {
 
         diff.changes.forEach((node) => {
             let element = this._elementRegistry.get(node.id);
-            console.log("diff-element ::", element)
-            console.log("diff-attributes ::", node.attributes)
+            console.log("diff-element ::", element);
+            let src = node.attributes.get('source');
+            if (src instanceof String) {
+                node.attributes.set('source', this._elementRegistry.get(src));
+            }
+            let target = node.attributes.get('target');
+            if (target instanceof String) {
+                node.attributes.set('target', this._elementRegistry.get(target));
+            }
+            console.log("diff-attributes ::", node.attributes);
             element = Object.assign(
                 element,
                 Object.fromEntries(node.attributes)
