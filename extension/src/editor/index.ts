@@ -37,9 +37,8 @@ import ormKeyboard from "./modules/keyboard";
 import ormVscodeHandler from "./modules/vscode";
 import ormDragging from "./modules/dragging";
 
-export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
-
-    // const container = context.getElementById("editor");
+export default function ORMEditor(container:HTMLLIElement) : 
+    Diagram<null> {
 
     // default modules provided by the toolbox
     const builtinModules = [
@@ -93,67 +92,11 @@ export default function ORMEditor(container:HTMLLIElement) : Diagram<null> {
         'keyboard.bind' : true
     });
 
-    // dummy creates to test out modules
-    // diagram.invoke([ 'eventBus', 'elementFactory', 'canvas', 'modeling', 
-    //     function(events, factory, canvas, modeling) {
-    //         var s1 = Object.assign(
-    //             factory.createDummyAttributesForEntities("entity"),
-    //             { x: 275, y: 100,}
-    //         );
-
-    //         s1 = modeling.createShape(
-    //             s1, {x: s1.x, y:s1.y}, 
-    //             canvas.getRootElement()
-    //         );
-
-    //         var s2 = Object.assign(
-    //             factory.createDummyAttributesForEntities("value"),
-    //             { x: 575, y: 100,}
-    //         );
-    //         s2 = modeling.createShape(
-    //             s2, {x: s2.x, y:s2.y}, 
-    //             canvas.getRootElement()
-    //         );
-
-    //         var fact = Object.assign(
-    //             factory.createDummyAttributesForFacts(),
-    //             { x: 415, y: 100,}
-    //         );
-    //         fact = modeling.createShape(
-    //             fact, {x: fact.x, y:fact.y},
-    //             canvas.getRootElement()
-    //         );
-    //         modeling.expandFact(fact);
-
-    //         var fact2 = Object.assign(
-    //             factory.createDummyAttributesForFacts(),
-    //             { x: 390, y: 250,}
-    //         );
-    //         fact2 = modeling.createShape(
-    //             fact2, {x: fact2.x, y:fact2.y},
-    //             canvas.getRootElement()
-    //         );
-    //         modeling.expandFact(fact2);
-    //         modeling.expandFact(fact2);
-    //         modeling.expandFact(fact2);
-
-    //         let c1 = modeling.connectToFact(fact, s1);
-    //         let c2 = modeling.connectToFact(fact, s2);
-
-    //         let l1 = modeling.createLabelForFact(
-    //             fact,
-    //             "has >"
-    //         ); 
-
-    //         let c3 = modeling.connectToFact(fact2, s2, 3);
-    //         modeling.flipMandatoryConstraint(c3);
-    //         let c4 = modeling.connectToFact(fact2, s1, 0);
-    //         modeling.flipMandatoryConstraint(c4);
-            
-    //         modeling.moveElements([s1,s2,l1,fact,fact2], {x:0,y:0, layout:false});
-    // }]);
-
-    (diagram.get('canvas') as any).zoom('fit-viewport');
+    setTimeout(
+        () => {
+            (diagram.get('canvas') as any).zoom('fit-viewport');
+        }, 50
+    );
 
     return diagram;
 }
