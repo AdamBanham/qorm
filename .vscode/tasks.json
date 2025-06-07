@@ -7,7 +7,6 @@
 			"label" : "run:watch",
 			"type": "shell",
 			"command": "cd ./extension && npm run watch",
-			"problemMatcher": "$tsc-watch",
 			"isBackground": true,
 			"presentation": {
 				"reveal": "never"
@@ -15,6 +14,22 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
+			},
+			"problemMatcher": {
+				"owner": "run:watch",
+				"pattern": [
+					{
+						"regexp": ".",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+				"activeOnStart": true,
+				"beginsPattern": "Compiler starting",
+				"endsPattern": "Compiler is watching files for updates"
+				}
 			}
 		}
 	]
