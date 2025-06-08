@@ -37,6 +37,11 @@
     [ ] fact xml 
     [ ] connections? 
 [] add verb conventions to bottom of html?
+[] add tab model 
+   [] when an element is selected, tabbing goes through its connections 
+   [] when tab is pressed, rotate from top left across and then down 
+   [] alt left goes to the last previous tab 
+   [] alt right goes to the next known tabbed element
 
 
 Bugfixes
