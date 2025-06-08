@@ -57,7 +57,8 @@ Bugfixes
 [X] document parse error, after an inital document is loaded and a new save trigger occurs; error in canvas finding the same entity.
 [X] bug with the fact labels, trigger derived without label, labels wont change
 [X] bugfix, element.out on dragging not progatting on default priority 
-[ ] labels on facts are not reactive; create derivation label; change base label content; no change
+[X] labels on facts are not reactive; create derivation label; change base label content; no change
+[X] labels on facts are not updating position after fact expansion
 [ ] positions of elements seem to change when reading in a document (only one or two arent or are offset)
 [X] when fact is expanded/reduced the connections for remainding connections are not updated
 

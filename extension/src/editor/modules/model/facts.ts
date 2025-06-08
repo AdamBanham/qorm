@@ -1,6 +1,8 @@
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 import { constraint } from "./constraints";
+import { 
+    Label } from "diagram-js/lib/model/Types";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
@@ -43,6 +45,8 @@ export class Fact implements fact {
     type: "fact";
     width: number;
     height: number;
+    label?: Label | undefined;
+    labels: Label[];
     x: number;
     y: number;
     hovered?: boolean;
@@ -65,12 +69,12 @@ export class Fact implements fact {
         this.constraints = new Array();
         this.objectifiedName = "foobar";
         this.derived = false;
+        this.labels = [];
     }
 
     addRole(){
         this.roles = this.roles + 1;
         this.factors = this.factors.concat(...[null]);
-        this.width = this.width + unitWidth;
     }
 
     /**
@@ -288,6 +292,11 @@ export class Fact implements fact {
 
     update(){
         this.width = unitWidth * this.roles;
+        if (this.labels.length > 0){
+            for(let labeler of this.labels){
+                labeler.x = this.x + (this.width / 2);
+            }
+        }
     }
 
     buildAttributes(): Map<string, any> {

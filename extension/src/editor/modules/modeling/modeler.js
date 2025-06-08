@@ -53,13 +53,13 @@ export default class OrmModelling extends Modeling {
         if (entity){
             fact.setRole(entity, fact.roles);
         }
-        this.sendUpdate(fact);
+        fact.update();
         if (fact.incoming){
             for(let con of fact.incoming){
                 this.layoutConnection(con);
             }
         }
-            
+        this.sendUpdates(fact,...fact.labels);
     }
 
     /**
@@ -69,16 +69,16 @@ export default class OrmModelling extends Modeling {
      */
     reduceFact(fact){
         let remove = fact.removeRole();
-        this.sendUpdate(fact);
         if (remove){
             this.removeConnectionFromFact(fact, remove);
         }
-        this.sendUpdates(fact);
+        fact.update();
         if (fact.incoming){
             for(let con of fact.incoming){
                 this.layoutConnection(con);
             }
         }
+        this.sendUpdates(fact, ...fact.labels);
         return remove;
     }
 
