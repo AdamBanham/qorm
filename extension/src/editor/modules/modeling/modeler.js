@@ -23,6 +23,12 @@ export default class OrmModelling extends Modeling {
         super(eventBus, elementFactory, commandStack);
     }
 
+    createShape(shape, position, target, parentIndex, hints){
+        let ret = super.createShape(shape, position, target, parentIndex, hints);
+        this._eventBus.fire('shape.created', {shape: ret});
+        return ret;
+    }
+
     sendUpdate(element){
         if (element !== null){
             // TODO: I dont think I need this line anymore
@@ -165,8 +171,9 @@ export default class OrmModelling extends Modeling {
             },
             Object.assign(
                 this._elementFactory.createDummyAttributesForLabel(),
-                { content: label}
-            )
+                { content: label, factLabel: true }
+            ),
+            fact.parent
         );
     }
 

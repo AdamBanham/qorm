@@ -96,25 +96,9 @@ export default function LabelEditingProvider(
       }
     });
   
-    eventBus.on('create.end', HIGH_PRIORITY, function(event) {
+    eventBus.on('shape.created', HIGH_PRIORITY, function(event) {
   
-      var context = event.context,
-          element = context.shape,
-          canExecute = event.context.canExecute,
-          isTouch = event.isTouch;
-  
-      if (isTouch) {
-        return;
-      }
-  
-      if (!canExecute) {
-        return;
-      }
-  
-      if (context.hints && context.hints.createElementsBehavior === false) {
-        return;
-      }
-  
+      var element = event.shape;
       setTimeout( () => activateDirectEdit(element), 25);
     });
   
@@ -292,8 +276,15 @@ export default function LabelEditingProvider(
   LabelEditingProvider.prototype.handleFinishingFact = function(fact, context, label){
     if (context.touchingMode === 'label'){
       if (fact.labels && fact.labels.length > 0){
-        let factLabel = fact.labels[0];
-        factLabel.content = label;
+        let factLabel = fact.labels.filter(label => label.factLabel);
+        if (factLabel.length > 0){
+          factLabel[0].content = label;
+        } else {
+          this._modeling.createLabelForFact(
+            fact,
+            label
+          );
+        }
       } else {
         this._modeling.createLabelForFact(
           fact,
