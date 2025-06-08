@@ -12,6 +12,7 @@
 [X] change all context pad icons to letters
 [X] link save button on palette to vscode api
 [X] add keyboard shortcut menu
+    [ ] should the keyboard shortcut be ctrl+k, maybe ctrl+h instead?
 [X] change connections so they were not going to center of objects
     [X] Now geometry is calculated for the perimeter of the object
 [] add value sets for entities

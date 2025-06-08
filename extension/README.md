@@ -36,6 +36,14 @@ We currently do not expose any settings for the extension.
 
 The following section capture the most recent releases.
 
+### 0.1.4
+
+Several bugfixes have been completed for interactions with the ORM schema.
+Also, a keyboard shortcut menu has been added, toggle the menu with ctrl+k or via the right-hand palette.
+The package now contributes two commands to open a new ORM schema file.
+Some general improvements to how connections between elements are handled
+have been implemented (mostly visual).
+
 ### 0.1.0
 
 Initial release of the ORM editor for testing purposes.
