@@ -17,6 +17,7 @@ import { unitWidth, unitHeight, Fact } from "../model/facts";
 import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype } from '../model/util';
 import { SUBTYPE_NAME } from '../model/subtypes';
 
+
 const BORDER_COLOUR = "var(--render-border-colour)";
 const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
 const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
@@ -32,7 +33,7 @@ const SUPPORTED_TYPES = [
 ];
 var RENDER_PRIORITY = 1500;
 const DEBUG = true;
-const DEBUG_OPACITY = 1.0;
+const DEBUG_OPACITY = 1;
 
 export default class TSRenderer extends  BaseRenderer {
     
@@ -113,8 +114,8 @@ export default class TSRenderer extends  BaseRenderer {
         svgAppend(marker, mandatory);
 
         let arrowMarker = svgCreate("marker", {
-            id: "arrowhead",
-            refX: 32.5,
+            id: "subtype-arrowhead",
+            refX: 8,
             refY: 5,
             markerWidth: 4,
             markerHeight: 4,
@@ -513,9 +514,9 @@ export default class TSRenderer extends  BaseRenderer {
                     id: connection.id
                 }, 
                 this.SUBTYPE_STYLE, attrs || {})
-            );    
+            );
             svgAttr(line, {
-                'marker-end': 'url(#arrowhead)'
+                'marker-end': 'url(#subtype-arrowhead)'
             });
             svgAppend(group, line);
         }

@@ -3,6 +3,7 @@ import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 
 import { isEntity, isFact } from "../model/util";
 import { unitHeight, unitWidth } from "../model/facts";
+import { makeRect, getAngleIntersection } from '../utils/geometry';
 
 export default class OrmLayouter extends BaseLayouter {
 
@@ -79,10 +80,22 @@ export default class OrmLayouter extends BaseLayouter {
         let bends = connection.waypoints || [];
         bends = bends.slice(1, -1);
 
+        let srcRect = makeRect(connection.source);
+        let srcPos = connection.waypoints[1];
+        let srcIntersection = getAngleIntersection(
+            srcPos, srcRect
+        );
+        let tgtRect = makeRect(connection.target);
+        let tgtPos = connection.waypoints[connection.waypoints.length - 2];
+        let tgtIntersection = getAngleIntersection(
+            tgtPos, tgtRect
+        );
+
+
         return [
-            getMid(connection.source),
+            getMid(srcIntersection.vertex),
             ...bends,
-            getMid(connection.target)
+            getMid(tgtIntersection.vertex)
         ];
     }
 
@@ -110,11 +123,25 @@ export default class OrmLayouter extends BaseLayouter {
             console.error("error: unable to consider connection :: ", connection);
             return super.layoutConnection(connection, hints);
         }
-        // work for waypoints
-        let srcPos = getMid(entity);
-        let tgtPos = fact.getCenterForRole(
-            role
+        
+        // handling to get intersecting on perimeters
+        let srcRect = makeRect(connection.source);
+        let srcPos = connection.waypoints[1];
+        srcPos = getMid(connection.source);
+        // I need to wait for pivot point before working out target
+        let tgtRect = Object.assign(
+            fact.getCenterForRole(role),
+            { width: unitWidth, height: unitHeight }
         );
+        tgtRect.x -= unitWidth / 2;
+        tgtRect.y -= unitHeight / 2;
+        // this needs to the center of the target role of the fact
+        let tgtPos = fact.getCenterForRole(role);
+        
+        
+        
+
+        // work for waypoints
         let waypoints = [];
         let bends;
         if (connection.waypoints){
@@ -128,6 +155,14 @@ export default class OrmLayouter extends BaseLayouter {
         if (fact.roles === 1){
             // if the fact has only one role then put the pivot
             // in the middle
+            let tgtIntersection = getAngleIntersection(
+                srcPos, tgtRect
+            );
+            tgtPos = tgtIntersection.vertex;
+            let srcIntersection = getAngleIntersection(
+                tgtPos, srcRect
+            );
+            srcPos = srcIntersection.vertex;
             waypoints = [
                     Object.assign({}, srcPos),
                     ...bends,
@@ -154,6 +189,16 @@ export default class OrmLayouter extends BaseLayouter {
             );
             mids = ret.mids;
             added = ret.added;
+            // now we have the fact connection point we can work out the target
+            let tgtIntersection = getAngleIntersection(
+                Object.assign({},mids[mids.length - 1]), tgtRect
+            );
+            tgtPos = tgtIntersection.vertex;
+            // but need to redo the srcpos as well if 
+            let srcIntersection = getAngleIntersection(
+                Object.assign({},mids[0]), srcRect
+            );
+            srcPos = srcIntersection.vertex;
             waypoints = 
             [
                 Object.assign({}, srcPos),

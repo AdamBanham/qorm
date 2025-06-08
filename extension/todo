@@ -12,6 +12,8 @@
 [X] change all context pad icons to letters
 [X] link save button on palette to vscode api
 [X] add keyboard shortcut menu
+[X] change connections so they were not going to center of objects
+    [X] Now geometry is calculated for the perimeter of the object
 [] add value sets for entities
 [] add extension setting for debug rendering
 [] revisit file_format.orm and update to reflect current data model
@@ -52,4 +54,5 @@ Bugfixes
 [X] bugfix, element.out on dragging not progatting on default priority 
 [ ] labels on facts are not reactive; create derivation label; change base label content; no change
 [ ] positions of elements seem to change when reading in a document (only one or two arent or are offset)
+[ ] when fact is expanded/reduced the connections for remainding connections are not updated
 

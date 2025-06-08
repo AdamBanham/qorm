@@ -119,14 +119,19 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         updateWebview();
     }
 
-    private async updateDocumentContent(document: vscode.TextDocument, content: string): Promise<void> {
-        const edit = new vscode.TextEdit(new vscode.Range(0, 0, document.lineCount, 0), content);
+    private async updateDocumentContent(
+        document: vscode.TextDocument, 
+        content: string): Promise<void> {
+        const edit = new vscode.TextEdit(
+            new vscode.Range(0, 0, document.lineCount, 0), content
+        );
         const workspaceEdit = new vscode.WorkspaceEdit();
         workspaceEdit.set(document.uri, [edit]);
         await vscode.workspace.applyEdit(workspaceEdit);
     }
 
-    private async getHtmlForWebview(webview: vscode.Webview): Promise<string> {
+    private async getHtmlForWebview(
+        webview: vscode.Webview): Promise<string> {
         // Local path to script and css for the webview
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(
             this.context.extensionUri, 'dist', 'connectDiagram.js'));
@@ -141,14 +146,18 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             this.context.extensionUri, 'media', 'render.css'));
 
         const mdiStyles = webview.asWebviewUri(vscode.Uri.joinPath(
-            this.context.extensionUri, "media", "@mdi", "font", "css", "materialdesignicons.css"
+            this.context.extensionUri, "media", "@mdi", "font", 
+            "css", "materialdesignicons.css"
         ));
         // Use a nonce to whitelist which scripts can be run
         const nonce = getNonce();
 
         // Read keyboard shortcuts content synchronously using Node.js fs
-        const keyboardShortcutsPath = path.join(this.context.extensionPath, 'media', 'html', 'keyboard-controls.html');
-        const keyboardShortcutsContent = fs.readFileSync(keyboardShortcutsPath, 'utf-8');
+        const keyboardShortcutsPath = path.join(
+            this.context.extensionPath, 'media', 'html', 
+            'keyboard-controls.html');
+        const keyboardShortcutsContent = fs.readFileSync(
+            keyboardShortcutsPath, 'utf-8');
 
         return `<!DOCTYPE>
         <html lang="en">
