@@ -1,5 +1,13 @@
 import * as vscode from 'vscode';
 
+const defaultContents = `system:
+  name: ''
+  type: ORM
+  entities: []
+  facts: []
+  connections: []
+`;
+
 export class ORMCreate implements vscode.Command {
     public readonly id: string = "qorma";
     public readonly title: string = "qORMa: Create new ORM Diagram";
@@ -26,20 +34,60 @@ export class ORMCreate implements vscode.Command {
         filename.then((filenameInput) => {
             if (filenameInput) {
 
-                // call the vscode commands to create a new file
-                // with the name {filenameInput}.orm
-                let uri = vscode.Uri.parse(`untitled:${filenameInput}.orm`);
-
-                vscode.workspace.openTextDocument(uri).then((document) => {
-                    vscode.commands.executeCommand('vscode.openWith', document.uri, 'qorma.ormEditor');
-                    vscode.window.showInformationMessage(
-                        `qORMA :: New ORM diagram created: ${filenameInput}.orm`
-                    );
-                }, (error) => {
-                    vscode.window.showErrorMessage(
-                        `qORMA :: Error creating file: ${error}`
-                    );    
-                });
+                let prefix;
+                let filename = `${filenameInput.trim()}.orm`;
+                let workspaceFolders = vscode.workspace.workspaceFolders;
+                if (workspaceFolders && workspaceFolders.length > 0) {
+                    prefix = workspaceFolders[0].uri;
+                } else {
+                    prefix = vscode.Uri.parse('untitled:');
+                }
+                let uri = vscode.Uri.joinPath(prefix, filename);
+                vscode.workspace.openTextDocument(uri).then(
+                    (document) => {
+                        vscode.commands.executeCommand(
+                            'vscode.openWith',
+                            document.uri,
+                            'qorma.ormEditor'
+                        );
+                    },
+                    (error) => {
+                        
+                        let edit = new vscode.WorkspaceEdit();
+                        edit.createFile(uri, 
+                            { 
+                                ignoreIfExists: true
+                            }
+                        );
+                        edit.insert(uri, new vscode.Position(0, 0), defaultContents);
+                        vscode.workspace.applyEdit(edit).then(
+                            () => {
+                                    vscode.commands.executeCommand(
+                                        'vscode.openWith',
+                                        uri,
+                                        'qorma.ormEditor'
+                                    ).then(
+                                        () => {
+                                            vscode.window.showInformationMessage(
+                                                `qORMA :: Successfully created and opened ${filenameInput}.orm`
+                                            );
+                                        },
+                                        (error) => {
+                                            vscode.window.showErrorMessage(
+                                                `qORMA :: Error showing newly created file: ${error.message}`
+                                            );
+                                        }
+                                    );
+                            }, 
+                            (error) => {
+                                vscode.window.showErrorMessage(
+                                    `qORMA :: Error creating file: ${error.message}`
+                                );
+                            }
+                        );
+                        
+                    }
+                );
 
             } else {
                 vscode.window.showErrorMessage(

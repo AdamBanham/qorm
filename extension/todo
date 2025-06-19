@@ -62,4 +62,8 @@ Bugfixes
 [X] labels on facts are not updating position after fact expansion
 [ ] positions of elements seem to change when reading in a document (only one or two arent or are offset)
 [X] when fact is expanded/reduced the connections for remainding connections are not updated
-
+[ ] command to create a new orm model does not work
+[ ] document diffing is not working, something to do with object assignment on readonly
+    [ ] Cannot convert undefined or null to object
+    [ ] loading an empty file causes a parse error (should not be triggered at all)
+[ ] laying out for intersections are a bit off, seems like intersection with shapes need to be revisited
