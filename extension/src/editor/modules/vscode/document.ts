@@ -233,9 +233,20 @@ export default class DocumentParser {
         try {
             const data = yaml.load(document) as any;
             const parsedDocument = new Document();
+            if (!data || !data.system) {
+                throw new Error("Invalid document format: "
+                    + "'system' key is missing."
+                );
+            }
             let system = data.system;
             parsedDocument.setName(system.name|| "Unnamed System");
 
+            if (!system.entities){
+                throw new Error(
+                    "Invalid document format: 'entities' key on"
+                    + " `system` is missing."
+                );
+            }
             // Parse entities
             if (system.entities) {
                 for(let entity of system.entities){                    
@@ -260,6 +271,12 @@ export default class DocumentParser {
                 }
             }
 
+            if (!system.facts){
+                throw new Error(
+                    "Invalid document format: 'facts' key on"
+                    + " `system` is missing."
+                );
+            }
             // Parse facts
             if (system.facts) {
                 for(let fact of system.facts){
@@ -285,6 +302,12 @@ export default class DocumentParser {
             }
 
             // Parse connections
+             if (!system.connections){
+                throw new Error(
+                    "Invalid document format: 'connections' key on"
+                    + " `system` is missing."
+                );
+            }
             if (system.connections) {
                 for(let connection of system.connections){
                     let attributes = new Map<string, any>();

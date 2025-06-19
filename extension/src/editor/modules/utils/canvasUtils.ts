@@ -1,6 +1,7 @@
 import { Position } from "../model/position";
 import { CanvasViewbox } from "diagram-js/lib/core/Canvas";
 import { ShapeLike } from "diagram-js/lib/model/Types";
+import Canvas from "diagram-js/lib/core/Canvas";
 
 /**
  * Transforms an mouse original event into the canvas coordinates.
@@ -36,3 +37,22 @@ export function isWithinShape(
         );
         return ret;
     };
+
+/**
+ * Applies a scale to the canvas to fit the elements within 
+ * the viewport.
+ * @param {Canvas} canvas the canvas to be scaled
+ */
+export function scaleToFitElements(canvas:Canvas){
+    const {inner,outer} = canvas.viewbox();
+    var center = {
+        x: inner.x + inner.width/2,
+        y: inner.y + inner.height/2
+    };
+    let scale = Math.min( 
+        (outer.width / inner.width),
+        (outer.height / inner.height)
+    ) * 0.8;
+    canvas.zoom('fit-viewport', center);
+    canvas.zoom(scale);
+}

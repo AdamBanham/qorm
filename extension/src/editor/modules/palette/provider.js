@@ -1,4 +1,5 @@
 import SvgExporter from "../exporters/svgExporter";
+import { scaleToFitElements } from "../utils/canvasUtils";
 
 export default function ExamplePaletteProvider(
     create, elementFactory, lassoTool, palette, connect, registry,
@@ -121,7 +122,7 @@ export default function ExamplePaletteProvider(
         action: {
           click: function(event) {
             // Generate the content you want to download as a string
-            const content = new SvgExporter(canvas).save()
+            const content = new SvgExporter(canvas).save();
 
             // Create a Blob (Binary Large Object) from the content
             const blob = new Blob([content], { type: 'text/plain' });
@@ -150,17 +151,7 @@ export default function ExamplePaletteProvider(
         title: 'fit to screen',
         action: {
           click: function(event) {
-            const {inner,outer} = canvas.viewbox();
-            var center = {
-              x: inner.x + inner.width/2,
-              y: inner.y + inner.height/2
-            };
-            let scale = Math.min( 
-              (outer.width / inner.width),
-              (outer.height / inner.height)
-            ) * 0.8;
-            canvas.zoom('fit-viewport', center);
-            canvas.zoom(scale);
+            scaleToFitElements(canvas);
           }
         }
       },

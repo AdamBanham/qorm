@@ -7,10 +7,10 @@ import { isEntity, isExactlyEntity, isFact } from "../model/util";
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
-import { transformToViewbox } from "../utils/canvasUtils";
 import VscodeMessager from "./messager";
 import Canvas from "diagram-js/lib/core/Canvas";
 import EventBus from "diagram-js/lib/core/EventBus";
+import { scaleToFitElements } from "../utils/canvasUtils";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
@@ -130,7 +130,8 @@ export default  class VscodeMessageHandler {
                 setTimeout(
                     () => {
                         this._eventBus.fire('document.loaded', {});
-                    }, 50
+                        scaleToFitElements(this._canvas);
+                    }, 15
                 );
             }
             this.state.status = "idle";
@@ -192,16 +193,21 @@ export default  class VscodeMessageHandler {
                 } else {
                 //    check if the values are different
                     let isDifferent = false;
+                    let changes = new Map<string, any>();
                     oldNode.attributes.forEach((value, key) => {
                         const oldJson = JSON.stringify(newNode.attributes.get(key));
                         const newJson = JSON.stringify(value);
                         if (oldJson !== newJson) {
                             isDifferent = true;
+                            changes.set(key, newNode.attributes.get(key));
                         }
                     });
                     if (isDifferent) {
                         // Node is updated
-                        changedNodes.push(newNode);
+                        changes.set('id', oldNode.id);
+                        let diffNode = Object.assign({}, newNode);
+                        diffNode.attributes = changes;
+                        changedNodes.push(diffNode);
                     }
                 }
             }
@@ -278,24 +284,31 @@ export default  class VscodeMessageHandler {
 
         diff.changes.forEach((node) => {
             let element = this._elementRegistry.get(node.id);
-            console.log("diff-element ::", element);
-            let src = node.attributes.get('source');
-            if (src instanceof String) {
-                node.attributes.set('source', this._elementRegistry.get(src));
-            }
-            let target = node.attributes.get('target');
-            if (target instanceof String) {
-                node.attributes.set('target', this._elementRegistry.get(target));
-            }
-            console.log("diff-attributes ::", node.attributes);
+            let diff = Object.assign({}, Object.fromEntries(node.attributes));
+            delete diff['id'];
+            delete diff['type'];
+            delete diff['source'];
+            delete diff['target'];
             element = Object.assign(
                 element,
-                Object.fromEntries(node.attributes)
+                diff
             );
             if (isEntity(element) || isFact(element)) {
                 element.update();
             }
-            this._modeling.sendUpdate(element);
+
+            // collect possible consumers for the new information
+            let updateTargets = [element];
+            if (element.labels){
+                updateTargets = updateTargets.concat([...element.labels]);
+            }
+            if (element.incoming){
+                updateTargets = updateTargets.concat([...element.incoming]);
+            }
+            if (element.outgoing){
+                updateTargets = updateTargets.concat([...element.outgoing]);
+            }
+            this._modeling.sendUpdates(...updateTargets);
         });
 
         diff.removals.forEach((node) => {
