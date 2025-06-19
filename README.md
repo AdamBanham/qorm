@@ -1,45 +1,39 @@
-# qORM README
+# Qwerty Object-Role-Modelling (ORM) Architect
 
-This is the README for your extension "qORM". After writing up a brief description, we recommend including the following sections.
+This is a vs-studio-code extension that supports rich interactions for
+constructing an ORM schema within the editor.
+The features of the editor are futher explained in the extension's 
+[readme](./extension/README.md).
 
-## Features
+## Building exntesion
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+To prepare the extension for the marketplace or for personal installment,
+make sure to have the [vsce](https://github.com/microsoft/vscode-vsce) or 
+"Visual Studio Code Extensions" CLI installed.
 
-For example if there is an image subfolder under your extension project workspace:
+### Preparing and Packaging
 
-\!\[feature X\]\(images/feature-x.png\)
+Using vsce, the extension can be packaged via the following commands
+```bash
+cd extension
+vsce package
+```
+Note that the version of the extension is controlled by the `version` 
+attribute in [package.json](./extension/package.json).
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+After package is completed, a new vsix file will be generated. This file
+can be shared for personal installs of the extension without the marketplace
+approval.
 
-## Requirements
+### Publishing
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Using vsce, the extension can be published via the following command:
+```bash
+vsce publish
+```
 
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 0.1.0
-
-Initial release of ...
-
----
+Note that publishing to marketplace requires a PAT for the marketplace 
+version of the extension to be pushed.
 
 ## Following extension guidelines
 
