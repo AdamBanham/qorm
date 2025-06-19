@@ -89,7 +89,6 @@ export default function LabelEditingProvider(
       'canvas.focus.changed',
       'document.loaded'
     ], HIGH_PRIORITY, function(event) {
-  
       if (directEditing.isActive(event.element)) {
         directEditing.cancel();
         that._context.touchingType = null;

@@ -1,10 +1,11 @@
 import ElementFactory from "diagram-js/lib/core/ElementFactory";
 
 import { createEntity, entity} from "../model/entities";
-import { createFact, fact } from "../model/facts";
+import { createFact, Fact, fact } from "../model/facts";
 import { createConstraint } from "../model/constraints";
 import { createConnection } from "../model/connections";
 import { SUBTYPE_NAME, createSubtype } from "../model/subtypes";
+import { OBJECTIFICATION_TYPE, createObjectification } from "../model/objectifiedRole";
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 
@@ -69,6 +70,12 @@ export default class OrmElementFactory extends ElementFactory{
             attrs['type'] = SUBTYPE_NAME;
             let el = createSubtype();
             el.setByAttributes(attrs);
+            this._eventBus.fire('factory.create', { element: el });
+            return el; 
+        }
+        if (type === OBJECTIFICATION_TYPE){
+            attrs['type'] = OBJECTIFICATION_TYPE;
+            let el = createObjectification(attrs.fact);
             this._eventBus.fire('factory.create', { element: el });
             return el; 
         }
@@ -156,6 +163,18 @@ export default class OrmElementFactory extends ElementFactory{
         return {
             mandatory: false,
             role: role
+        };
+    }
+
+    /**
+     * Makes a dummy set of attributes for objectification.
+     * @param {Fact} fact 
+     * @returns 
+     */
+    createDummyAttributesForObjectification(fact){
+        return {
+            type: OBJECTIFICATION_TYPE,
+            fact: fact,
         };
     }
 }

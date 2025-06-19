@@ -127,11 +127,11 @@ export default  class VscodeMessageHandler {
             if (this._first_load) {
                 this.triggerVscodeUpdate();
                 this._first_load = false;
+                scaleToFitElements(this._canvas);
                 setTimeout(
                     () => {
                         this._eventBus.fire('document.loaded', {});
-                        scaleToFitElements(this._canvas);
-                    }, 15
+                    }, 25
                 );
             }
             this.state.status = "idle";
@@ -178,6 +178,7 @@ export default  class VscodeMessageHandler {
         removedNodes: Array<documentNode>,
         addedNodes: Array<documentNode>
     ) {
+        
         // Detect added or updated nodes
         newNodes.forEach((newNode, id) => {
             const oldNode = oldNodes.get(id);
@@ -405,11 +406,15 @@ export default  class VscodeMessageHandler {
             this._modeling.connectToFact(element,entity, id);
         });
 
+        if(element.objectified) {
+            element.objectified = false;
+            this._modeling.flipObjectification(element);
+        }
+
         if (factLabel) {
             this._modeling.createLabelForFact(
                 element, factLabel
             );
-            this._modeling.sendUpdate(...element.labels);
         }
 
         if (derived){
@@ -434,7 +439,6 @@ export default  class VscodeMessageHandler {
         }
 
         element.update();
-        
     }
 
     _handleUpdatesForFact(element:any, attributes:Map<string, any>) {

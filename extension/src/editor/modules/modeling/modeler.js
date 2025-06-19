@@ -19,8 +19,9 @@ export default class OrmModelling extends Modeling {
      * @param {ElementFactory} elementFactory 
      * @param {CommandStack} commandStack 
      */
-    constructor(eventBus, elementFactory, commandStack){
+    constructor(eventBus, elementFactory, commandStack, canvas){
         super(eventBus, elementFactory, commandStack);
+        this._canvas = canvas;  
     }
 
     createShape(shape, position, target, parentIndex, hints){
@@ -35,7 +36,12 @@ export default class OrmModelling extends Modeling {
             // this.moveElements([element], {x:0,y:0});
             // things usually fire on elements changed rather than element.changed
             this._eventBus.fire('elements.changed', {elements: [element], layout:false});
-            this._eventBus.fire('element.changed', {element: element, layout:false});    
+            this._eventBus.fire('element.changed', {element: element, layout:false}); 
+            if (isFact(element)){
+                if (element.objectified && element.objectification){
+                    this.sendUpdate(element.objectification);
+                }
+            }   
         }
     }
 
@@ -223,8 +229,21 @@ export default class OrmModelling extends Modeling {
     flipObjectification(fact){
         if (fact.objectified){
             fact.objectified = false;
+            // remove the objectification
+            this.removeElements([fact.objectification]);
+            fact.objectification = null;
         } else {
+            let attrs = this._elementFactory
+                .createDummyAttributesForObjectification(fact);
+            let objectification = this.createShape(
+                attrs, {x: 0, y: 0},
+                this._canvas.getRootElement(),);
             fact.objectified = true;
+            fact.objectification = objectification;
+            objectification.update();
+            this.moveElements([fact, objectification], {x:1, y:1});
+            this.moveElements([fact, objectification], {x:-1, y:-1});
+            this.sendUpdates(fact, objectification);
         }
         this.sendUpdate(fact);
     }
@@ -338,4 +357,25 @@ export default class OrmModelling extends Modeling {
         return con;
     }
 
+    /**
+     * Removes a constraint from the source of the constraint.
+     * @param {*} constraint 
+     * @property {Fact} constraint.src
+     */
+    removeConstraint(constraint){
+        let src = constraint.src;
+        src.removeConstraint(constraint);
+        src.update();
+        this.removeElements([ constraint ]);
+        this.sendUpdate(src);
+        this.sendUpdates(...src.constraints);
+    }
+
 }
+
+OrmModelling.$inject = [
+    'eventBus',
+    'elementFactory',
+    'commandStack',
+    'canvas'
+];

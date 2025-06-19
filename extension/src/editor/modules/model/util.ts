@@ -2,6 +2,7 @@ import { ConnectionLike, ShapeLike } from "diagram-js/lib/model/Types";
 import { entity, Entity, ValueEntity } from "./entities";
 import { Fact } from "./facts";
 import { OrmSubtypeConnection, SUBTYPE_NAME } from "./subtypes";
+import { OBJECTIFICATION_TYPE, ObjectifiedRole } from "./objectifiedRole";
 
 let id = 0;
 
@@ -135,4 +136,13 @@ export function isReferredReference(shape: ShapeLike): boolean {
         return shape.referenceMode === "reference";
     }
     return false;
+}
+
+export function isObjectification(
+        shape: ShapeLike
+    ): shape is ObjectifiedRole {
+        if (shape.type) {
+            return shape.type === OBJECTIFICATION_TYPE;
+        }
+        return false;
 }

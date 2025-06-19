@@ -14,8 +14,9 @@ import {
 
 import { ValueEntity, Entity, unitWidth as entityWidth } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
-import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype } from '../model/util';
+import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype, isObjectification } from '../model/util';
 import { SUBTYPE_NAME } from '../model/subtypes';
+import { OBJECTIFICATION_TYPE } from '../model/objectifiedRole';
 
 
 const BORDER_COLOUR = "var(--render-border-colour)";
@@ -27,9 +28,10 @@ const CONSTRAINT_EDIT_COLOUR = "var(--render-simple-constraint-editing)";
 const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
 const MANDATORY_ROLE_COLOUR = "var(--render-mandatory-role-fill)";
 const MANDATORY_ROLE_STROKE = "var(--render-madatory-role-stroke)";
+const OBJECTIFICATION_FILL_COLOUR = "var(--render-objectification-fill)";
 const SUPPORTED_TYPES = [
     'entity', 'value', 'fact', 'connection', 'label', 'constraint',
-    SUBTYPE_NAME
+    SUBTYPE_NAME, OBJECTIFICATION_TYPE
 ];
 var RENDER_PRIORITY = 1500;
 const DEBUG = true;
@@ -56,6 +58,9 @@ export default class TSRenderer extends  BaseRenderer {
                 }
                 if (isConstraint(element)){
                     return self._drawContraint(visuals, element, attrs);
+                }
+                if (isObjectification(element)){
+                    return self.drawObjectification(visuals, element, attrs);
                 }
                 return self.drawShape(visuals, element, attrs);
             } else {
@@ -175,19 +180,7 @@ export default class TSRenderer extends  BaseRenderer {
             if (element.type === 'fact'){
                 // draw the objectification
                 if (element.objectified){
-                    let box = svgCreate("rect", {
-                        class: "fact-objectified",
-                        x: -10,
-                        y: -10 - (10 * element.constraints.length),
-                        rx: rx,
-                        width: element.width + 20,
-                        height: element.height + 20 + 15 + (10 * element.constraints.length),
-                        fill: "none",
-                        stroke: BORDER_COLOUR,
-                        strokeWidth: strokeWidth * 2,
-                        'stroke-dasharray': dashType
-                    });
-                    svgAppend(group, box);
+                    
                 }
                 // draw the fact roles
                 let x = 0;
@@ -356,6 +349,8 @@ export default class TSRenderer extends  BaseRenderer {
         return svg;
     }
 
+
+
     drawLabel(visuals, label, attrs){
         var group = svgCreate("g", {
             class: "orm-visuals"
@@ -471,6 +466,27 @@ export default class TSRenderer extends  BaseRenderer {
         svgAttr(line, {
             'marker-start': 'url(#mandatory-role-'+connection.id +')'
         });
+    }
+
+    drawObjectification(visuals, objectification, attrs) {
+        let group = svgCreate("g", {
+            class: "orm-visuals"
+        });
+        let box = svgCreate("rect", {
+                class: "fact-objectified",
+                x: 0,
+                y: 0,
+                rx: 2.5,
+                width: objectification.width,
+                height: objectification.height,
+                fill: OBJECTIFICATION_FILL_COLOUR,
+                stroke: BORDER_COLOUR,
+                strokeWidth: 2,
+                'stroke-dasharray': ""
+            });
+        svgAppend(group, box);
+        svgAppend(visuals, group);
+        return group;
     }
 
     _drawSimpleConnection(visuals, connection, attrs){

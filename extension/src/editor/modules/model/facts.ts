@@ -2,13 +2,15 @@ import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
 import { constraint } from "./constraints";
 import { 
-    Label } from "diagram-js/lib/model/Types";
+    Label, Element, 
+    Connection} from "diagram-js/lib/model/Types";
+import { Objectification } from "./objectifiedRole";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
 export const constraintDiff = 10;
 
-export interface fact {
+export interface fact extends Element {
     id: string;
     roles: number;
     factors: Array<entity | null>;
@@ -21,6 +23,7 @@ export interface fact {
     constraints?: Array<constraint>;
     objectified?: boolean;
     objectifiedName?: string;
+    objectification?: Objectification
     derived?: boolean;
     derivedLabel?: string;
     towards?: "right" | "left";
@@ -53,8 +56,14 @@ export class Fact implements fact {
     constraints: Array<constraint>;
     objectified?: boolean | undefined;
     objectifiedName?: string;
+    objectification?: Objectification | undefined;
     derived?: boolean | undefined;
     towards?: "right" | "left" | undefined;
+    derivedLabel?: string | undefined;
+    businessObject?: any;
+    parent?: Element | undefined;
+    incoming: Connection[];
+    outgoing: Connection[];
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
@@ -70,7 +79,11 @@ export class Fact implements fact {
         this.objectifiedName = "foobar";
         this.derived = false;
         this.labels = [];
+        this.incoming = [];
+        this.outgoing = [];
+        this.objectification = undefined;
     }
+    
 
     addRole(){
         this.roles = this.roles + 1;
@@ -297,6 +310,10 @@ export class Fact implements fact {
                 labeler.x = this.x + (this.width / 2);
             }
         }
+        if (this.objectified){
+            this.objectification?.update();
+        }
+
     }
 
     buildAttributes(): Map<string, any> {

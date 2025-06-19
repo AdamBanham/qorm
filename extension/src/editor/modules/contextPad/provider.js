@@ -6,7 +6,8 @@ import  {
 import { ShapeLike, Connection } from "diagram-js/lib/model";
 import { unitHeight, fact,  Fact } from "../model/facts";
 import { Entity, ValueEntity, entity } from "../model/entities";
-import { isFact, isEntity, isConstraint, isExactlyEntity, isSubtype } from "../model/util";
+import { isFact, isEntity, isConstraint, isExactlyEntity, } from "../model/util";
+import { isSubtype, isObjectification } from "../model/util";
 import { constraint } from "../model/constraints";
   
 
@@ -59,6 +60,9 @@ export default function ContextPadProvider(
         }
         if (isConstraint(element)){
             options = this.getConstraintOptions(element);
+        }
+        if (isObjectification(element)){
+            options = this.getObjectificationOptions(element);
         }
         return options;
     };
@@ -122,8 +126,7 @@ export default function ContextPadProvider(
      * @param {Fact} fact 
      */
     ContextPadProvider.prototype.objectifyFact = function(that, fact){
-        fact.objectified = true; 
-        that._modeling.sendUpdate(fact);
+        that._modeling.flipObjectification(fact);
         that._pad.open(fact, true);
     };
 
@@ -133,8 +136,7 @@ export default function ContextPadProvider(
      * @param {Fact} fact 
      */
     ContextPadProvider.prototype.deobjectifyFact = function(that, fact){
-        fact.objectified = false; 
-        that._modeling.sendUpdate(fact);
+        that._modeling.flipObjectification(fact);
         that._pad.open(fact, true);
     };
 
@@ -515,11 +517,7 @@ export default function ContextPadProvider(
      * @param {constraint} constraint the constraint to remove
      */
     ContextPadProvider.prototype.removeConstraint = function(that, constraint){
-        let src = constraint.src;
-        constraint.src.removeConstraint(constraint);
-        that._modeling.removeElements([ constraint ]);
-        that._modeling.sendUpdate(src);
-        that._modeling.sendUpdates(...src.constraints);
+        that._modeling.removeConstraint(constraint);
     };
 
     /**
@@ -534,6 +532,45 @@ export default function ContextPadProvider(
         options['delete'] = {
             action: {
                 click: () => {that.removeConstraint(that, constraint);},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'Delete',
+            group: 'edit'
+        };
+
+        return options;
+    };
+
+
+    ContextPadProvider.prototype.getObjectificationOptions = function(objectification){
+        var that = this;
+        var options = {};
+
+        options['connect'] = {
+            action: {
+                click: (event,) => {that.startConnect(that, objectification, event,);},
+                dragstart: (event,) => {that.startConnect(that, objectification, event,);}
+            },
+            className: 'context-pad-contect',
+            html: '<div class="entry mdi-alpha-c-box-outline mdi editor-hover"/>',
+            title: 'Connect',
+            group: 'join'
+        };
+
+        options['create-fact'] = {
+            action: {
+                click: () => {that.createConnectedFact(that, objectification);},
+            },
+            class: 'context-pad-create-fact',
+            html: '<div class="entry mdi mdi-alpha-f-box-outline editor-hover"/>',
+            title: 'Join to Fact',
+            group: 'add'
+        };
+
+        options['delete'] = {
+            action: {
+                click: () => {that.objectifyFact(that, objectification.fact);},
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',

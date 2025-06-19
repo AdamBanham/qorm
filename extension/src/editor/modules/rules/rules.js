@@ -1,7 +1,7 @@
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import Rules from 'diagram-js/lib/features/rules/Rules';
-import { isEntity, isExactlyEntity, isFact } from '../model/util';
+import { isEntity, isExactlyEntity, isFact, isObjectification } from '../model/util';
 
 const DEFAULT_PRIORITY = 1000;
 
@@ -28,7 +28,7 @@ export default class OrmRules extends RuleProvider{
         var source = context.source,
         target = context.target,
         role = context.role;
-        if (isEntity(source) && isFact(target)){
+        if ((isEntity(source) || isObjectification(source)) && isFact(target)){
             if (!target.hasMissingRole()){
                 return false;
             } else {

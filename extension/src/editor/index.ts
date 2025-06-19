@@ -36,6 +36,8 @@ import ormConstraints from "./modules/constraints";
 import ormKeyboard from "./modules/keyboard";
 import ormVscodeHandler from "./modules/vscode";
 import ormDragging from "./modules/dragging";
+import ormObjectification from "./modules/objectification";
+import ormMoving from "./modules/move";
 
 export default function ORMEditor(container:HTMLLIElement) : 
     Diagram<null> {
@@ -78,7 +80,9 @@ export default function ORMEditor(container:HTMLLIElement) :
         ormConstraints,
         ormKeyboard,
         ormVscodeHandler,
-        ormDragging
+        ormDragging,
+        ormObjectification,
+        ormMoving
     ];
 
     var diagram =  new Diagram({

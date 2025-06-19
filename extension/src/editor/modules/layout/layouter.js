@@ -119,10 +119,10 @@ export default class OrmLayouter extends BaseLayouter {
 
         // check if the connection is a fact-entity connection
         // [rules should stop this from happening]
-        if (!isFact(fact) || !isEntity(entity)){
-            console.error("error: unable to consider connection :: ", connection);
-            return super.layoutConnection(connection, hints);
-        }
+        // if (!isFact(fact) || !isEntity(entity)){
+        //     console.error("error: unable to consider connection :: ", connection);
+        //     return super.layoutConnection(connection, hints);
+        // }
         
         // handling to get intersecting on perimeters
         let srcRect = makeRect(connection.source);

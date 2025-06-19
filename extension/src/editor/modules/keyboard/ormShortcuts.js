@@ -7,7 +7,7 @@ import {
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import EventBus from "diagram-js/lib/core/EventBus";
 
-import { isFact, isEntity, isExactlyEntity, isSubtype } from "../model/util";
+import { isFact, isEntity, isExactlyEntity, isSubtype, isObjectification } from "../model/util";
 import Modeling from "../modeling/modeler";
 
 const ZoomPunch = 0.25;
@@ -323,7 +323,7 @@ export default class OrmShortcuts {
             if (event.ctrlKey){
                 return;
             }
-            if (isEntity(select)){
+            if (isEntity(select) || isObjectification(select)){
                 if (isKey(['c', 'C'], event)){
                     const other = that._mouse.getLastMoveEvent();
                     that._connect.start(other, select, true);
