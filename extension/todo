@@ -18,7 +18,7 @@
 [] add value sets for entities
 [] add extension setting for debug rendering
 [] revisit file_format.orm and update to reflect current data model
-
+[ ] add vertical alignment for facts
 
 [X] actually write to file changes as they happen
 [X] added a new command create a new ORM model
@@ -66,5 +66,6 @@ Bugfixes
 [X] document diffing is not working, something to do with object assignment on readonly
     [X] Cannot convert undefined or null to object
     [X] loading an empty file causes a parse error (should not be triggered at all)
-[ ] laying out for intersections are a bit off, seems like intersection with shapes need to be revisited
+[?] laying out for intersections are a bit off, seems like intersection with shapes need to be revisited
 [X] editing opens after file load, should be closed after load
+[ ] Mandatory constraints on fact connections need to be closer to the entity
