@@ -9,6 +9,8 @@ import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/e
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 import { transformToViewbox } from "../utils/canvasUtils";
 import VscodeMessager from "./messager";
+import Canvas from "diagram-js/lib/core/Canvas";
+import EventBus from "diagram-js/lib/core/EventBus";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
@@ -30,15 +32,15 @@ export default  class VscodeMessageHandler {
     _modeling: any;
     _elementRegistry: any;
     _elementFactory: any;
-    _eventBus: any;
-    _canvas: any;
+    _eventBus: EventBus;
+    _canvas: Canvas;
     _api: any;
     _seenCons: Set<any>;
     _first_load: boolean = true;
     state: handlerState;
 
-    constructor(eventBus:any, modeling:any, elementRegistry:any, 
-                elementFactory:any, canvas:any, messager:any) {
+    constructor(eventBus:EventBus, modeling:any, elementRegistry:any, 
+                elementFactory:any, canvas:Canvas, messager:any) {
         this.oldDocuments = new Map<string, Document>();
         this.pushInterval = null;
         this.vscodeInterval = null;
@@ -125,6 +127,11 @@ export default  class VscodeMessageHandler {
             if (this._first_load) {
                 this.triggerVscodeUpdate();
                 this._first_load = false;
+                setTimeout(
+                    () => {
+                        this._eventBus.fire('document.loaded', {});
+                    }, 50
+                );
             }
             this.state.status = "idle";
             return;

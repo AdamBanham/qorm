@@ -87,6 +87,7 @@ export default function LabelEditingProvider(
       'shape.remove',
       'connection.remove',
       'canvas.focus.changed',
+      'document.loaded'
     ], HIGH_PRIORITY, function(event) {
   
       if (directEditing.isActive(event.element)) {
