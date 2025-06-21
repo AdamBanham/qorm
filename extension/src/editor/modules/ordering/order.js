@@ -21,12 +21,12 @@ class OrmOrderingProvider extends OrderingProvider{
     }
 
     getOrdering(element, newParent){
-        let index = -2;
+        let index = -1;
         if (isConnection(element)){
-            index = -1;
+            index = 0;
         }
         if (isObjectification(element)){
-            index = 0;
+            index = 1;
             newParent = this._canvas.getRootElement();
         } 
         return {
