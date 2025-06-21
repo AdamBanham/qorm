@@ -68,4 +68,4 @@ Bugfixes
     [X] loading an empty file causes a parse error (should not be triggered at all)
 [?] laying out for intersections are a bit off, seems like intersection with shapes need to be revisited
 [X] editing opens after file load, should be closed after load
-[ ] Mandatory constraints on fact connections need to be closer to the entity
+[X] Mandatory constraints on fact connections need to be closer to the entity
