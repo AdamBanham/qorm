@@ -3,8 +3,9 @@ import {
     attr as svgAttr,
     create as svgCreate,
     clone as svgClone,
-  } from 'tiny-svg';
-
+    classes as svgClasses
+} from 'tiny-svg';
+    
 import { assign } from 'min-dash';
 
 import BaseRenderer from "diagram-js/lib/draw/BaseRenderer";
@@ -18,7 +19,7 @@ import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueRef
 import { SUBTYPE_NAME } from '../model/subtypes';
 import { OBJECTIFICATION_TYPE } from '../model/objectifiedRole';
 
-
+const RENDER_VISUALS_CLASS = "orm-visuals";
 const BORDER_COLOUR = "var(--render-border-colour)";
 const SHAPE_FILL_COLOUR = "var(--render-fill-colour)";
 const SHAPE_LABEL_COLOUR = "var(--render-label-colour)";
@@ -29,11 +30,17 @@ const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
 const MANDATORY_ROLE_COLOUR = "var(--render-mandatory-role-fill)";
 const MANDATORY_ROLE_STROKE = "var(--render-madatory-role-stroke)";
 const OBJECTIFICATION_FILL_COLOUR = "var(--render-objectification-fill)";
+const OBJECTIFICATION_RECT_CLASS = "fact-objectified";
+
+const NO_HIT_CLASS = "djs-hit-no-move";
+
 const SUPPORTED_TYPES = [
     'entity', 'value', 'fact', 'connection', 'label', 'constraint',
     SUBTYPE_NAME, OBJECTIFICATION_TYPE
 ];
+
 var RENDER_PRIORITY = 1500;
+
 const DEBUG = true;
 const DEBUG_OPACITY = 1;
 
@@ -469,11 +476,11 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     drawObjectification(visuals, objectification, attrs) {
-        let group = svgCreate("g", {
-            class: "orm-visuals"
-        });
+        svgClasses(visuals).add(NO_HIT_CLASS);
+        let group = svgCreate("g", {});
+        svgClasses(group)
+            .add(RENDER_VISUALS_CLASS);
         let box = svgCreate("rect", {
-                class: "fact-objectified",
                 x: 0,
                 y: 0,
                 rx: 2.5,
@@ -483,7 +490,9 @@ export default class TSRenderer extends  BaseRenderer {
                 stroke: BORDER_COLOUR,
                 strokeWidth: 2,
                 'stroke-dasharray': ""
-            });
+        });
+        svgClasses(box)
+            .add(OBJECTIFICATION_RECT_CLASS);
         svgAppend(group, box);
         svgAppend(visuals, group);
         return group;

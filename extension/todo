@@ -1,8 +1,8 @@
 [X] export svg
 [X] add objectified fact types
 [X] add objectified label editing
-[] make objectified roles into seperate objects
-[] add objectified connections to roles
+[X] make objectified roles into seperate objects
+[X] add objectified connections to roles
 [X] fancy directions for facts
 [X] add derivable flag
 [X] add unit-based reference mode
