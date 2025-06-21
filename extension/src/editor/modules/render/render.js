@@ -107,23 +107,25 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     _setupMarkers(defs){
-        let marker = svgCreate("marker",{
+         // use a base of 20 (abaritary, feels selected)
+        let mandatory = svgCreate("marker", {
             id: "mandatory-role",
-            refX: 22,
+            refX: 10,
             refY: 5,
             markerHeight: 10,
             markerWidth: 10,
             viewbox: '0 0 10 10',
             orient: 'auto-start-reverse',
-
         });
-        let mandatory = svgCreate("circle", {
+        // the role to include
+        svgAppend(mandatory, svgCreate("circle", {
             cx : 5, 
             cy : 5,
-            r : 2,
-            fill: "red"
-        });
-        svgAppend(marker, mandatory);
+            r : 3,
+            fill: MANDATORY_ROLE_COLOUR,
+            stroke:  MANDATORY_ROLE_STROKE,
+            strokeWidth: 1,
+        }));
 
         let arrowMarker = svgCreate("marker", {
             id: "subtype-arrowhead",
@@ -143,7 +145,7 @@ export default class TSRenderer extends  BaseRenderer {
         svgAppend(arrowMarker, arrowPath);
         svgAppend(defs, arrowMarker);
 
-        svgAppend(defs, marker);
+        svgAppend(defs, mandatory);
     }
 
     canRender(element){
@@ -435,43 +437,8 @@ export default class TSRenderer extends  BaseRenderer {
     }
 
     _drawMandatory(visuals, connection, line){
-        let angle = this.angleBetweenPoints(
-            connection.waypoints[0],
-            connection.waypoints[1]
-        );
-        // work out the extra need for the corners with the hypo is the longest
-        let between = Math.abs(angle % 90);
-        let extra = 5;
-        if (between > 45){
-            extra = extra * (1 - ((between-45)/45.0));
-        } else {
-            extra = extra * ((between/45.0));
-        }
-        // use a base of 20 (abaritary, feels selected)
-        let marker = svgCreate("marker", {
-            id: "mandatory-role-"+connection.id,
-            refX: 20 + 2 + extra,
-            refY: 5,
-            markerHeight: 10,
-            markerWidth: 10,
-            viewbox: '0 0 10 10',
-            orient: 'auto-start-reverse',
-        });
-        // the role to include
-        svgAppend(marker, svgCreate("circle", {
-            cx : 5, 
-            cy : 5,
-            r : 3,
-            fill: MANDATORY_ROLE_COLOUR,
-            stroke:  MANDATORY_ROLE_STROKE,
-            strokeWidth: 1,
-        }));
-        let defs = svgCreate("defs", {});
-        // append to line
-        svgAppend(defs, marker);
-        svgAppend(visuals, defs);
         svgAttr(line, {
-            'marker-start': 'url(#mandatory-role-'+connection.id +')'
+            'marker-start': 'url(#mandatory-role)'
         });
     }
 
