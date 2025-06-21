@@ -39,6 +39,8 @@ import ormDragging from "./modules/dragging";
 import ormObjectification from "./modules/objectification";
 import ormMoving from "./modules/move";
 
+import { scaleToFitElements } from './modules/utils/canvasUtils';
+
 export default function ORMEditor(container:HTMLLIElement) : 
     Diagram<null> {
 
@@ -98,7 +100,8 @@ export default function ORMEditor(container:HTMLLIElement) :
 
     setTimeout(
         () => {
-            (diagram.get('canvas') as any).zoom('fit-viewport');
+            let canvas = (diagram.get('canvas') as any);
+            scaleToFitElements(canvas);
         }, 50
     );
 
