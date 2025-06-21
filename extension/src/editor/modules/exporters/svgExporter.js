@@ -22,6 +22,7 @@ const renderColours = `
     --render-objectified-label-fill: hsl(283, 100%, 68%);
     --render-derived-fact-label-fill: hsl(300, 82%, 32%);
     --render-fact-verb-arrow-fill: hsl(283, 100%, 68%);
+    --render-objectification-fill: #6464c7ab;
 }
 
 .fact-role {
