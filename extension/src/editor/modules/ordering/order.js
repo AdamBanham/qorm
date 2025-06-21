@@ -1,15 +1,15 @@
 import OrderingProvider from "diagram-js/lib/features/ordering/OrderingProvider.js"
 import { isConnection} from "diagram-js/lib/util/ModelUtil";
-import { isObjectification } from "../model/util";
+import { isObjectification, isSubtype } from "../model/util";
 
 
 /**
  * Layering of elements in the ORM editor.
  * 
  * ----TOP----
- * 0, Entities, Facts, Constraints
- * 1, connections to above, Subtypes to above
- * 2, Objectifications,
+ * -1, Entities, Facts, Constraints
+ * 0, connections to above, Subtypes to above
+ * 1, Objectifications,
  * 3, connections to above
  * ----BOTTOM----
  */
@@ -22,7 +22,7 @@ class OrmOrderingProvider extends OrderingProvider{
 
     getOrdering(element, newParent){
         let index = -1;
-        if (isConnection(element)){
+        if (isConnection(element) || isSubtype(element)){
             index = 0;
         }
         if (isObjectification(element)){
