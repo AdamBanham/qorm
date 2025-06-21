@@ -456,7 +456,7 @@ export default class OrmShortcuts {
             if (event.ctrlKey){
                 return;
             }
-            if (isEntity(select)){
+            if (isEntity(select) || isObjectification(select)){
                 if (isKey(['f', 'F'], event)){
                     var fact = Object.assign(
                     that._factory.createDummyAttributesForFacts(),
