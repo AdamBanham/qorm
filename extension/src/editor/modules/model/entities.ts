@@ -19,6 +19,7 @@ export interface entity extends Shape {
     attachers: Shape[];
     referenceMode: "reference" | "unit-based" | "value";
     meta?: string;
+    constraints: any[];
 }
 
 export function createEntity(
@@ -57,6 +58,7 @@ export class Entity implements entity {
     referenceMode: "reference" | "unit-based" | "value";
     subtypeOf: string[];
     meta?: string | undefined;
+    constraints: any[];
     
     
     constructor(name: string, ref: string, width: number, height: number, x: number, y: number) {
@@ -77,6 +79,7 @@ export class Entity implements entity {
         this.referenceMode = "reference";
         this.meta = " ";
         this.subtypeOf = [];
+        this.constraints = [];
     }
 
     flipType() {
@@ -148,6 +151,14 @@ export class Entity implements entity {
     isSubtyping(): boolean {
         return this.subtypeOf.length > 0;
     }
+
+    hasValueConstraint(): boolean {
+        return this.constraints.some(constraint => constraint.type === "value-constraint");
+    }
+
+    addConstraint(constraint: any) {
+        this.constraints.push(constraint);
+    };
 
     update() {
         

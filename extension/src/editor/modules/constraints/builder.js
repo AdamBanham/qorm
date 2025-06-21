@@ -22,6 +22,7 @@ import {
 import { isKey } from 'diagram-js/lib/features/keyboard/KeyboardUtil';
 
 import { isWithinShape,transformToViewbox } from '../utils/canvasUtils';
+import { SIMPLE_MODE } from './constraints';
 
 /**
  * @typedef {import('diagram-js/lib/features/dragging/Dragging').default} Dragging
@@ -237,9 +238,16 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
       }, { originalEvent: event });
 
       // emit move event
-      if (isWithinShape(context.data.source, payload)) {
+      if (context.mode === SIMPLE_MODE ) {
+        if (isWithinShape(context.data.source, payload)) {
+          fire('move', context);
+        }
+      } else {
+        // emit move event with payload
+        // containing the current position
         fire('move', context);
       }
+     
     }
   }
 

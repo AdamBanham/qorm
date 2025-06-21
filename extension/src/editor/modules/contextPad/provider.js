@@ -9,6 +9,11 @@ import { Entity, ValueEntity, entity } from "../model/entities";
 import { isFact, isEntity, isConstraint, isExactlyEntity, } from "../model/util";
 import { isSubtype, isObjectification } from "../model/util";
 import { constraint } from "../model/constraints";
+import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
+         SIMPLE_MODE as CONSTRAINT_SIMPLE_MODE,
+         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE
+} from "../constraints/constraints";
+import { isValueConstraint } from "../constraints/model/utils";
   
 
 export default function ContextPadProvider(
@@ -64,6 +69,9 @@ export default function ContextPadProvider(
         if (isObjectification(element)){
             options = this.getObjectificationOptions(element);
         }
+        if (isValueConstraint(element)){
+            options = this.getValueConstraintOptions(element);
+        }
         return options;
     };
 
@@ -114,8 +122,8 @@ export default function ContextPadProvider(
      * @param {Fact} fact 
      */
     ContextPadProvider.prototype.createConstraint = function(that, fact, event){
-        that._eventBus.fire('fact.create.constraint', 
-            {source: fact, mode: 'simple', originalEvent: event}
+        that._eventBus.fire(CONSTRAINT_BUS_TRIGGER, 
+            {source: fact, mode: CONSTRAINT_SIMPLE_MODE, originalEvent: event}
         );
     };
 
@@ -434,6 +442,18 @@ export default function ContextPadProvider(
         that._subtyping.start(event, entity);
     };
 
+    ContextPadProvider.prototype.addValueConstraint = function(that, entity){
+        that._eventBus.fire(CONSTRAINT_BUS_TRIGGER, 
+            {source: entity, mode: CONSTRAINT_VALUE_MODE, originalEvent: event}
+        );
+    };
+
+    ContextPadProvider.prototype.removeValueConstraint = function(that, entity){
+        that._modeling.removeValueConstraint(entity);
+        that._pad.open(entity, true);
+    };
+
+
     /**
      * Creates the usable options for the given Entity type.
      * @param {Entity} entity 
@@ -497,6 +517,28 @@ export default function ContextPadProvider(
             title: 'Join to Fact',
             group: 'add'
         };
+
+        if (entity.hasValueConstraint()){
+            options['remove-value-constraint'] = {
+                action: {
+                    click: () => {that.removeValueConstraint(that, entity);},
+                },
+                className: 'context-pad-add-value-constraint',
+                html: '<div class="entry mdi mdi-alpha-v-box editor-hover"/>',
+                title: 'Remove Value Constraint',
+                group: 'add'
+            };
+        } else {
+            options['add-value-constraint'] = {
+                action: {
+                    click: () => {that.addValueConstraint(that, entity);},
+                },
+                className: 'context-pad-add-value-constraint',
+                html: '<div class="entry mdi mdi-alpha-v-box-outline editor-hover"/>',
+                title: 'Add Value Constraint',
+                group: 'add'
+            };
+        }
 
         options['delete'] = {
             action: {
@@ -571,6 +613,54 @@ export default function ContextPadProvider(
         options['delete'] = {
             action: {
                 click: () => {that.objectifyFact(that, objectification.fact);},
+            },
+            className: 'context-pad-delete',
+            html: '<div class="entry mdi-delete mdi editor-hover"/>',
+            title: 'Delete',
+            group: 'edit'
+        };
+
+        return options;
+    };
+
+    ContextPadProvider.prototype.increaseWidthOnValueConstraint = function(that, constraint){
+        constraint.increaseWidth();
+        that._modeling.sendUpdate(constraint);
+    };
+
+    ContextPadProvider.prototype.decreaseWidthOnValueConstraint = function(that, constraint){
+        constraint.decreaseWidth();
+        that._modeling.sendUpdate(constraint);
+    };
+
+    ContextPadProvider.prototype.getValueConstraintOptions = function(constraint){
+        let options = {};
+
+        options['increase-width'] = {
+            action: {
+                click: () => {this.increaseWidthOnValueConstraint(this, constraint);}
+            },
+            className: 'context-pad-increase-width',
+            html: '<div class="entry mdi mdi-plus-box-outline editor-hover"/>',
+            title: 'Increase Width',
+            group: 'edit'
+        };
+
+        if (constraint.canDecreaseWidth()){ 
+            options['decrease-width'] = {
+                action: {
+                    click: () => {this.decreaseWidthOnValueConstraint(this, constraint);}
+                },
+                className: 'context-pad-decrease-width',
+                html: '<div class="entry mdi mdi-minus-box-outline editor-hover"/>',
+                title: 'Decrease Width',
+                group: 'edit'
+            };
+        }
+
+        options['delete'] = {
+            action: {
+                click: () => {this.removeValueConstraint(this, constraint.source);}
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',

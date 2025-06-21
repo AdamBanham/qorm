@@ -3,7 +3,12 @@ import { PREFIX } from './builder';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import Modeling from 'diagram-js/lib/features/modeling/Modeling';
 
+export const BUS_TRIGGER = 'constraint-builder.create';
+export const SIMPLE_MODE = 'simple';
+export const OBJECT_VALUE_MODE = 'object-value';
+
 import SimpleConstraintHandler from './handlers/SimpleConstraint.js';
+import ObjectValueConstraintHandler from './handlers/ObjectValueConstraint.js';
 
 /**
  * This module is responsible for managing the creation 
@@ -17,22 +22,24 @@ export default class ContraintsModule {
      * @param {Modeling} modeling 
      * @param {Builder} dragging 
      */
-    constructor(eventBus, modeling, builder, elementFactory, rules) {
+    constructor(eventBus, modeling, builder, elementFactory, rules, editing) {
         this._builder = builder;
         this._eventBus = eventBus;
         this._modeling = modeling;
 
         // register event listeners
         var that = this;
-        this._eventBus.on('fact.create.constraint', (context) => {
+        this._eventBus.on(BUS_TRIGGER, (context) => {
             that.init(context);
         });
 
-        this._registry = {
-            'simple' : new SimpleConstraintHandler(
+        this._registry = {};
+        this._registry[SIMPLE_MODE] = new SimpleConstraintHandler(
                 eventBus, elementFactory, modeling, rules
-            )
-        };
+        );
+        this._registry[OBJECT_VALUE_MODE] = new ObjectValueConstraintHandler(
+            eventBus, elementFactory, modeling, rules, editing
+        );
     }
 
     /**
@@ -62,5 +69,6 @@ ContraintsModule.$inject = [
     'modeling',
     'constraintsBuilder',
     'elementFactory',
-    'rules'
+    'rules',
+    'directEditing'
 ];

@@ -8,6 +8,10 @@ export default class ConstraintHandler {
 
     }
 
+    precheck(context) {
+        return true;
+    }
+
     prepareData(context) {
         return {
             source: context.source,

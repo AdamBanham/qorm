@@ -10,6 +10,7 @@ import { entity, ValueEntity, Entity } from "../model/entities";
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 import { isFact, isSubtype } from '../model/util';
 import { OrmConnection } from '../model/connections';
+import { TYPE as VALUE_CONSTRAINT_TYPE } from '../constraints/model/valueConstraint';
 
 export default class OrmModelling extends Modeling {
 
@@ -369,6 +370,25 @@ export default class OrmModelling extends Modeling {
         this.removeElements([ constraint ]);
         this.sendUpdate(src);
         this.sendUpdates(...src.constraints);
+    }
+
+    removeValueConstraint(shape){
+        if (shape && shape.constraints) {
+            let valueConstraint; 
+            for (let con of shape.constraints) {
+                if (con.type === VALUE_CONSTRAINT_TYPE) {
+                    valueConstraint = con;
+                    break;
+                }
+            }
+            if (valueConstraint) {
+                this.removeElements([valueConstraint]);
+            }
+            shape.constraints = shape.constraints.filter(
+                con => con.type !== VALUE_CONSTRAINT_TYPE
+            );
+            this.sendUpdate(shape);
+        }
     }
 
 }

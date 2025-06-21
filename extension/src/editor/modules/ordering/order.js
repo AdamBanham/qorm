@@ -1,6 +1,7 @@
-import OrderingProvider from "diagram-js/lib/features/ordering/OrderingProvider.js"
+import OrderingProvider from "diagram-js/lib/features/ordering/OrderingProvider.js";
 import { isConnection} from "diagram-js/lib/util/ModelUtil";
 import { isObjectification, isSubtype } from "../model/util";
+import { isValueConstraint } from "../constraints/model/utils";
 
 
 /**
@@ -22,11 +23,15 @@ class OrmOrderingProvider extends OrderingProvider{
 
     getOrdering(element, newParent){
         let index = -1;
+        
         if (isConnection(element) || isSubtype(element)){
             index = 0;
         }
-        if (isObjectification(element)){
+        if (isValueConstraint(element)){
             index = 1;
+        }
+        if (isObjectification(element)){
+            index = 2;
             newParent = this._canvas.getRootElement();
         } 
         return {

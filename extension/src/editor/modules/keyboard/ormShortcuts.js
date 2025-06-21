@@ -9,6 +9,11 @@ import EventBus from "diagram-js/lib/core/EventBus";
 
 import { isFact, isEntity, isExactlyEntity, isSubtype, isObjectification } from "../model/util";
 import Modeling from "../modeling/modeler";
+import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
+         SIMPLE_MODE as CONSTRAINT_SIMPLE_MODE,
+         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE
+ } from "../constraints/constraints";
+import { isValueConstraint } from "../constraints/model/utils";
 
 const ZoomPunch = 0.25;
 
@@ -66,6 +71,9 @@ export default class OrmShortcuts {
             that.triggerSimpleConstraint(that, context);
         });
         keyboard.addListener((context) => {
+            that.triggerValueConstraint(that, context);
+        });
+        keyboard.addListener((context) => {
             that.triggerMandatory(that, context);
         });
         keyboard.addListener((context) => {
@@ -94,6 +102,12 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerKeyboardHelpMenu(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerConstraintIncrease(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerConstraintDecrease(that, context);
         });
     }
 
@@ -237,8 +251,8 @@ export default class OrmShortcuts {
     }
 
     /**
-     * Will trigger fact expansion or reduction the following keydowns:
-     * '+' (expand), '-' (reduce)
+     * Will trigger adding new a simple constraint on the following keydowns:
+     * 'c', 'C'
      * @param {OrmShortcuts} that 
      * @param {*} context 
      */
@@ -252,12 +266,42 @@ export default class OrmShortcuts {
             }
             if (isFact(select)){
                 if (isKey(['c', 'C'], event)){
-                    that._eventbus.fire('fact.create.constraint', 
-                        {source: select, mode: 'simple', originalEvent: event}
+                    that._eventbus.fire(CONSTRAINT_BUS_TRIGGER, 
+                        {source: select, mode: CONSTRAINT_SIMPLE_MODE,
+                         originalEvent: event}
                     );
                     setTimeout(
                         () => this._selection.deselect(select), 
                     5 );
+                }
+            }
+        }
+    }
+
+    /**
+     * Will trigger adding a new value constraint on the following keydowns:
+     * 'v', 'V'
+     * @param {OrmShortcuts} that 
+     * @param {*} context 
+     */
+    triggerValueConstraint(that, context){
+        const event  = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isFact(select) || isEntity(select)){
+                if (isKey(['v', 'v'], event)){
+                    if (select.hasValueConstraint()){
+                        that._modeling.removeValueConstraint(select);
+                    } else {
+                        that._eventbus.fire(CONSTRAINT_BUS_TRIGGER, 
+                            {source: select, mode: CONSTRAINT_VALUE_MODE,
+                             originalEvent: event}
+                        );
+                    }
                 }
             }
         }
@@ -491,6 +535,42 @@ export default class OrmShortcuts {
             if (isKey(['k', 'K'], event)){
                 that._eventbus.fire('keyboard.controls.toggle');
                 event.stopPropagation();
+            }
+        }
+    }
+
+    triggerConstraintIncrease(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isKey(['+', '=', 'Plus', 'Equal'], event)){
+                    if (isValueConstraint(select)){
+                    event.stopPropagation();
+                    select.increaseWidth();
+                    that._modeling.sendUpdate(select);
+                }
+            }
+        }
+    }
+
+    triggerConstraintDecrease(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isKey(['-', '_', 'Minus'], event)){
+                    if (isValueConstraint(select)){
+                    event.stopPropagation();
+                    select.decreaseWidth();
+                    that._modeling.sendUpdate(select);
+                }
             }
         }
     }

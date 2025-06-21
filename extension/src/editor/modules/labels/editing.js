@@ -5,10 +5,19 @@ import {
 import  {
   isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
-import { isEntity, isFact, isExactlyEntity, isExactlyValue, isUnitReference} from '../model/util';
-import { transformToViewbox } from "../utils/canvasUtils";
 import EventBus from 'diagram-js/lib/core/EventBus';
 import Canvas from 'diagram-js/lib/core/Canvas';
+
+
+import { 
+  isEntity, isFact, isExactlyEntity, 
+  isExactlyValue, isUnitReference} from '../model/util';
+import {
+  isValueConstraint
+} from '../constraints/model/utils';
+import { transformToViewbox } from "../utils/canvasUtils";
+
+
 
 
 // helpers //////////
@@ -36,6 +45,12 @@ function getLabel(element ,context){
   } else if (context.touchingMode === 'objectified'){
     if (element.objectifiedName){
       return element.objectifiedName;
+    } else {
+      return "";
+    }
+  } else if (context.touchingMode === 'description'){
+    if (element.description){
+      return element.description;
     } else {
       return "";
     }
@@ -78,7 +93,10 @@ export default function LabelEditingProvider(
     // listen to dblclick on non-root elements
     eventBus.on(
       ['element.dblclick', 'label.edit.trigger'], HIGH_PRIORITY, function(event) {
-      if (isFact(event.element) || isEntity(event.element) || isLabel(event.element)){
+      if (isFact(event.element) || 
+          isEntity(event.element) || 
+          isLabel(event.element) ||
+          isValueConstraint(event.element)){
         activateDirectEdit(event.element, true);
       }
     });
@@ -117,6 +135,9 @@ export default function LabelEditingProvider(
       } else if (isExactlyValue(element)){
         that._context.touchingType = 'value';
         that._context.touchingMode = 'name';
+      } else if (isValueConstraint(element)) {
+        that._context.touchingType = 'constraint';
+        that._context.touchingMode = 'description';
       } else {
         that._context.touchingType = null;
         that._context.touchingMode = null;
@@ -245,11 +266,16 @@ export default function LabelEditingProvider(
       this.handleFinishingFact(element, this._context, newLabel);
     } else if (this._context.touchingMode === 'name'){
       element.name = newLabel;
+    } else if (this._context.touchingType === 'constraint'){
+      element.setDescription(newLabel);
     }
 
     // trigger changes
     setTimeout(() => {
-      this._modeling.sendUpdates(element, ...element.labels);
+      this._modeling.sendUpdates(element);
+      if (element.labels){
+        this._modeling.sendUpdates(...element.labels);
+      }
       this._selection.select(element);
     }, 25);
    

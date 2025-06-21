@@ -1,11 +1,13 @@
 import ElementFactory from "diagram-js/lib/core/ElementFactory";
 
-import { createEntity, entity} from "../model/entities";
+import { createEntity, entity, ValueEntity} from "../model/entities";
 import { createFact, Fact, fact } from "../model/facts";
 import { createConstraint } from "../model/constraints";
 import { createConnection } from "../model/connections";
 import { SUBTYPE_NAME, createSubtype } from "../model/subtypes";
 import { OBJECTIFICATION_TYPE, createObjectification } from "../model/objectifiedRole";
+import { TYPE as VALUE_CONSTRAINT_TYPE, createValueConstraint } from "../constraints/model/valueConstraint";
+
 import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 
@@ -78,6 +80,11 @@ export default class OrmElementFactory extends ElementFactory{
             let el = createObjectification(attrs.fact);
             this._eventBus.fire('factory.create', { element: el });
             return el; 
+        }
+        if (type === VALUE_CONSTRAINT_TYPE){
+            attrs['type'] = VALUE_CONSTRAINT_TYPE;
+            let el = createValueConstraint(attrs.x, attrs.y, attrs.source);
+            return el;
         }
         if (type === 'label'){
             attrs['type'] = 'label';
@@ -175,6 +182,20 @@ export default class OrmElementFactory extends ElementFactory{
         return {
             type: OBJECTIFICATION_TYPE,
             fact: fact,
+        };
+    }
+
+    /**
+     * Makes a dummy set of attributes for a value constraints.
+     * @param {Entity | ValueEntity | Fact} source what the constraint is over 
+     * @returns 
+     */
+    createDummyAttributesForValueConstraint(source) {
+        return {
+            type: VALUE_CONSTRAINT_TYPE,
+            source: source,
+            x: source.x + source.width + 10,
+            y: source.y + source.height / 2,
         };
     }
 }
