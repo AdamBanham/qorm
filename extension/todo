@@ -7,17 +7,20 @@
 [X] add derivable flag
 [X] add unit-based reference mode
 [X] keyboard support
-[] "general" reference modes (probably not)
+[-] "general" reference modes (probably not)
 [X] add subtpying (a connection between entities)
 [X] change all context pad icons to letters
 [X] link save button on palette to vscode api
 [X] add keyboard shortcut menu
-    [ ] should the keyboard shortcut be ctrl+k, maybe ctrl+h instead?
+    [-] should the keyboard shortcut be ctrl+k, maybe ctrl+h instead?
 [X] change connections so they were not going to center of objects
     [X] Now geometry is calculated for the perimeter of the object
-[] add value sets for entities
-[] add extension setting for debug rendering
-[] revisit file_format.orm and update to reflect current data model
+[ ] add value constraints 
+    [X] add value constraints for referenced object types 
+    [ ] add value constraints for value types
+    [ ] add value constraints for facts
+[ ] add extension setting for debug rendering
+[ ] revisit file_format.orm and update to reflect current data model
 [ ] add vertical alignment for facts
 
 [X] actually write to file changes as they happen
@@ -37,8 +40,8 @@
     [ ] entities xml 
     [ ] fact xml 
     [ ] connections? 
-[] add verb conventions to bottom of html?
-[] add tab model 
+[ ] add verb conventions to bottom of html?
+[ ] add tab model 
    [] when an element is selected, tabbing goes through its connections 
    [] when tab is pressed, rotate from top left across and then down 
    [] alt left goes to the last previous tab 
