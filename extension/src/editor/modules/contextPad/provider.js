@@ -115,7 +115,7 @@ export default function ContextPadProvider(
      */
     ContextPadProvider.prototype.createConstraint = function(that, fact, event){
         that._eventBus.fire('fact.create.constraint', 
-            {fact: fact, mode: 'simple', originalEvent: event}
+            {source: fact, mode: 'simple', originalEvent: event}
         );
     };
 

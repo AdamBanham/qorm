@@ -38,7 +38,7 @@ export default class ContraintsModule {
     /**
      * The trigger point for a constraint builder.
      * @param {Object} context 
-     * @param {Fact} context.fact The fact element to constrain.
+     * @param {Shape} context.source The fact element to constrain.
      * @param {string} context.mode The mode of the builder.
      * @param {Object} context.orginalEvent A mouse event.
      * 

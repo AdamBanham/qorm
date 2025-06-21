@@ -253,7 +253,7 @@ export default class OrmShortcuts {
             if (isFact(select)){
                 if (isKey(['c', 'C'], event)){
                     that._eventbus.fire('fact.create.constraint', 
-                        {fact: select, mode: 'simple', originalEvent: event}
+                        {source: select, mode: 'simple', originalEvent: event}
                     );
                     setTimeout(
                         () => this._selection.deselect(select), 

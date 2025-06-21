@@ -43,11 +43,11 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
     prepareData(context) {
         const data = super.prepareData(context);
         var attrs = this._factory
-            .createDummyAttributesForConstraintOverFact(data.fact);
+            .createDummyAttributesForConstraintOverFact(data.source);
         var constraint = this._modeling.createShape(
             Object.assign({}, attrs),
             {x: attrs.x, y: attrs.y },
-            data.fact.parent
+            data.source.parent
         );
         constraint.setEditing(true);
         this._modeling.sendUpdate(constraint);
@@ -59,7 +59,7 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
 
     click(event) {
         event.stopPropagation();
-        let role = event.fact.findNearestRoleUsingPosX(
+        let role = event.source.findNearestRoleUsingPosX(
             event.x
         );
         if (role < 0) {
@@ -69,7 +69,7 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
         this._rules.allowed('constraint.create', {
             mode: event.mode,
             constraint: event.constraint,
-            fact: event.fact,
+            fact: event.source,
         });
         this._modeling.sendUpdate(event.constraint);
     }
@@ -80,12 +80,12 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
         let allowed = this._rules.allowed('constraint.create', {
             mode: event.mode,
             constraint: event.constraint,
-            fact: event.fact,
+            fact: event.source,
         });
 
         if (allowed) {
-            event.fact.addConstraint(event.constraint);
-            this._modeling.sendUpdates(event.constraint, event.fact);
+            event.source.addConstraint(event.constraint);
+            this._modeling.sendUpdates(event.constraint, event.source);
         } else {
             this._modeling.removeElements([event.constraint]);
         }

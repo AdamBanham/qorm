@@ -237,7 +237,7 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
       }, { originalEvent: event });
 
       // emit move event
-      if (isWithinShape(context.data.fact, payload)) {
+      if (isWithinShape(context.data.source, payload)) {
         fire('move', context);
       }
     }
@@ -320,7 +320,7 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
 
 
     // emit click if its on the fact
-    if (isWithinShape(context.data.fact, context.payload)) {
+    if (isWithinShape(context.data.source, context.payload)) {
         fire('click', context);
     } else {
         end(event);
@@ -412,7 +412,7 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
     canvas.removeMarker(canvas.getRootElement(), DRAG_ACTIVE_CLS);
 
     // restore selection, unless it has changed
-    var previousSelection = context.data.fact;
+    var previousSelection = context.data.source;
     // always restore the selection back to the fact.
     if (previousSelection){
       restoreSelection([previousSelection]);

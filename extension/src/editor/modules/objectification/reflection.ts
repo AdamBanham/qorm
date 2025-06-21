@@ -21,7 +21,7 @@ export default class ObjectificationReflection {
 
         eventBus.on('constraint.builder.simple.end', (event) => {
             let data = event as any;
-            let shape = data.fact;
+            let shape = data.source;
             if (this.checkFact(shape)) {
                 setTimeout(() => this.processObjectification(shape), 5);
             }

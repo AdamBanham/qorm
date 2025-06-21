@@ -10,7 +10,7 @@ export default class ConstraintHandler {
 
     prepareData(context) {
         return {
-            fact: context.fact,
+            source: context.source,
             mode: context.mode,
         };
     }
