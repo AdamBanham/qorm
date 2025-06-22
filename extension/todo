@@ -15,10 +15,10 @@
     [-] should the keyboard shortcut be ctrl+k, maybe ctrl+h instead?
 [X] change connections so they were not going to center of objects
     [X] Now geometry is calculated for the perimeter of the object
-[ ] add value constraints 
+[X] add value constraints 
     [X] add value constraints for referenced object types 
-    [ ] add value constraints for value types
-    [ ] add value constraints for facts
+    [X] add value constraints for value types
+    [X] add value constraints for facts
 [ ] add extension setting for debug rendering
 [ ] revisit file_format.orm and update to reflect current data model
 [ ] add vertical alignment for facts
@@ -63,7 +63,8 @@ Bugfixes
 [X] bugfix, element.out on dragging not progatting on default priority 
 [X] labels on facts are not reactive; create derivation label; change base label content; no change
 [X] labels on facts are not updating position after fact expansion
-[ ] positions of elements seem to change when reading in a document (only one or two arent or are offset)
+[-] positions of elements seem to change when reading in a document (only one or two arent or are offset)
+    [X] fixed a version of this bug due to objectification, likely other offsets are needed :/
 [X] when fact is expanded/reduced the connections for remainding connections are not updated
 [X] command to create a new orm model does not work
 [X] document diffing is not working, something to do with object assignment on readonly
