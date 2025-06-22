@@ -1,4 +1,4 @@
-import ConstraintHandler from './ConstraintHandler.js';
+import ConstraintHandler from './ConstraintHandler';
 
 import { PREFIX } from '../builder.js';
 const MODE = 'simple';

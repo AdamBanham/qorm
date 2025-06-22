@@ -328,10 +328,14 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
 
 
     // emit click if its on the fact
-    if (isWithinShape(context.data.source, context.payload)) {
-        fire('click', context);
+    if (context.mode === SIMPLE_MODE) {
+      if (isWithinShape(context.data.source, context.payload)) {
+          fire('click', context);
+      } else {
+          end(event);
+      }
     } else {
-        end(event);
+      fire('click', context);
     }
 
   }

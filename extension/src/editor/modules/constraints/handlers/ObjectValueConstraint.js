@@ -1,4 +1,4 @@
-import ConstraintHandler from './ConstraintHandler.js';
+import ConstraintHandler from './ConstraintHandler';
 
 import { PREFIX } from '../builder.js';
 const MODE = 'object-value';
@@ -36,18 +36,12 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
         );
 
         this._eventBus.on(
-            `${PREFIX}${MODE}.cleanup`,
-            (event) => this.cleanup(event)
-        );
-
-        this._eventBus.on(
             [`${PREFIX}${MODE}.cancel`, `${PREFIX}${MODE}.cancelled`],
             (event) => this.cancel(event)
         );
     }
 
     prepareData(context) {
-        console.log(context);
         const data = super.prepareData(context);
 
         let constraint = this._factory
@@ -81,27 +75,26 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
     }
 
     click(event) {
+        let source = event.source,
+            constraint = event.constraint,
+            that = this;
         
+        source.addConstraint(constraint);
+        this._modeling.sendUpdates(source, constraint);
+        setTimeout( () =>
+            that._eventBus.fire(
+                'label.edit.trigger',
+                {
+                    element: constraint,
+                }
+            )
+        , 25);
+        this._builder.end(event);
     }
 
     cleanup(event) {
-        this.move(event);
-
-        let source = event.source,
-            constraint = event.constraint;
-        
-        source.addConstraint(constraint);
-
-        this._eventBus.fire(
-            'label.edit.trigger',
-            {
-                element: constraint,
-            }
-        );
-    }
-
-    cancel(event) {
-        this._modeling.removeElements([event.constraint]);
+        let constraint = event.constraint;
+        this._modeling.removeElements([constraint]);
     }
 }
 
