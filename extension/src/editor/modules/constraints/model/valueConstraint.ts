@@ -89,7 +89,25 @@ export class ValueConstraint implements valueConstraint{
         return this.width > UNIT_WIDTH;
     }
 
+    setRoleFactor(factor: number) { 
+        if (isFact(this.source)) {
+            this.factor = factor;
+        }
+    }
+
     update(){
 
     }
+
+    buildAttributes(): object {
+        return {
+            id: this.id,
+            x: this.x,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+            factor: this.factor,
+            description: this.description
+        };
+    };
 };

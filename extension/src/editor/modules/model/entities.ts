@@ -172,9 +172,18 @@ export class Entity implements entity {
         attributes.set("ref", this.ref);
         attributes.set("x", Math.fround(this.x));
         attributes.set("y", Math.fround(this.y));
+        
         if (this.type === "entity"){
             attributes.set("referenceMode", this.referenceMode);
             attributes.set("meta", this.meta);
+        }
+
+        if (this.constraints.length > 0) {
+            attributes.set("constraints", 
+                this.constraints.map(
+                    constraint => constraint.buildAttributes()
+                )
+            );
         }
         return attributes;
     }

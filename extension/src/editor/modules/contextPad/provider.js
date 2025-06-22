@@ -11,7 +11,8 @@ import { isSubtype, isObjectification } from "../model/util";
 import { constraint } from "../model/constraints";
 import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
          SIMPLE_MODE as CONSTRAINT_SIMPLE_MODE,
-         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE
+         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE,
+         ROLE_VALUE_MODE as CONSTRAINT_ROLE_VALUE_MODE
 } from "../constraints/constraints";
 import { isValueConstraint } from "../constraints/model/utils";
   
@@ -180,7 +181,13 @@ export default function ContextPadProvider(
      */
     ContextPadProvider.prototype.removeFact = function(that, fact){
         that._modeling.removeFact(fact);
-    }
+    };
+
+    ContextPadProvider.prototype.createValueConstraint = function(that, fact, event){
+        that._eventBus.fire(CONSTRAINT_BUS_TRIGGER, 
+            {source: fact, mode: CONSTRAINT_ROLE_VALUE_MODE, originalEvent: event}
+        );
+    };
 
     /**
      * Builds the current context options from the state of the fact
@@ -284,7 +291,17 @@ export default function ContextPadProvider(
             className: 'context-pad-delete',
             html: '<div class="entry mdi-alpha-c-box-outline mdi editor-hover"/>',
             title: 'Add Constraint',
-            group: '2-edit'
+            group: '3-edit'
+        };
+
+        options['create-value-constraint'] = {
+            action: {
+                click: (event) => {that.createValueConstraint(that, fact, event);},
+            },
+            className: 'context-pad-create-value-constraint',
+            html: '<div class="entry mdi mdi-alpha-v-box-outline editor-hover"/>',
+            title: 'Add Value Constraint',
+            group: '3-edit'
         };
 
         if (!fact.objectified){
@@ -448,8 +465,8 @@ export default function ContextPadProvider(
         );
     };
 
-    ContextPadProvider.prototype.removeValueConstraint = function(that, entity){
-        that._modeling.removeValueConstraint(entity);
+    ContextPadProvider.prototype.removeAllValueConstraints = function(that, entity){
+        that._modeling.removeAllValueConstraint(entity);
         that._pad.open(entity, true);
     };
 
@@ -521,7 +538,7 @@ export default function ContextPadProvider(
         if (entity.hasValueConstraint()){
             options['remove-value-constraint'] = {
                 action: {
-                    click: () => {that.removeValueConstraint(that, entity);},
+                    click: () => {that.removeAllValueConstraints(that, entity);},
                 },
                 className: 'context-pad-add-value-constraint',
                 html: '<div class="entry mdi mdi-alpha-v-box editor-hover"/>',
@@ -633,6 +650,12 @@ export default function ContextPadProvider(
         that._modeling.sendUpdate(constraint);
     };
 
+    ContextPadProvider.prototype.removeValueConstraint = function(that, constraint){
+        let src = constraint.source;
+        that._modeling.removeValueConstraint(constraint);
+        that._pad.open(src, true);
+    };
+
     ContextPadProvider.prototype.getValueConstraintOptions = function(constraint){
         let options = {};
 
@@ -660,7 +683,7 @@ export default function ContextPadProvider(
 
         options['delete'] = {
             action: {
-                click: () => {this.removeValueConstraint(this, constraint.source);}
+                click: () => {this.removeValueConstraint(this, constraint);}
             },
             className: 'context-pad-delete',
             html: '<div class="entry mdi-delete mdi editor-hover"/>',

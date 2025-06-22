@@ -3,14 +3,17 @@ import DocuementParser from "./document";
 import { Document } from "./document";
 import { documentNode, DocumentEntity, DocumentFact, DocumentConnection } from "./document";
 import { isEqualSets } from "../utils/sets";
-import { isEntity, isExactlyEntity, isFact } from "../model/util";
-import { isConnection } from "diagram-js/lib/util/ModelUtil";
-import { unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
+import { isConstraint, isEntity, isExactlyEntity, isFact } from "../model/util";
+import { Entity, unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 import VscodeMessager from "./messager";
+import { scaleToFitElements } from "../utils/canvasUtils";
+import { Fact } from "../model/facts";
+
+import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import Canvas from "diagram-js/lib/core/Canvas";
 import EventBus from "diagram-js/lib/core/EventBus";
-import { scaleToFitElements } from "../utils/canvasUtils";
+import { isValueConstraint } from "../constraints/model/utils";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
@@ -241,22 +244,28 @@ export default  class VscodeMessageHandler {
                 element = this._elementFactory.createDummyAttributesForEntities("entity");
                 pos.x = pos.x + (entityWidth / 2);
                 pos.y = pos.y + (entityHeight / 2);
+                let docData = Object.fromEntries(node.attributes);
+                delete docData['constraints'];
                 element = this._modeling.createShape(
-                    Object.assign(element, Object.fromEntries(node.attributes)),
+                    Object.assign(element, docData),
                     pos,
                     this._canvas.getRootElement()
                 );
                 element.update();
+                this._handleCreationForEntity(element, node.attributes);
                 this._modeling.sendUpdate(element);
             } else if (node.attributes.get('type') === 'fact') {
                 element = this._elementFactory.createDummyAttributesForFacts();
                 pos.x = pos.x + (
                     (factWidth * node.attributes.get('roles') 
-                    + node.attributes.get('objectified') ? 10 : 0) 
+                    + node.attributes.get('objectified') ? 26 : 0) 
                     / 2);
                 pos.y = pos.y + (factHeight/2);
+                let docData = Object.fromEntries(node.attributes);
+                delete docData['uniqueness'];
+                delete docData['constraints'];
                 element = this._modeling.createShape(
-                    Object.assign(element, Object.fromEntries(node.attributes)),
+                    Object.assign(element, docData),
                     pos,
                     this._canvas.getRootElement()
                 );
@@ -318,6 +327,34 @@ export default  class VscodeMessageHandler {
                 this._modeling.removeElements([element]);
             }
         });
+    }
+
+    _handleCreationForEntity(element:Entity, attributes:Map<string, any>) {
+
+        let constraints = attributes.get('constraints') || [];
+
+        if (constraints.length > 0) {
+            constraints.forEach((data: any) => {
+                let constraint = this._elementFactory
+                    .createDummyAttributesForValueConstraint(
+                        element,
+                    );
+                constraint = this._modeling.createShape(
+                    Object.assign({}, constraint),
+                    {x: data.x + data.width /2 , y: data.y + data.height / 2 },
+                    this._canvas.getRootElement()
+                );
+                constraint.width = data.width;
+                constraint.height = data.height;
+                constraint.setDescription(data.description);
+                attributes.set('id', constraint.id);
+                element.addConstraint(constraint);
+                setTimeout(
+                    () => this._modeling.sendUpdate(constraint)
+                , 30);
+            });
+        }
+
     }
 
     _handleCreationForConnection(attributes:Map<string, any>) {
@@ -387,13 +424,15 @@ export default  class VscodeMessageHandler {
      * @param {Fact} element the current fact being created
      * @param {Map<string, any>} attributes the attributes from document
      */
-    _handleCreationForFact(element:any, attributes:Map<string, any>) {
+    _handleCreationForFact(element:Fact, attributes:Map<string, any>) {
         element.factors = new Array(element.roles).fill(null);
         let factors = attributes.get('factors') || [null];
         let factLabel = attributes.get('label') || false;
         let derived = attributes.get('derived') || false;
         let derivedLabel = attributes.get('derivedLabel') || undefined;
-        
+        let uniqueness = attributes.get('uniqueness') || [];
+        let constraints = attributes.get('constraints') || [];
+
         factors.forEach((role: any, id: number) => {
             if (role === null) {
                 return;
@@ -421,8 +460,8 @@ export default  class VscodeMessageHandler {
             this._modeling.makeDerivedLabel(element,derivedLabel);
         }
 
-        if (element.uniqueness){
-            element.uniqueness.forEach((unique: any) => {
+        if (uniqueness){
+            uniqueness.forEach((unique: any) => {
                 var attrs = this._elementFactory
                     .createDummyAttributesForConstraintOverFact(element);
                 attrs.mode = unique.mode;
@@ -433,8 +472,34 @@ export default  class VscodeMessageHandler {
                     pos,
                     element.parent
                 );
-                element.addConstraint(constraint);
+                element.addUniqueness(constraint);
                 this._modeling.sendUpdate(constraint);
+            });
+        }
+
+        if (constraints.length > 0) {
+            constraints.forEach((data: any) => {
+                let constraint = this._elementFactory
+                    .createDummyAttributesForValueConstraint(
+                        element,
+                    );
+                constraint = this._modeling.createShape(
+                    Object.assign({}, constraint),
+                    {x: data.x, y: data.y },
+                    this._canvas.getRootElement()
+                );
+                constraint.setRoleFactor(data.factor);
+                constraint.x = data.x;
+                constraint.y = data.y;
+                constraint.width = data.width || constraint.width;
+                constraint.height = data.height || constraint.height;
+                attributes.set('id', constraint.id);
+                constraint.setDescription(data.description || '...');
+                element.addConstraint(constraint);
+                setTimeout(
+                    () => this._modeling.sendUpdate(constraint),
+                    30
+                );
             });
         }
 
@@ -522,17 +587,17 @@ export default  class VscodeMessageHandler {
             return;
         }
         elements.forEach((element) => {
+            if (isValueConstraint(element)) {
+                element = element.source;
+            }
+            if (!isFact(element) && !isEntity(element) && !isConnection(element)) {
+                return;
+            }
+            let attributes = element.buildAttributes();
             if (isFact(element) || isEntity(element)) {
                 let docElement = this.currentDocument.getNodeById(element.id);
-                let attributes = element.buildAttributes();
-                if (isFact(element)) {
-                    this._handleUpdatesForFact(element, attributes);
-                }
                 if (docElement) {
-                    docElement.attributes = new Map<string, any>([
-                        ...docElement.attributes,
-                        ...element.buildAttributes()
-                    ]);
+                    docElement.attributes = attributes;
                 }
             }
             if (isConnection(element)) {
@@ -543,10 +608,7 @@ export default  class VscodeMessageHandler {
                     element.source.id, element.target.id, element.role
                 );
                 if (connection) {
-                    connection.attributes = new Map<string, any>([
-                        ...connection.attributes,
-                        ...element.buildAttributes()
-                    ]);
+                    connection.attributes = attributes;
                 } else {
                     this.addElementToDocument(element);
                 }

@@ -1,7 +1,7 @@
 import ConstraintHandler from './ConstraintHandler';
 
 import { PREFIX } from '../builder.js';
-const MODE = 'object-value';
+import { OBJECT_VALUE_MODE as MODE } from '../constraints.js';
 
 /**
  * The object value constraint handler constraints over objects

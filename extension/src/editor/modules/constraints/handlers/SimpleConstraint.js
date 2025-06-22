@@ -84,7 +84,7 @@ export default class SimpleConstraintHandler extends ConstraintHandler {
         });
 
         if (allowed) {
-            event.source.addConstraint(event.constraint);
+            event.source.addUniqueness(event.constraint);
             this._modeling.sendUpdates(event.constraint, event.source);
         } else {
             this._modeling.removeElements([event.constraint]);

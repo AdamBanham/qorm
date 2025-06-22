@@ -11,6 +11,7 @@ import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 import { isFact, isSubtype } from '../model/util';
 import { OrmConnection } from '../model/connections';
 import { TYPE as VALUE_CONSTRAINT_TYPE } from '../constraints/model/valueConstraint';
+import { isValueConstraint } from '../constraints/model/utils';
 
 export default class OrmModelling extends Modeling {
 
@@ -319,8 +320,8 @@ export default class OrmModelling extends Modeling {
      */
     removeFact(fact){
         if (isFact(fact)){
-            if (fact.constraints.length > 0){
-                for(let constraint of fact.constraints){
+            if (fact.uniqueness.length > 0){
+                for(let constraint of fact.uniqueness){
                     this.removeShape(constraint);
                 }
             }
@@ -365,14 +366,14 @@ export default class OrmModelling extends Modeling {
      */
     removeConstraint(constraint){
         let src = constraint.src;
-        src.removeConstraint(constraint);
+        src.removeUniqueness(constraint);
         src.update();
         this.removeElements([ constraint ]);
         this.sendUpdate(src);
-        this.sendUpdates(...src.constraints);
+        this.sendUpdates(...src.uniqueness, ...src.constraints);
     }
 
-    removeValueConstraint(shape){
+    removeAllValueConstraint(shape){
         if (shape && shape.constraints) {
             let valueConstraint; 
             for (let con of shape.constraints) {
@@ -388,6 +389,17 @@ export default class OrmModelling extends Modeling {
                 con => con.type !== VALUE_CONSTRAINT_TYPE
             );
             this.sendUpdate(shape);
+        }
+    }
+
+    removeValueConstraint(constraint){
+        if (isValueConstraint(constraint)) {
+            let src = constraint.source;
+            src.constraints = src.constraints.filter(
+                con => con.id !== constraint.id
+            );
+            this.removeElements([constraint]);
+            this.sendUpdate(src);
         }
     }
 

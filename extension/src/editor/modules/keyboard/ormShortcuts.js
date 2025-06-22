@@ -11,7 +11,9 @@ import { isFact, isEntity, isExactlyEntity, isSubtype, isObjectification } from 
 import Modeling from "../modeling/modeler";
 import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
          SIMPLE_MODE as CONSTRAINT_SIMPLE_MODE,
-         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE
+         OBJECT_VALUE_MODE as CONSTRAINT_VALUE_MODE,
+         ROLE_VALUE_MODE as CONSTRAINT_ROLE_VALUE_MODE,
+         ROLE_VALUE_MODE
  } from "../constraints/constraints";
 import { isValueConstraint } from "../constraints/model/utils";
 
@@ -294,11 +296,13 @@ export default class OrmShortcuts {
             }
             if (isFact(select) || isEntity(select)){
                 if (isKey(['v', 'v'], event)){
-                    if (select.hasValueConstraint()){
+                    if (select.hasValueConstraint() && isEntity(select)){
                         that._modeling.removeValueConstraint(select);
                     } else {
+                        let mode = isFact(select) ? 
+                            ROLE_VALUE_MODE : CONSTRAINT_VALUE_MODE;
                         that._eventbus.fire(CONSTRAINT_BUS_TRIGGER, 
-                            {source: select, mode: CONSTRAINT_VALUE_MODE,
+                            {source: select, mode: mode,
                              originalEvent: event}
                         );
                     }

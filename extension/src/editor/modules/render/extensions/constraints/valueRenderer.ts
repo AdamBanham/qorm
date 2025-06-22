@@ -16,6 +16,8 @@ import Styles from 'diagram-js/lib/draw/Styles';
 
 import { TYPE, ValueConstraint } from "../../../constraints/model/valueConstraint";
 import CONSTANTS from "../../constants";
+import { isRoleValueConstraint } from '../../../constraints/model/utils';
+import { isFact } from '../../../model/util';
 
 export const ALLOWED_TYPES = [
     TYPE
@@ -115,14 +117,26 @@ export default class ValueRenderer extends BaseRenderer {
         let source = shape.source,
             x1 = -TEXT_X_OFFSET,
             y1 = y_curr * 0.75,
+            x2, y2, segments = [];
+        segments.push({x: x1, y: y1});
+        if (isRoleValueConstraint(shape) && isFact(source)) {
+            let role = shape.factor? shape.factor : 0;
+            let center = source.getCenterForRole(role);
+            x2 = (center.x - shape.x);
+            y2 = (center.y - shape.y);
+            
+            segments.push({x: x2, y: y2 - source.height});
+            segments.push({x: x2, y: y2});
+        } else {
             x2 = (source.x - shape.x) + source.width / 2,
             y2 = (source.y - shape.y) + source.height / 2;
-        let line = createLine([
-            {x: x1, y: y1}, {x: x2, y: y2}
-        ]);
+            segments.push({x: x2, y: y2});
+        }
+        let line = createLine(segments);
 
         let lineStyle = this._styles.style({
-            strokeWidth: 3, stroke: CONSTANTS.CONSTRAINT_COLOUR, 
+            strokeWidth: 3, stroke: CONSTANTS.CONSTRAINT_COLOUR,
+            fill: 'none', 
             'stroke-dasharray': '5, 5',
         });
         svgAttr(line, lineStyle);

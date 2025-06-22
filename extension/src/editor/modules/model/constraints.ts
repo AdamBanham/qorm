@@ -21,7 +21,7 @@ export function createConstraint(
     width: number,
     height: number,
     over: Array<number>,
-    roles: number): constraint {
+    roles: number): SimpleConstraint {
     return new SimpleConstraint(
         x, y,
         width, height,
@@ -86,7 +86,7 @@ export class SimpleConstraint implements constraint {
         return this.over.includes(role);
     }
 
-    setSource(fact: Fact) {
+    setSource(fact: Fact | undefined) {
         this.src = fact;
     }
 

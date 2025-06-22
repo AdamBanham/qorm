@@ -1,10 +1,12 @@
 import { entity } from "./entities";
 import { getNextIdentifier } from "./util";
-import { constraint } from "./constraints";
+import { SimpleConstraint } from "./constraints";
 import { 
     Label, Element, 
     Connection} from "diagram-js/lib/model/Types";
 import { Objectification } from "./objectifiedRole";
+import { ValueConstraint, TYPE as ValueConstraintType } from "../constraints/model/valueConstraint";
+import { isValueConstraint } from "../constraints/model/utils";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
@@ -20,7 +22,7 @@ export interface fact extends Element {
     x: number;
     y: number;
     hovered?: boolean;
-    constraints?: Array<constraint>;
+    uniqueness?: Array<SimpleConstraint>;
     objectified?: boolean;
     objectifiedName?: string;
     objectification?: Objectification
@@ -53,7 +55,8 @@ export class Fact implements fact {
     x: number;
     y: number;
     hovered?: boolean;
-    constraints: Array<constraint>;
+    uniqueness: Array<SimpleConstraint>;
+    constraints: Array<ValueConstraint>;
     objectified?: boolean | undefined;
     objectifiedName?: string;
     objectification?: Objectification | undefined;
@@ -75,13 +78,14 @@ export class Fact implements fact {
         this.x = x;
         this.y = y;
         this.hovered = false;
-        this.constraints = new Array();
+        this.uniqueness = new Array();
         this.objectifiedName = "foobar";
         this.derived = false;
         this.labels = [];
         this.incoming = [];
         this.outgoing = [];
         this.objectification = undefined;
+        this.constraints = [];
     }
     
 
@@ -225,7 +229,7 @@ export class Fact implements fact {
      */
     getNextFreeContraintPosition(): {x:number, y:number} {
         let x = this.x + this.width / 2;
-        let y = this.y - ( constraintDiff * (this.constraints.length + 1) );
+        let y = this.y - ( constraintDiff * (this.uniqueness.length + 1) );
         return {x: x, y: y};
     }
 
@@ -233,8 +237,8 @@ export class Fact implements fact {
      * Adds a constraint to the fact type.
      * @param constraint the constraint to add
      */
-    addConstraint(constraint: constraint): void {
-        this.constraints.push(constraint);
+    addUniqueness(constraint: SimpleConstraint): void {
+        this.uniqueness.push(constraint);
         constraint.setSource(this);
     }
 
@@ -242,20 +246,20 @@ export class Fact implements fact {
      * Removes the given constraint from the fact type.
      * @param constraint the constraint to remove
      */
-    removeConstraint(constraint: constraint): void {
-        let idx = this.constraints.findIndex((i,_) => {
+    removeUniqueness(constraint: SimpleConstraint): void {
+        let idx = this.uniqueness.findIndex((i,_) => {
             if (i){
                 return i.id === constraint.id;
             } return false;
         });
         if (idx >= 0){
-            let rem = this.constraints.splice(idx,1);
+            let rem = this.uniqueness.splice(idx,1);
             for(let removed of rem){
-                removed.setSource(null);
+                removed.setSource(undefined);
             }
         }
         let curr_y = this.y - constraintDiff;
-        for(let keeps of this.constraints){
+        for(let keeps of this.uniqueness){
             keeps.y = curr_y;
             curr_y = curr_y - constraintDiff;
         }
@@ -264,9 +268,9 @@ export class Fact implements fact {
     /**
      * Refreshes the positions of the constraints.
      */
-    refreshConstraintPositions(): void {
+    refreshUniquenessPositions(): void {
         let curr_y = this.y - constraintDiff;
-        for(let keeps of this.constraints){
+        for(let keeps of this.uniqueness){
             keeps.y = curr_y;
             keeps.x = this.x;
             curr_y = curr_y - constraintDiff;
@@ -301,6 +305,37 @@ export class Fact implements fact {
      */
     unsetTowards(): void {  
         this.towards = undefined;
+    }
+
+    /**
+     * Checks whether the fact has any value constraints.
+     * @returns {boolean} true if the fact has value constraints, false otherwise
+     */
+    hasValueConstraint(): boolean {
+        return this.constraints.some(
+            (i) => isValueConstraint(i)
+        );
+    }
+
+    /**
+     * Checks whether the fact has a value constraint over the given role.
+     * @param {number} role the role to check
+     * @returns {boolean} true if the fact has a value constraint over the role, false otherwise
+     */
+    hasValueConstraintOver(role: number): boolean {
+        return this.constraints.some(
+            (i) => isValueConstraint(i) && 
+                   i.factor && 
+                   i.factor === role
+        );
+    }
+
+    /**
+     * Adds a constraint to the fact type or one of its roles.
+     * @param constraint the value constraint to add
+     */
+    addConstraint(constraint: ValueConstraint): void {
+        this.constraints.push(constraint);
     }
 
     update(){
@@ -346,8 +381,13 @@ export class Fact implements fact {
         if (this.towards){
             attributes.set("towards", this.towards);
         }
+        if (this.uniqueness.length > 0){
+            attributes.set("uniqueness", this.uniqueness.map((i) => {
+                return i.buildAttributes();
+            }));
+        }
         if (this.constraints.length > 0){
-            attributes.set("uniqueness", this.constraints.map((i) => {
+            attributes.set("constraints", this.constraints.map((i) => {
                 return i.buildAttributes();
             }));
         }

@@ -10,6 +10,7 @@ export const ROLE_VALUE_MODE = 'role-value';
 
 import SimpleConstraintHandler from './handlers/SimpleConstraint.js';
 import ObjectValueConstraintHandler from './handlers/ObjectValueConstraint.js';
+import RoleValueConstraintHandler from './handlers/RoleValueConstraint';
 
 /**
  * This module is responsible for managing the creation 
@@ -41,6 +42,10 @@ export default class ContraintsModule {
         this._registry[OBJECT_VALUE_MODE] = new ObjectValueConstraintHandler(
             eventBus, elementFactory, modeling, rules, editing
         ).setBuilder(builder);
+        this._registry[ROLE_VALUE_MODE] = new RoleValueConstraintHandler(
+            eventBus, elementFactory, modeling, rules, editing
+        ).setBuilder(builder);
+
     }
 
     /**
