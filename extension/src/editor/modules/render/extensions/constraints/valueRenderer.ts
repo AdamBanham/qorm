@@ -23,7 +23,7 @@ export const ALLOWED_TYPES = [
 const PRIORITY = 2000;
 const TEXT_X_OFFSET = 7; // offset for text x position
 const TEXT_Y_OFFSET = 12; // offset for text y position
-const TEXT_LETTER_WIDTH = 5.5; // approximate width of a letter in the text
+const TEXT_LETTER_WIDTH = 6; // approximate width of a letter in the text
 
 export default class ValueRenderer extends BaseRenderer {
 
@@ -69,14 +69,14 @@ export default class ValueRenderer extends BaseRenderer {
             let text = svgCreate('text');
             svgAttr(text, {
                 x: TEXT_X_OFFSET,
-                y: y_curr,
+                y: y_curr - TEXT_Y_OFFSET * 0.25,
                 width: shape.width - 4,
                 height: shape.height - 4,
                 fill: CONSTANTS.CONSTRAINT_TEXT_COLOUR,
                 fontSize: '12px',
             });
             let nextStep = head + Math.floor(
-                (shape.width)
+                (shape.width - TEXT_X_OFFSET)
                 / TEXT_LETTER_WIDTH
             );
             text.textContent = textContent.substring(head, nextStep);
@@ -88,7 +88,7 @@ export default class ValueRenderer extends BaseRenderer {
         y_curr -= (mut > 1) ? TEXT_Y_OFFSET : 0;
         let leftBang = svgCreate('text',
             {
-                x: -TEXT_X_OFFSET,
+                x: -TEXT_X_OFFSET * 0.5,
                 y: y_curr,
                 width: 2,
                 height: shape.height,
@@ -101,7 +101,7 @@ export default class ValueRenderer extends BaseRenderer {
         
         let rightBang = svgCreate('text',
             {
-                x: shape.width - TEXT_X_OFFSET,
+                x: shape.width - TEXT_X_OFFSET * 0.5,
                 y: y_curr,
                 width: 2,
                 height: shape.height,
