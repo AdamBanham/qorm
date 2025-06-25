@@ -1,7 +1,9 @@
 import ConstraintHandler from "./ConstraintHandler";
 import { ValueConstraint } from "../model/valueConstraint";
 
+// @ts-ignore
 import { PREFIX } from "../builder.js";
+// @ts-ignore
 import { ROLE_VALUE_MODE as MODE } from "../constraints.js";
 import { isWithinShape } from "../../utils/canvasUtils";
 import { Fact } from "../../model/facts";

@@ -30,6 +30,7 @@ export default class OrmContextPad extends ContextPad {
                 top: hitBox.top - containerBounds.top
             };
         } else {
+            // @ts-ignore
             return super._getPosition(target);
         }
     }
