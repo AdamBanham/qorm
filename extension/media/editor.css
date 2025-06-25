@@ -77,3 +77,69 @@ html, body {
     left: calc((97.5% - 92px)) !important;
     top: 92px !important;
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        scale: 0.75;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+    }
+}
+
+#editor
+.helpers {
+    position: absolute;
+    min-width: 200px;
+    max-width: 200px;
+    margin-left: calc((100% - 270px) / 2);
+    z-index: 9999;
+}
+
+#editor 
+.help-interactions {
+    width: fit-content;
+    border-radius: 5px;
+    animation: 1s fadeIn 0s;
+    text-align: center;
+    text-wrap: pretty;
+    max-width: 200px;
+    min-width: 200px;
+    left: 0px;
+    position: relative;
+    
+    padding: 10px 10px 2.5px 2.5px;
+    height: fit-content;
+    position: relative;
+    box-shadow: 5px 5px 5px rgba(63, 61, 61, 0.425);
+
+    .content {
+        font-size: 8pt;
+        padding-bottom: 5px;
+        animation: 0.5s fadeIn 0s;
+        color: black;
+    }
+}
+
+#editor 
+.help-interactions.close {
+    display: none;
+}
+
+#editor 
+.help-interactions.open {
+    display: block;
+}
+
+#editor 
+.help-interactions-error {
+    margin-top: 2.5px;
+    background-color: rgb(228, 193, 193);
+    border-color: rgba(66, 3, 3, 0.603);
+
+    .content {
+        font-weight: bold;
+    };
+}

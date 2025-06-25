@@ -21,6 +21,12 @@ export interface RoleValueContext extends MouseEvent {
     state: RoleValueConstruction;
 }
 
+import { HelpChainBuilder } from "../../help-interactions/model";
+export const HelpChain = new HelpChainBuilder()
+    .create("Click on a role on the fact", "role already has a constraint")
+    .addNext("Move the constraint to the desired position and click to place the constraint", "")
+    .build();
+
 export default class RoleValueConstraint extends ConstraintHandler {
 
     static $inject: Array<string> = [ 
@@ -78,6 +84,10 @@ export default class RoleValueConstraint extends ConstraintHandler {
             this._directEditing.cancel();
         }, 30);
 
+        this._eventBus.fire('help.start', {
+            chain: HelpChain
+        });
+
         return Object.assign(data, {
             source: context.source,
             factor: context.factor || -1,
@@ -121,7 +131,18 @@ export default class RoleValueConstraint extends ConstraintHandler {
                 }
 
                 if (fact.hasValueConstraintOver(role)){
-                    this._builder.cancel(event);
+                    
+                    this._eventBus.fire(
+                        'help.error'
+                    );
+                    setTimeout(
+                        () => {
+                            this._builder.cancel(event);
+                            this._eventBus.fire(
+                            'help.end'
+                            );
+                        }, 500
+                    );
                     return;
                 }
 
@@ -130,6 +151,13 @@ export default class RoleValueConstraint extends ConstraintHandler {
                 this._modeling.sendUpdate(constraint);
                 state.state = "moving";
                 constraint.show();
+                this._eventBus.fire(
+                    'help.next'
+                );
+            } else {
+                this._eventBus.fire(
+                    'help.error'
+                );
             }
 
         } else if (state.state === "moving") {
@@ -144,14 +172,27 @@ export default class RoleValueConstraint extends ConstraintHandler {
                 )
             , 25);
             this._builder.end(event);
+            this._eventBus.fire(
+                'help.end'
+            );
         }
     }
 
     cleanup(event: RoleValueContext) {
         let constraint = event.state.constraint;
 
-        this._modeling.removeShapes([constraint]);
+        this._modeling.removeElements([constraint]);
+        this._eventBus.fire(
+            'help.end'
+        );
     }
 
+    cancel(event: any): void {
+        let constraint = event.state.constraint;
 
+        this._modeling.removeElements([constraint]);
+        this._eventBus.fire(
+            'help.end'
+        );
+    }
 }

@@ -39,6 +39,7 @@ import ormDragging from "./modules/dragging";
 import ormObjectification from "./modules/objectification";
 import ormMoving from "./modules/move";
 import OrmInteractionEvents from './modules/interaction-events';
+import OrmHelpInteractions from './modules/help-interactions';
 
 import { scaleToFitElements } from './modules/utils/canvasUtils';
 
@@ -86,7 +87,8 @@ export default function ORMEditor(container:HTMLLIElement) :
         ormDragging,
         ormObjectification,
         ormMoving,
-        OrmInteractionEvents
+        OrmInteractionEvents,
+        OrmHelpInteractions
     ];
 
     var diagram =  new Diagram({

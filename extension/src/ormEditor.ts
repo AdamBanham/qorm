@@ -159,6 +159,12 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         const keyboardShortcutsContent = fs.readFileSync(
             keyboardShortcutsPath, 'utf-8');
 
+        const helpInteractionPath = path.join(
+            this.context.extensionPath, 'media', 'html', 
+            'help-interactions.html');
+        const helpInteractionsContent = fs.readFileSync(
+            helpInteractionPath, 'utf-8');
+
         return `<!DOCTYPE>
         <html lang="en">
             <head>
@@ -176,7 +182,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                 
                 <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'>
                     <!-- The editor will be rendered here -->
-
+                    ${helpInteractionsContent}             
                     ${keyboardShortcutsContent}
                 </div>
                 <h2> Elementary Facts </h2>

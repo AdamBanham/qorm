@@ -296,8 +296,8 @@ export default class OrmShortcuts {
             }
             if (isFact(select) || isEntity(select)){
                 if (isKey(['v', 'v'], event)){
-                    if (select.hasValueConstraint() && isEntity(select)){
-                        that._modeling.removeValueConstraint(select);
+                    if (isEntity(select) && select.hasValueConstraint()){
+                        that._modeling.removeAllValueConstraint(select);
                     } else {
                         let mode = isFact(select) ? 
                             ROLE_VALUE_MODE : CONSTRAINT_VALUE_MODE;
