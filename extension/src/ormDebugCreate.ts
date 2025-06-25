@@ -42,7 +42,7 @@ export class ORMCreateDebug implements vscode.Command {
                 if (workspaceFolders && workspaceFolders.length > 0) {
                     prefix = workspaceFolders[0].uri;
                 } else {
-                    prefix = vscode.Uri.parse('untitled:');
+                    prefix = vscode.Uri.parse('untitled::');
                 }
                 let uri = vscode.Uri.joinPath(prefix, filename);
 
