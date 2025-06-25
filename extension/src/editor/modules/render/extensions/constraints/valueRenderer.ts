@@ -25,7 +25,7 @@ export const ALLOWED_TYPES = [
 const PRIORITY = 2000;
 const TEXT_X_OFFSET = 7; // offset for text x position
 const TEXT_Y_OFFSET = 12; // offset for text y position
-const TEXT_LETTER_WIDTH = 6; // approximate width of a letter in the text
+const TEXT_LETTER_WIDTH = 9; // approximate width of a letter in the text
 
 export default class ValueRenderer extends BaseRenderer {
 
@@ -72,6 +72,7 @@ export default class ValueRenderer extends BaseRenderer {
         while (head < textContent.length) {
             y_curr += TEXT_Y_OFFSET;
             mut += 1;
+            let workingText = textContent.substring(head);
             let text = svgCreate('text');
             svgAttr(text, {
                 x: TEXT_X_OFFSET,
@@ -81,11 +82,9 @@ export default class ValueRenderer extends BaseRenderer {
                 fill: CONSTANTS.CONSTRAINT_TEXT_COLOUR,
                 fontSize: '12px',
             });
-            let nextStep = head + Math.floor(
-                (shape.width - TEXT_X_OFFSET)
-                / TEXT_LETTER_WIDTH
-            );
-            text.textContent = textContent.substring(head, nextStep);
+            let nextStep = this.workoutLongestSequenceOfLetters(
+                workingText, shape.width - (TEXT_X_OFFSET * 2));
+            text.textContent = workingText.substring(0, nextStep);
             head += text.textContent.length;
             svgAppend(lines, text);
         }
@@ -128,8 +127,13 @@ export default class ValueRenderer extends BaseRenderer {
             let center = source.getCenterForRole(role);
             x2 = (center.x - shape.x);
             y2 = (center.y - shape.y);
-            
-            segments.push({x: x2, y: y2 - source.height});
+            let offset;
+            if (y1 < y2) {
+                offset = -1 * source.height;
+            } else {
+                offset = source.height;
+            }
+            segments.push({x: x2, y: y2 + offset});
             segments.push({x: x2, y: y2});
         } else {
             x2 = (source.x - shape.x) + source.width / 2,
@@ -145,6 +149,7 @@ export default class ValueRenderer extends BaseRenderer {
 
         let lineStyle = this._styles.style({
             strokeWidth: 3, stroke: CONSTANTS.CONSTRAINT_COLOUR,
+            opacity: 0.75,
             fill: 'none', 
             'stroke-dasharray': '5, 5',
         });
@@ -156,6 +161,39 @@ export default class ValueRenderer extends BaseRenderer {
         svgAppend(g, rightBang);
         svgAppend(visuals, g);
         return visuals;
+    }
+
+    workoutLetterWidth(text: string): number {
+        let code = text.charCodeAt(0);
+        // handle spaces and number differently
+        if (code >= 35 && code <= 38) {
+            return 5;
+        }
+        if (code <= 47) {
+            return 3;
+        }
+        if (code >= 48 && code <= 59) {
+            return 5;
+        }
+        if (code >= 65 && code <= 90) { // A-Z
+            return 9; 
+        }
+        return 7; 
+    }
+
+    workoutLongestSequenceOfLetters(text: string, max: number): number {
+        let length = 0;
+        let last = 0;
+        for (let letter of text) {
+            let width = this.workoutLetterWidth(letter);
+            if (length + width <= max) {
+                length += width;
+                last += 1;
+            } else {
+                break;
+            }
+        }
+        return last;
     }
 
 };
