@@ -14,6 +14,7 @@ import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import Canvas from "diagram-js/lib/core/Canvas";
 import EventBus from "diagram-js/lib/core/EventBus";
 import { isValueConstraint } from "../constraints/model/utils";
+import { off } from "process";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
@@ -243,7 +244,7 @@ export default  class VscodeMessageHandler {
                 node.attributes.get('type') === 'value') {
                 element = this._elementFactory.createDummyAttributesForEntities("entity");
                 pos.x = pos.x + (entityWidth / 2);
-                pos.y = pos.y + (entityHeight / 2);
+                pos.y = pos.y + (entityHeight / 2) + 0.5;
                 let docData = Object.fromEntries(node.attributes);
                 delete docData['constraints'];
                 element = this._modeling.createShape(
@@ -257,10 +258,13 @@ export default  class VscodeMessageHandler {
             } else if (node.attributes.get('type') === 'fact') {
                 element = this._elementFactory.createDummyAttributesForFacts();
                 pos.x = pos.x + (
-                    (factWidth * node.attributes.get('roles') 
-                    + node.attributes.get('objectified') ? 26 : 0) 
-                    / 2);
-                pos.y = pos.y + (factHeight/2);
+                    (
+                        factWidth * node.attributes.get('roles') 
+                        + node.attributes.get('objectified') ? 26 : 0
+                        + 26
+                    ) / 2
+                );
+                pos.y = pos.y + (factHeight/2) + 0.5;
                 let docData = Object.fromEntries(node.attributes);
                 delete docData['uniqueness'];
                 delete docData['constraints'];
@@ -339,9 +343,18 @@ export default  class VscodeMessageHandler {
                     .createDummyAttributesForValueConstraint(
                         element,
                     );
+                let offset = data.width - 50;
+                offset = offset / 25;
+                offset = offset * 12.5 * -1.0;
+                let pos = {
+                    x: data.x + (data.width / 2) + offset, 
+                    y: data.y + data.height / 2
+                };
+                constraint.x = pos.x;
+                constraint.y = pos.y;
                 constraint = this._modeling.createShape(
                     Object.assign({}, constraint),
-                    {x: data.x + data.width /2 , y: data.y + data.height / 2 },
+                    pos,
                     this._canvas.getRootElement()
                 );
                 constraint.width = data.width;
@@ -483,23 +496,28 @@ export default  class VscodeMessageHandler {
                     .createDummyAttributesForValueConstraint(
                         element,
                     );
+                let offset = data.width - 50;
+                offset = offset / 25;
+                offset = offset * 12.5 * -1.0;
+                let pos = {
+                    x: data.x + (data.width / 2) + offset, 
+                    y: data.y + data.height / 2
+                };
+                constraint.x = pos.x;
+                constraint.y = pos.y;
+
                 constraint = this._modeling.createShape(
                     Object.assign({}, constraint),
-                    {x: data.x, y: data.y },
+                    pos,
                     this._canvas.getRootElement()
                 );
                 constraint.setRoleFactor(data.factor);
-                constraint.x = data.x;
-                constraint.y = data.y;
-                constraint.width = data.width || constraint.width;
-                constraint.height = data.height || constraint.height;
+                constraint.width = data.width;
+                constraint.height = data.height;
                 attributes.set('id', constraint.id);
                 constraint.setDescription(data.description || '...');
                 element.addConstraint(constraint);
-                setTimeout(
-                    () => this._modeling.sendUpdate(constraint),
-                    30
-                );
+                this._modeling.sendUpdate(constraint);
             });
         }
 
