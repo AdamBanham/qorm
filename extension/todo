@@ -19,6 +19,9 @@
     [X] add value constraints for referenced object types 
     [X] add value constraints for value types
     [X] add value constraints for facts
+[ ] add a help system to guide the user through interactions
+    [ ] add a new module for handling chains of interactions
+    [ ] add a new data structure for triggering help chain
 [ ] add extension setting for debug rendering
 [ ] revisit file_format.orm and update to reflect current data model
 [ ] add vertical alignment for facts

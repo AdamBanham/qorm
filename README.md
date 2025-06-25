@@ -5,7 +5,15 @@ constructing an ORM schema within the editor.
 The features of the editor are futher explained in the extension's 
 [readme](./extension/README.md).
 
-## Building exntesion
+At a high level, the extension allows for the construction of ORM schemas 
+and exporting them into a svg. 
+
+![image](./sampleFiles/travel_agency.svg)
+
+The underlying file structure used to store the schema 
+is currently written within yaml.
+
+## Building the extension
 
 To prepare the extension for the marketplace or for personal installment,
 make sure to have the [vsce](https://github.com/microsoft/vscode-vsce) or 

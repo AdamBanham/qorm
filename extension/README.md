@@ -22,7 +22,7 @@ At this stage, we support the following components of the ORM language:
 
 For instance, you can see the graphical representation of these elements in the following snippet:
 
-![image](./extension-assets/entities-and-values.png)
+![image](/extension/extension-assets/entities-and-values.png)
 
 ## Requirements
 
