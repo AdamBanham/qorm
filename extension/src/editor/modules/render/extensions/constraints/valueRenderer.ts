@@ -136,6 +136,11 @@ export default class ValueRenderer extends BaseRenderer {
             y2 = (source.y - shape.y) + source.height / 2;
             segments.push({x: x2, y: y2});
         }
+
+        if (x1 < x2){
+            segments[0].x = shape.width + TEXT_X_OFFSET;
+        }
+
         let line = createLine(segments);
 
         let lineStyle = this._styles.style({
