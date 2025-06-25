@@ -28,11 +28,12 @@ export default class ObjectificationReflection {
             return event;
         });
 
-        eventBus.on('element.changed', (event) => {
+        eventBus.on('elements.changed', (event) => {
             let data = event as any;
-            let shape = data.element;
-            if (this.checkFact(shape)) {
-                setTimeout( () => this.processObjectification(shape), 5);
+            for (let shape of data.elements) {
+                if (this.checkFact(shape)) {
+                    setTimeout( () => this.processObjectification(shape), 5);
+                }
             }
             return event;
         });
@@ -47,13 +48,23 @@ export default class ObjectificationReflection {
 
     processObjectification(fact:Fact) {
         if (fact.objectification){
-            fact.objectification.update();
-            let objectification = fact.objectification;
+            let that = this;
             setTimeout(
                 () => {
-                    this._modeling.sendUpdate(objectification);
-                    for(let out of objectification.outgoing) {
-                        this._modeling.layoutConnection(out);
+                    let objectification = fact.objectification;
+                    objectification!.update();
+                    that._modeling.sendUpdate(objectification);
+                    for(let out of objectification?.incoming) {
+                        setTimeout(() => {
+                            that._modeling.layoutConnection(out);
+                            that._modeling.sendUpdate(out);
+                        }, 19);
+                    }
+                    for(let out of objectification?.outgoing) {
+                        setTimeout(() => {
+                            that._modeling.layoutConnection(out);
+                            that._modeling.sendUpdate(out);
+                        }, 10);
                     }
                 }
             , 5 );
