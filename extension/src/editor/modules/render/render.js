@@ -301,7 +301,7 @@ export default class TSRenderer extends  BaseRenderer {
             } else {
                 if (element.objectified && element.objectifiedName){
                     let upperText = svgCreate("text", {
-                        x: centerText, y:  - 10 - (10 * element.constraints.length) - 12.5,
+                        x: centerText, y:  - 10 - (10 * element.uniqueness.length) - 12.5,
                         class: "fact-objectified-label",
                         style: style,
                     });
