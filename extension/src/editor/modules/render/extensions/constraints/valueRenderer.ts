@@ -43,7 +43,11 @@ export default class ValueRenderer extends BaseRenderer {
                 visuals = context.gfx;
 
             if (that.canRender(element)) {
-                return that.draw(visuals, element);
+                if (element.isVisible()) {
+                    return that.draw(visuals, element);
+                } else {
+                    return visuals;
+                }
             } 
             
             return;

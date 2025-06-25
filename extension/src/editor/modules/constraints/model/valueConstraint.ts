@@ -47,6 +47,7 @@ export class ValueConstraint implements valueConstraint{
     type:string = TYPE;
     width: number;
     height: number;
+    visible: boolean = true;
     source: Entity | ValueEntity | Fact;
     factor?: number;
     description: string;
@@ -70,6 +71,20 @@ export class ValueConstraint implements valueConstraint{
         }
 
         this.update();
+    }
+
+    hide() {
+        this.visible = false;
+        this.update();
+    }
+
+    show() {
+        this.visible = true;
+        this.update();
+    }
+
+    isVisible() {
+        return this.visible;
     }
 
     setDescription(value: string) {

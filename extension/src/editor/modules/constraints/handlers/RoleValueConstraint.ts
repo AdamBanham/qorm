@@ -59,15 +59,18 @@ export default class RoleValueConstraint extends ConstraintHandler {
     prepareData(context: any): object {
         let data:any = super.prepareData(context);
 
-        let constraint = this._factory
+        let dummyState = this._factory
             .createDummyAttributesForValueConstraint(
                 data.source,
             );
-        constraint = this._modeling.createShape(
-            Object.assign({}, constraint),
-            {x: constraint.x, y: constraint.y },
+        let constraint:ValueConstraint = this._modeling.createShape(
+            Object.assign({}, dummyState),
+            {x: dummyState.x, y: dummyState.y },
             data.source.parent
         );
+
+        constraint.hide();
+        this._modeling.sendUpdate(constraint);
 
         setTimeout(() => {
             this._directEditing.cancel();
@@ -124,6 +127,7 @@ export default class RoleValueConstraint extends ConstraintHandler {
                 constraint.setRoleFactor(state.factor);
                 this._modeling.sendUpdate(constraint);
                 state.state = "moving";
+                constraint.show();
             }
 
         } else if (state.state === "moving") {

@@ -44,19 +44,20 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
     prepareData(context) {
         const data = super.prepareData(context);
 
-        let constraint = this._factory
+        let dummyState = this._factory
             .createDummyAttributesForValueConstraint(
                 data.source,
             );
-        constraint = this._modeling.createShape(
-            Object.assign({}, constraint),
-            {x: constraint.x, y: constraint.y },
+        let constraint = this._modeling.createShape(
+            Object.assign({}, dummyState),
+            {x: dummyState.x, y: dummyState.y },
             data.source.parent
         );
 
         setTimeout(() => {
             this._directEditing.cancel();
         }, 30);
+
 
         return Object.assign(data, {
             mode: MODE,
