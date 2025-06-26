@@ -6,12 +6,14 @@ The features of the editor are futher explained in the extension's
 [readme](./extension/README.md).
 
 At a high level, the extension allows for the construction of ORM schemas 
-and exporting them into a svg. 
-
-![image](./sampleFiles/travel_agency.svg)
+and exporting them into a svg. The following schema is constructed to very
+roughly capture how might a travel agency might handle their application data
+for a website.
+![travel_agency_orm](./sampleFiles/travel_agency.svg)
 
 The underlying file structure used to store the schema 
-is currently written within yaml.
+is currently written within yaml. You can check out the file structure for
+the above schema [here](./sampleFiles/travel_agency.orm).
 
 ## Building the extension
 
