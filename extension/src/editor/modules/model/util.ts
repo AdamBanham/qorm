@@ -33,7 +33,7 @@ export function isFact(shape: ShapeLike): shape is Fact {
  * @returns {boolean} whether the shape is an entity type.
  */
 export function isEntity(shape: ShapeLike): shape is Entity {
-    if (shape.type){
+    if (shape && shape.type){
         return shape.type === "entity" || shape.type === "value";
     }
     return false;
