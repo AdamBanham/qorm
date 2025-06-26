@@ -4,7 +4,7 @@ import Canvas from 'diagram-js/lib/core/Canvas';
 import { HelpChainModel } from './model';
 
 export type HelpPrefix = 'help';
-export type HelpSuffix = 'start' | 'error' | 'next' | 'end';
+export type HelpSuffix = 'start' | 'error' | 'clear' | 'next' | 'end';
 export type HelpEvents = `${HelpPrefix}.${HelpSuffix}`;
 
 const contentDivId = 'help-interactions';
@@ -37,25 +37,7 @@ export default class HelpInteractions {
         this._bus.on('help.error', this.error.bind(this));
         this._bus.on('help.next', this.next.bind(this));
         this._bus.on('help.end', this.end.bind(this));
-
-        // For testing purposes, we can use a dummy chain
-        setTimeout( 
-            () => this._bus.fire('help.start', {
-            chain: DummyChain
-            })
-        , 5000);
-        setTimeout( 
-            () => this._bus.fire('help.error')
-        , 10000);
-        setTimeout( 
-            () => this._bus.fire('help.next')
-        , 15000);
-        setTimeout( 
-            () => this._bus.fire('help.error')
-        , 20000);
-        setTimeout( 
-            () => this._bus.fire('help.end')
-        , 25000);
+        this._bus.on('help.clear', this.clear.bind(this));
     }
 
     init(){
@@ -69,13 +51,20 @@ export default class HelpInteractions {
             ?.getElementsByClassName("content")[0]!;
     }
 
-    reset() {
+    reset(force: boolean = false) {
         this._contentDiv.classList.remove('open');
         this._errorDiv.classList.remove('open');
         this._contentDiv.classList.add('close');
         this._errorDiv.classList.add('close');
-        this._contentText.textContent = '';
-        this._errorText.textContent = '';
+        if (force) {
+            this._contentText.textContent = '';
+            this._errorText.textContent = '';
+        } else {
+            setTimeout(() => {
+                this._contentText.textContent = '';
+                this._errorText.textContent = '';
+            }, 150);
+        }
     }
 
     fire(event: HelpEvents, context: any) {
@@ -87,22 +76,30 @@ export default class HelpInteractions {
     }
 
     start(context:HelpStartEvent){
-        this.reset();
+        this.reset(true);
         this._chain = context.chain;
         if (this._chain) {
             this._contentDiv.classList.add('open');
             this._contentDiv.classList.remove('close');
-            this._contentText.textContent = this._chain.title;
+            this._contentText.innerHTML = this._chain.title;
         } else {
             console.warn("No help chain provided.");
         }
+    }
+
+    clear() {
+        this._errorDiv.classList.add('close');
+        this._errorDiv.classList.remove('open');
+        setTimeout(() => {
+            this._errorText.textContent = '';
+        }, 150);
     }
 
     error() {
         if (this._chain) {
             this._errorDiv.classList.add('open');
             this._errorDiv.classList.remove('close');
-            this._errorText.textContent = this._chain.error;
+            this._errorText.innerHTML = this._chain.error;
         } else {
             console.warn("No help chain available for error display.");
         }
@@ -111,12 +108,10 @@ export default class HelpInteractions {
     next() {
         if (this._chain && this._chain.next) {
             this._chain = this._chain.next;
-            this.reset();
-            setTimeout(() => {
-                this._contentDiv.classList.add('open');
-                this._contentDiv.classList.remove('close');
-                this._contentText.textContent = this._chain!.title;
-            }, 100);
+            this.reset(true);
+            this._contentDiv.classList.add('open');
+            this._contentDiv.classList.remove('close');
+            this._contentText.innerHTML = this._chain!.title;
             
         } else {
             console.warn("No next help chain available.");
@@ -126,6 +121,5 @@ export default class HelpInteractions {
     end() {
         this.reset();
         this._chain = undefined;
-        console.log("Help interaction ended.");
     }
 }
