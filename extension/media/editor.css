@@ -89,6 +89,19 @@ html, body {
     }
 }
 
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        scale: 1;
+        display: block;
+    }
+    to {
+        opacity: 0;
+        scale: 0.75;
+        display: none;
+    }
+}
+
 #editor
 .helpers {
     position: absolute;
@@ -102,7 +115,6 @@ html, body {
 .help-interactions {
     width: fit-content;
     border-radius: 5px;
-    animation: 1s fadeIn 0s;
     text-align: center;
     text-wrap: pretty;
     max-width: 200px;
@@ -125,12 +137,14 @@ html, body {
 
 #editor 
 .help-interactions.close {
+    animation: 0.25s fadeOut 0s;
     display: none;
 }
 
 #editor 
 .help-interactions.open {
     display: block;
+    animation: 0.5s fadeIn 0s;
 }
 
 #editor 
