@@ -57,19 +57,22 @@ export default class HelpInteractions {
         this._contentDiv.classList.add('close');
         this._errorDiv.classList.add('close');
         if (force) {
-            this._contentText.textContent = '';
-            this._errorText.textContent = '';
+            this._contentText.innerHTML = '';
+            this._errorText.innerHTML = '';
         } else {
             setTimeout(() => {
-                this._contentText.textContent = '';
-                this._errorText.textContent = '';
+                this._contentText.innerHTML = '';
+                this._errorText.innerHTML = '';
             }, 150);
         }
     }
 
     fire(event: HelpEvents, context: any) {
         if (this._bus) {
-            this._bus.fire(event, context);
+            setTimeout(
+                () => this._bus.fire(event, context),
+                5
+            );
         } else {
             console.warn("Event bus is not initialized.");
         }
@@ -90,9 +93,7 @@ export default class HelpInteractions {
     clear() {
         this._errorDiv.classList.add('close');
         this._errorDiv.classList.remove('open');
-        setTimeout(() => {
-            this._errorText.textContent = '';
-        }, 150);
+        this._errorText.innerHTML = '';
     }
 
     error() {
