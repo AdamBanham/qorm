@@ -45,6 +45,9 @@ export function isWithinShape(
  */
 export function scaleToFitElements(canvas:Canvas){
     const {inner,outer} = canvas.viewbox();
+    if (inner.width === 0 || inner.height === 0) {
+        return;
+    }
     var center = {
         x: inner.x + inner.width/2,
         y: inner.y + inner.height/2
