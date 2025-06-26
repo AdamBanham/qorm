@@ -113,7 +113,7 @@ export default function OrmConnect(
           y: event.originalEvent.layerY
         }
       );
-      context.targetRole = hover.findNearestRoleUsingPosX(transform.x);
+      context.targetRole = hover.findNearestRoleUsingPos(transform.x, transform.y);
       var canExecute = context.canExecute = canConnect(
         start, hover, context.targetRole
       );
@@ -156,7 +156,7 @@ export default function OrmConnect(
           }
         );
         context.targetRole = targetedRole = 
-          hover.findNearestRoleUsingPosX(transform.x);
+          hover.findNearestRoleUsingPos(transform.x, transform.y);
       }
       canExecute = context.canExecute = 
         canConnect(start, hover, targetedRole);

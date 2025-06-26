@@ -49,9 +49,15 @@ export class ObjectifiedRole implements Objectification {
     update(){
         this.x = this.fact.x - 10;
         this.y = this.fact.y - 10;
-        this.y = this.y - (10 * this.fact.uniqueness.length);
-        this.width = this.fact.width + 20;
-        this.height = this.fact.height + 20 + 15 + (10 * this.fact.uniqueness.length);
+        if (this.fact.isVertical()) {
+            this.x = this.x - (10 * this.fact.uniqueness.length);
+            this.height = this.fact.height + 20;
+            this.width = this.fact.width + 20 + 15 + (10 * this.fact.uniqueness.length);
+        } else {
+            this.y = this.y - (10 * this.fact.uniqueness.length);
+            this.width = this.fact.width + 20;
+            this.height = this.fact.height + 20 + 15 + (10 * this.fact.uniqueness.length);
+        }
     }
 
 

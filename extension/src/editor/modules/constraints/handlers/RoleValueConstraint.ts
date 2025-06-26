@@ -143,7 +143,7 @@ export default class RoleValueConstraint extends ConstraintHandler {
         if (state.state === "selecting") {
             event.stopPropagation();
             if (isWithinShape(event.source, {x: event.x, y: event.y})) {
-                let role = fact.findNearestRoleUsingPosX(event.x);
+                let role = fact.findNearestRoleUsingPos(event.x, event.y);
 
                 if (role < 0) {
                     return;

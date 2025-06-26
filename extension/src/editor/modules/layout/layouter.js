@@ -171,16 +171,32 @@ export default class OrmLayouter extends BaseLayouter {
         } else {
             if (role === 0){
             // if its the first role then put the pivot to the left
-            factConnectionPoint = { x: tgtPos.x - unitWidth, y: tgtPos.y};
+                if (fact.isVertical()){
+                    factConnectionPoint = { x: tgtPos.x, y: tgtPos.y - unitHeight};
+                } else {
+                    factConnectionPoint = { x: tgtPos.x - unitWidth, y: tgtPos.y};
+                }
             } else if (role === fact.roles - 1){
                 // if its the last role then put the pivot to the right
-                factConnectionPoint = { x: tgtPos.x + unitWidth, y: tgtPos.y};
+                if (fact.isVertical()){
+                    factConnectionPoint = { x: tgtPos.x, y: tgtPos.y + unitHeight};
+                } else {
+                    factConnectionPoint = { x: tgtPos.x + unitWidth, y: tgtPos.y};
+                }
             } else {
                 // if its a middle role then put the pivot above or below
-                if (tgtPos.y > srcPos.y){
-                    factConnectionPoint =  { x: tgtPos.x, y: tgtPos.y - unitHeight };
+                if (fact.isVertical()){
+                    if (tgtPos.x > srcPos.x){
+                        factConnectionPoint = { x: tgtPos.x - unitWidth, y: tgtPos.y };
+                    } else {
+                        factConnectionPoint = { x: tgtPos.x + unitWidth, y: tgtPos.y };
+                    }
                 } else {
-                    factConnectionPoint = { x: tgtPos.x, y: tgtPos.y + unitHeight };
+                    if (tgtPos.y > srcPos.y){
+                        factConnectionPoint =  { x: tgtPos.x, y: tgtPos.y - unitHeight };
+                    } else {
+                        factConnectionPoint = { x: tgtPos.x, y: tgtPos.y + unitHeight };
+                    }
                 }
             }
             // update waypoints

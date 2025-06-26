@@ -31,8 +31,8 @@ export default class FactInteractions {
                     let fact = event.element;
                     fact.hovered = true;
                     fact.hoveredRole = 
-                        fact.findNearestRoleUsingPosX(
-                            transform.x
+                        fact.findNearestRoleUsingPos(
+                            transform.x, transform.y
                         );
                     setTimeout(() => {
                         modeling.sendUpdate(fact);

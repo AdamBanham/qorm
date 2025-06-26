@@ -1,4 +1,3 @@
-
 import DocuementParser from "./document";
 import { Document } from "./document";
 import { documentNode, DocumentEntity, DocumentFact, DocumentConnection } from "./document";
@@ -445,6 +444,11 @@ export default  class VscodeMessageHandler {
         let derivedLabel = attributes.get('derivedLabel') || undefined;
         let uniqueness = attributes.get('uniqueness') || [];
         let constraints = attributes.get('constraints') || [];
+
+        // Ensure dimensions are updated for alignment after loading
+        if (element.alignment) {
+            element.updateDimensionsForAlignment();
+        }
 
         factors.forEach((role: any, id: number) => {
             if (role === null) {

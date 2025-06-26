@@ -122,18 +122,28 @@ export default class ValueRenderer extends BaseRenderer {
             y1 = y_curr * 0.75,
             x2, y2, segments = [];
         segments.push({x: x1, y: y1});
+        
         if (isRoleValueConstraint(shape) && isFact(source)) {
             let role = shape.factor? shape.factor : 0;
             let center = source.getCenterForRole(role);
             x2 = (center.x - shape.x);
             y2 = (center.y - shape.y);
             let offset;
-            if (y1 < y2) {
-                offset = -1 * source.height;
+            if (source.isVertical()) {
+                if (x1 < x2) {
+                    offset = -1 * source.width;
+                } else {
+                    offset = source.width;
+                }
+                segments.push({x: x2 + offset, y: y2});
             } else {
-                offset = source.height;
+                if (y1 < y2) {
+                    offset = -1 * source.height;
+                } else {
+                    offset = source.height;
+                }
+                segments.push({x: x2, y: y2 + offset});
             }
-            segments.push({x: x2, y: y2 + offset});
             segments.push({x: x2, y: y2});
         } else {
             x2 = (source.x - shape.x) + source.width / 2,

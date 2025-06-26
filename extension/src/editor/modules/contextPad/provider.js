@@ -1,4 +1,3 @@
-
 import  {
     isLabel, isConnection
 } from "diagram-js/lib/util/ModelUtil";
@@ -172,7 +171,16 @@ export default function ContextPadProvider(
             fact.unsetTowards();
         }
         that._modeling.sendUpdate(fact);
-    }
+    };
+
+    /**
+     * Toggles the alignment of a fact between horizontal and vertical.
+     * @param {ContextPadProvider} that 
+     * @param {Fact} fact 
+     */
+    ContextPadProvider.prototype.toggleAlignment = function(that, fact){
+        that._modeling.toggleAlignment(fact);
+    };
 
     /**
      * Removes the fact from the current ORM schema.
@@ -280,6 +288,29 @@ export default function ContextPadProvider(
                 className: 'context-pad-towards-none',
                 html: '<div class="entry mdi mdi-alpha-n-box-outline editor-hover"/>',
                 title: 'No Direction',
+                group: '2-edit'
+            };
+        }
+
+        // Add alignment toggle options
+        if (fact.alignment === "vertical") {
+            options['set-horizontal'] = {
+                action: {
+                    click: () => {that.toggleAlignment(that, fact);},
+                },
+                className: 'context-pad-alignment-horizontal',
+                html: '<div class="entry mdi mdi-alpha-a-box editor-hover"/>',
+                title: 'Flip Alignment',
+                group: '2-edit'
+            };
+        } else {
+            options['set-vertical'] = {
+                action: {
+                    click: () => {that.toggleAlignment(that, fact);},
+                },
+                className: 'context-pad-alignment-vertical',
+                html: '<div class="entry mdi mdi-alpha-a-box-outline editor-hover"/>',
+                title: 'Flip Alignment',
                 group: '2-edit'
             };
         }

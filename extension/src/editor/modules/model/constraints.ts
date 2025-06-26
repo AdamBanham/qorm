@@ -7,6 +7,8 @@ export enum constraintType {
     SIMPLE
 }
 
+export const UNIT_HEIGHT = 2.5;
+
 export interface constraint extends ShapeLike {
     id: string;
     type: "constraint";
@@ -32,6 +34,7 @@ export class SimpleConstraint implements constraint {
     id: string;
     type: "constraint";
     mode: constraintType;
+    alignment: "horizontal" | "vertical" = "horizontal";
     over: Array<number>;
     width: number;
     height: number;
@@ -94,6 +97,19 @@ export class SimpleConstraint implements constraint {
         this.over = this.over.filter(
             (r) => r < this.roles
         );
+    }
+
+    update() {
+        if (this.src) {
+            this.alignment = this.src.alignment;
+            if (this.alignment === "horizontal") {
+                this.width = this.src.width;
+                this.height = UNIT_HEIGHT;
+            } else {
+                this.width = UNIT_HEIGHT;
+                this.height = this.src.height;
+            }
+        }
     }
 
     buildAttributes(): any {

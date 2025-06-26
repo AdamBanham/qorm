@@ -262,6 +262,8 @@ export default class OrmModelling extends Modeling {
             fact.derived = true;
             this.makeDerivedLabel(fact, "...");
         }
+        fact.update();
+        this.sendUpdates(fact, ...fact.labels);
     }
 
     /**
@@ -403,6 +405,29 @@ export default class OrmModelling extends Modeling {
         }
     }
 
+    /**
+     * Toggles the alignment of a fact between horizontal and vertical.
+     * @param {Fact} fact the fact to toggle alignment for
+     */
+    toggleAlignment(fact){
+        if (isFact(fact)){
+            fact.toggleAlignment();
+            fact.refreshUniquenessPositions();
+            fact.update();
+            this.sendUpdates(fact, ...fact.labels, 
+                ...fact.uniqueness, ...fact.constraints,
+            );
+            if (fact.incoming){
+                for(let con of fact.incoming){
+                    this.layoutConnection(con);
+                    // for whatever reason, the source rect for layouting is offset
+                    // without a move on the source element :/
+                    setTimeout( () => this.moveElements([con.source], {x: 0, y: 0}), 2);
+                }
+            }
+            this.sendUpdate(...fact.incoming, ...fact.outgoing);                    
+        }
+    }
 }
 
 OrmModelling.$inject = [

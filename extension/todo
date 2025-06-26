@@ -30,8 +30,13 @@
 [ ] revisit file_format.orm and update to reflect current data model
 [-] add vertical alignment for facts
     [ ] seperate rendering for facts from main line 
-    [ ] adjust layouting to account for vertical alignment
+    [X] adjust layouting to account for vertical alignment
     [ ] seperate uniquess constraints from main line (account for vertical alignment)
+    [X] adjusted objectified fact types to account for vertical alignment
+    [X] adjust objectified fact types to account for vertical alignment
+    [X] adjust labels to account for vertical alignment
+    [X] add switch for flipping alignment in keyboard shortcuts
+    [X] add switch for flipping alignment in context pad
 
 [X] actually write to file changes as they happen
 [X] added a new command create a new ORM model

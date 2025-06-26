@@ -111,8 +111,8 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
             return;
         }
 
-        let role = event.source.findNearestRoleUsingPosX(
-            event.x
+        let role = event.source.findNearestRoleUsingPos(
+            event.x, event.y
         );
         if (role < 0) {
             return;

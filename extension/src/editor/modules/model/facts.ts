@@ -29,6 +29,7 @@ export interface fact extends Element {
     derived?: boolean;
     derivedLabel?: string;
     towards?: "right" | "left";
+    alignment?: "horizontal" | "vertical";
 }
 
 export function createFact(
@@ -63,6 +64,7 @@ export class Fact implements fact {
     derived?: boolean | undefined;
     towards?: "right" | "left" | undefined;
     derivedLabel?: string | undefined;
+    alignment: "horizontal" | "vertical";
     businessObject?: any;
     parent?: Element | undefined;
     incoming: Connection[];
@@ -86,12 +88,14 @@ export class Fact implements fact {
         this.outgoing = [];
         this.objectification = undefined;
         this.constraints = [];
+        this.alignment = "horizontal"; // Default to horizontal alignment
     }
     
 
     addRole(){
         this.roles = this.roles + 1;
         this.factors = this.factors.concat(...[null]);
+        this.updateDimensionsForAlignment();
     }
 
     /**
@@ -102,7 +106,7 @@ export class Fact implements fact {
         let temp = this.factors[this.roles - 1];
         this.roles = this.roles - 1;
         this.factors = this.factors.slice(0, -1);
-        this.width = this.width - unitWidth;
+        this.updateDimensionsForAlignment();
         if (this.roles === 1){
             this.unsetTowards();
         }
@@ -197,20 +201,38 @@ export class Fact implements fact {
      * @returns {x:number, y:number} the center of the role
      */
     getCenterForRole(pos:number): {x:number, y:number} {
-        return {
-            x: this.x + ((pos + 0.5) * unitWidth),
-            y: this.y + 0.5 * unitHeight
-        };
+        if (this.isVertical()) {
+            return {
+                x: this.x + 0.5 * unitWidth,
+                y: this.y + ((pos + 0.5) * unitHeight)
+            };
+        } else {
+            return {
+                x: this.x + ((pos + 0.5) * unitWidth),
+                y: this.y + 0.5 * unitHeight
+            };
+        }
     }
 
-    findNearestRoleUsingPosX(posX:number): number {
-        let pos = Math.max(0, 
-            Math.floor((posX+5 - this.x) / unitWidth)
-        );
-        if (pos < this.roles){
-            return pos;
+    findNearestRoleUsingPos(posX:number, posY:number): number {
+        if (this.isVertical()) {
+            let pos = Math.max(0, 
+                Math.floor((posY + 5 - this.y) / unitHeight)
+            );
+            if (pos < this.roles){
+                return pos;
+            } else {
+                return -1;
+            }
         } else {
-            return -1;
+            let pos = Math.max(0, 
+                Math.floor((posX + 5 - this.x) / unitWidth)
+            );
+            if (pos < this.roles){
+                return pos;
+            } else {
+                return -1;
+            }
         }
     }
             
@@ -228,9 +250,15 @@ export class Fact implements fact {
      * @returns {x:number, y:number} the next free position for a constraint
      */
     getNextFreeContraintPosition(): {x:number, y:number} {
-        let x = this.x + this.width / 2;
-        let y = this.y - ( constraintDiff * (this.uniqueness.length + 1) );
-        return {x: x, y: y};
+        if (this.isVertical()) {
+            let x = this.x - (constraintDiff * (this.uniqueness.length + 1));
+            let y = this.y + this.height / 2;
+            return {x: x, y: y};
+        } else {
+            let x = this.x + this.width / 2;
+            let y = this.y - (constraintDiff * (this.uniqueness.length + 1));
+            return {x: x, y: y};
+        }
     }
 
     /**
@@ -258,10 +286,18 @@ export class Fact implements fact {
                 removed.setSource(undefined);
             }
         }
-        let curr_y = this.y - constraintDiff;
-        for(let keeps of this.uniqueness){
-            keeps.y = curr_y;
-            curr_y = curr_y - constraintDiff;
+        if (this.isVertical()) {
+            let curr_x = this.x - constraintDiff;
+            for(let keeps of this.uniqueness){
+                keeps.x = curr_x;
+                curr_x = curr_x - constraintDiff;
+            }
+        } else {
+            let curr_y = this.y - constraintDiff;
+            for(let keeps of this.uniqueness){
+                keeps.y = curr_y;
+                curr_y = curr_y - constraintDiff;
+            }
         }
     }
 
@@ -269,11 +305,20 @@ export class Fact implements fact {
      * Refreshes the positions of the constraints.
      */
     refreshUniquenessPositions(): void {
-        let curr_y = this.y - constraintDiff;
-        for(let keeps of this.uniqueness){
-            keeps.y = curr_y;
-            keeps.x = this.x;
-            curr_y = curr_y - constraintDiff;
+        if (this.isVertical()) {
+            let curr_x = this.x - constraintDiff;
+            for(let keeps of this.uniqueness){
+                keeps.x = curr_x;
+                keeps.y = this.y;
+                curr_x = curr_x - constraintDiff;
+            }
+        } else {
+            let curr_y = this.y - constraintDiff;
+            for(let keeps of this.uniqueness){
+                keeps.y = curr_y;
+                keeps.x = this.x;
+                curr_y = curr_y - constraintDiff;
+            }
         }
     }
 
@@ -339,16 +384,24 @@ export class Fact implements fact {
     }
 
     update(){
-        this.width = unitWidth * this.roles;
+        this.updateDimensionsForAlignment();
         if (this.labels.length > 0){
             for(let labeler of this.labels){
-                labeler.x = this.x + (this.width / 2);
+                if (this.isVertical()) {
+                    labeler.y = this.y + (this.height / 2);
+                    labeler.x = this.x + (unitWidth * 1.5) + (labeler.derived ? 25 : 0);
+                } else {
+                    labeler.x = this.x + (this.width / 2);
+                    labeler.y = this.y + (unitHeight * 1.5) + (labeler.derived ? 25 : 0);
+                }
             }
         }
         if (this.objectified){
             this.objectification?.update();
         }
-
+        this.uniqueness.forEach((uni) => {
+            uni.update();
+        });
     }
 
     buildAttributes(): Map<string, any> {
@@ -381,6 +434,9 @@ export class Fact implements fact {
         if (this.towards){
             attributes.set("towards", this.towards);
         }
+        if (this.alignment && this.alignment !== "horizontal"){
+            attributes.set("alignment", this.alignment);
+        }
         if (this.uniqueness.length > 0){
             attributes.set("uniqueness", this.uniqueness.map((i) => {
                 return i.buildAttributes();
@@ -392,6 +448,55 @@ export class Fact implements fact {
             }));
         }
         return attributes;
+    }
+
+    /**
+     * Checks whether the fact type is vertically aligned.
+     * @returns {boolean} whether the fact type is vertical
+     */
+    isVertical(): boolean {
+        return this.alignment === "vertical";
+    }
+
+    /**
+     * Checks whether the fact type is horizontally aligned.
+     * @returns {boolean} whether the fact type is horizontal
+     */
+    isHorizontal(): boolean {
+        return this.alignment === "horizontal" || this.alignment === undefined;
+    }
+
+    /**
+     * Sets the alignment of the fact type.
+     * @param {"horizontal" | "vertical"} alignment the alignment to set
+     */
+    setAlignment(alignment: "horizontal" | "vertical"): void {
+        this.alignment = alignment;
+        this.updateDimensionsForAlignment();
+    }
+
+    /**
+     * Toggles the alignment between horizontal and vertical.
+     */
+    toggleAlignment(): void {
+        if (this.isVertical()) {
+            this.setAlignment("horizontal");
+        } else {
+            this.setAlignment("vertical");
+        }
+    }
+
+    /**
+     * Updates width and height based on current alignment.
+     */
+    updateDimensionsForAlignment(): void {
+        if (this.isVertical()) {
+            this.width = unitWidth;
+            this.height = unitHeight * this.roles;
+        } else {
+            this.width = unitWidth * this.roles;
+            this.height = unitHeight;
+        }
     }
 
 }

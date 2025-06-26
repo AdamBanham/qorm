@@ -3,7 +3,8 @@ import {
     attr as svgAttr,
     create as svgCreate,
     clone as svgClone,
-    classes as svgClasses
+    classes as svgClasses,
+    transform
 } from 'tiny-svg';
     
 import { assign } from 'min-dash';
@@ -15,7 +16,7 @@ import {
 
 import { ValueEntity, Entity, unitWidth as entityWidth } from '../model/entities';
 import { unitWidth, unitHeight, Fact } from "../model/facts";
-import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype, isObjectification } from '../model/util';
+import { isLabel, isConstraint, isUnitReference, isReferredReference, isValueReference, isSubtype, isObjectification, isFact } from '../model/util';
 import { SUBTYPE_NAME } from '../model/subtypes';
 import { OBJECTIFICATION_TYPE } from '../model/objectifiedRole';
 
@@ -194,6 +195,8 @@ export default class TSRenderer extends  BaseRenderer {
                 // draw the fact roles
                 let x = 0;
                 let y = 0;
+                const isVertical = element.alignment === "vertical";
+                
                 for (let i = 0; i < element.roles; i++){
                     let box = svgCreate("rect", {
                         'stroke-dasharray': dashType,
@@ -202,7 +205,7 @@ export default class TSRenderer extends  BaseRenderer {
                         width: unitWidth,
                         height: unitHeight,
                         x: x,
-                        y: 0
+                        y: y
                     });
                     svgAppend(group, box);
                     if (element.hovered && i === element.hoveredRole){
@@ -214,11 +217,16 @@ export default class TSRenderer extends  BaseRenderer {
                             width: unitWidth,
                             height: unitHeight,
                             x: x,
-                            y: 0
+                            y: y
                         });
                         svgAppend(group, box);
                     }
-                    x = x + unitWidth;
+                    
+                    if (isVertical) {
+                        y = y + unitHeight;
+                    } else {
+                        x = x + unitWidth;
+                    }
                 }
             } else {
                 let box = svgCreate("rect", {
@@ -300,11 +308,23 @@ export default class TSRenderer extends  BaseRenderer {
                 }
             } else {
                 if (element.objectified && element.objectifiedName){
-                    let upperText = svgCreate("text", {
-                        x: centerText, y:  - 10 - (10 * element.uniqueness.length) - 12.5,
-                        class: "fact-objectified-label",
-                        style: style,
-                    });
+                    let upperText;
+                    let offset =  - 10 - (10 * element.uniqueness.length) - 12.5;
+                    if (element.isVertical()){
+                        centerText = Math.floor(element.height * 0.5);
+                        upperText = svgCreate("text", {
+                            x: offset , y:   centerText,
+                            class: "fact-objectified-label",
+                            style: style,
+                            transform: `rotate(-90, ${offset}, ${centerText})`,
+                        });
+                    } else {
+                        upperText = svgCreate("text", {
+                            x: centerText, y:  - 10 - (10 * element.uniqueness.length) - 12.5,
+                            class: "fact-objectified-label",
+                            style: style,
+                        });
+                    }
                     upperText.textContent = '"'+element.objectifiedName+'!"';
                     svgAppend(group, upperText);
                 }
@@ -370,11 +390,26 @@ export default class TSRenderer extends  BaseRenderer {
         } else {
             className = className + "-label";
         }
+        let src = label.labelTarget,
+            x = 0,
+            y = 3.5,
+            transform = "";
+        if (isFact(src)){
+            if (src.isVertical()){
+                x = 3.5;
+                y = 0;
+                transform = "rotate(-90, 0, 0)";
+            } else {
+                x = 0;
+                y = 3.5;
+            }
+        }
         var text = svgCreate('text',
             {
-                x: 0,
-                y: 3.5,
-                class: className
+                x,
+                y,
+                class: className,
+                transform,
             }
         );
         if (label.content.length > 0){
@@ -407,17 +442,29 @@ export default class TSRenderer extends  BaseRenderer {
         // draw segments 
         let curr_x = 0;
         let next_x = unitWidth;
+        let x1, y1, x2, y2;
         let color = (constraint.editing) ? 
         ( constraint.valid ? CONSTRAINT_EDIT_COLOUR : CONSTRAINT_EDIT_FAIL) 
         : CONSTRAINT_COLOUR;
         for(let i = 0; i < constraint.roles; i++){
+            if (constraint.src && constraint.src.isVertical()){
+                x1 = 1.5;
+                y1 = curr_x;
+                x2 = 1.5;
+                y2 = next_x;
+            } else {
+                x1 = curr_x;
+                y1 = 1.5;
+                x2 = next_x;
+                y2 = 1.5;
+            }
             let dash = (constraint.isRoleConstrainted(i)) 
                 ? "0" : "2.5";
             let line = svgCreate("line", {
-                x1: curr_x,
-                y1: 1.5,
-                x2: next_x,
-                y2: 1.5,
+                x1,
+                y1,
+                x2,
+                y2,
                 stroke: color,
                 'stroke-width': 2,
                 'stroke-dasharray': dash,
@@ -447,12 +494,15 @@ export default class TSRenderer extends  BaseRenderer {
         let group = svgCreate("g", {});
         svgClasses(group)
             .add(RENDER_VISUALS_CLASS);
+        let width = objectification.width,
+            height = objectification.height;
+
         let box = svgCreate("rect", {
                 x: 0,
                 y: 0,
                 rx: 2.5,
-                width: objectification.width,
-                height: objectification.height,
+                width: width,
+                height: height,
                 fill: OBJECTIFICATION_FILL_COLOUR,
                 stroke: BORDER_COLOUR,
                 strokeWidth: 2,

@@ -111,6 +111,9 @@ export default class OrmShortcuts {
         keyboard.addListener((context) => {
             that.triggerConstraintDecrease(that, context);
         });
+        keyboard.addListener((context) => {
+            that.triggerAlignmentToggle(that, context);
+        });
     }
 
     /**
@@ -575,6 +578,21 @@ export default class OrmShortcuts {
                     select.decreaseWidth();
                     that._modeling.sendUpdate(select);
                 }
+            }
+        }
+    }
+
+    triggerAlignmentToggle(that, context){
+        const event = context.keyEvent;
+        const selected = that._selection.get();
+        if (selected.length === 1){
+            const select = selected[0];
+            if (event.ctrlKey){
+                return;
+            }
+            if (isKey(['a', 'A'], event)){
+                event.stopPropagation();
+                that._modeling.toggleAlignment(select);
             }
         }
     }
