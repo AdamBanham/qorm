@@ -10,12 +10,38 @@ import {
 
 import { isFact } from '../model/util';
 import { transformToViewbox } from "../utils/canvasUtils";
+import { HelpChainBuilder } from '../help-interactions/model';
 
 var MARKER_OK = 'connect-ok',
-MARKER_NOT_OK = 'connect-not-ok';
+MARKER_NOT_OK = 'connect-not-ok',
+helper_title = `
+<p> 
+Click on a fact's role to make a relation with that fact.
+</p>
+<p>
+<b style="color:green">CLICK</b> to connect,
+<b style="color:red">ESC</b> to cancel.
+</p>
+`,
+helpChain = new HelpChainBuilder()
+  .create(helper_title, "Unable to connect with hovered element.")
+  .build();
 
+
+/**
+ * @typedef {import('../help-interactions/helping')} HelpInteractions
+ */
+
+/**
+ * @param {*} eventBus 
+ * @param {*} dragging 
+ * @param {*} modeling 
+ * @param {*} rules 
+ * @param {*} canvas 
+ * @param {HelpInteractions} helping 
+ */
 export default function OrmConnect(
-    eventBus, dragging, modeling, rules, canvas) {
+    eventBus, dragging, modeling, rules, canvas, helping) {
 
     // rules
   
@@ -98,6 +124,9 @@ export default function OrmConnect(
       if (canExecute) {
         context.source = start;
         context.target = hover;
+        helping.fire('help.clear');
+      } else {
+        helping.fire('help.error');
       }
     });
   
@@ -154,6 +183,11 @@ export default function OrmConnect(
       context.target = null;
       context.targetRole = null;
       context.canExecute = false;
+      helping.fire('help.clear');
+    });
+
+    eventBus.on('connect.cleanup', function(event) {
+      helping.fire('help.end');
     });
 
     eventBus.on(['connect.cancel','connect.canceled'], function(event) {
@@ -199,6 +233,10 @@ export default function OrmConnect(
         autoActivate = connectionStart;
         connectionStart = getMid(start);
       }
+
+      helping.fire('help.start', {
+        chain: helpChain,
+      });
       
       dragging.init(event, 'connect', {
         autoActivate: autoActivate,
@@ -218,7 +256,8 @@ export default function OrmConnect(
     'dragging',
     'modeling',
     'rules',
-    'canvas'
+    'canvas',
+    'helpInteractions'
   ];
   
   

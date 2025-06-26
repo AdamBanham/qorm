@@ -23,8 +23,9 @@
     [X] add a new module for handling chains of interactions
     [X] add a new data structure for triggering help chain
     [X] add helper for value constraint contruction
-    [ ] add helper for uniquness constraint construction
-    [ ] add helpers for connections betwen entities and facts
+    [X] add helper for uniquness constraint construction
+    [X] add helpers for connections betwen entities and facts
+    [ ] add helpers for subtyping creation
 [ ] add extension setting for debug rendering
 [ ] revisit file_format.orm and update to reflect current data model
 [ ] add vertical alignment for facts
