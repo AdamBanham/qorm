@@ -1,4 +1,5 @@
 import ConstraintHandler from "./ConstraintHandler";
+import { ConstraintContext } from "./ConstraintHandler";
 import { ValueConstraint } from "../model/valueConstraint";
 
 // @ts-ignore
@@ -9,12 +10,12 @@ import { isWithinShape } from "../../utils/canvasUtils";
 import { Fact } from "../../model/facts";
 
 export interface RoleValueConstruction {
-    state: "selecting" | "moving";
+    state: 'selecting' | 'moving';
     factor: number;
     constraint: ValueConstraint
 }
 
-export interface RoleValueContext extends MouseEvent {
+export interface RoleValueContext extends ConstraintContext {
     source: Fact;
     factor?: number;
     mode: MODE;
@@ -22,9 +23,26 @@ export interface RoleValueContext extends MouseEvent {
 }
 
 import { HelpChainBuilder } from "../../help-interactions/model";
+let helper_title = `
+<p> 
+Click on a role on the fact to create a value costraint on its popluation.
+</p>
+<p>
+<b style="color:red">ESC</b> to cancel.
+</p>
+`;
+let helper_title2 = `
+<p> 
+Move the constraint to the desired position.
+</p>
+<p>
+<b style="color:green">CLICK</b> to place,
+<b style="color:red">ESC</b> to cancel.
+</p>
+`;
 export const HelpChain = new HelpChainBuilder()
-    .create("Click on a role on the fact", "role already has a constraint")
-    .addNext("Move the constraint to the desired position and click to place the constraint", "")
+    .create(helper_title, "role already has a value constraint")
+    .addNext(helper_title2, "")
     .build();
 
 export default class RoleValueConstraint extends ConstraintHandler {
@@ -64,8 +82,8 @@ export default class RoleValueConstraint extends ConstraintHandler {
         );
     }
 
-    prepareData(context: any): object {
-        let data:any = super.prepareData(context);
+    prepareData(context: any): RoleValueContext {
+        let data = super.prepareData(context);
 
         let dummyState = this._factory
             .createDummyAttributesForValueConstraint(
@@ -88,15 +106,16 @@ export default class RoleValueConstraint extends ConstraintHandler {
             chain: HelpChain
         });
 
+        let state:RoleValueConstruction = {
+            state: 'selecting',
+            factor: context.factor || -1,
+            constraint: constraint
+        };
+
         return Object.assign(data, {
-            source: context.source,
             factor: context.factor || -1,
             mode: MODE,
-            state: {
-                state: "selecting",
-                factor: context.factor || -1,
-                constraint: constraint
-            }
+            state
         });
     }
 
@@ -131,17 +150,8 @@ export default class RoleValueConstraint extends ConstraintHandler {
                 }
 
                 if (fact.hasValueConstraintOver(role)){
-                    
                     this._eventBus.fire(
                         'help.error'
-                    );
-                    setTimeout(
-                        () => {
-                            this._builder.cancel(event);
-                            this._eventBus.fire(
-                            'help.end'
-                            );
-                        }, 500
                     );
                     return;
                 }

@@ -8,7 +8,7 @@ export const SIMPLE_MODE = 'simple';
 export const OBJECT_VALUE_MODE = 'object-value';
 export const ROLE_VALUE_MODE = 'role-value';
 
-import SimpleConstraintHandler from './handlers/SimpleConstraint.js';
+import UniquenessConstraintHandler from './handlers/UniqunessConstraint';
 import ObjectValueConstraintHandler from './handlers/ObjectValueConstraint.js';
 import RoleValueConstraintHandler from './handlers/RoleValueConstraint';
 
@@ -24,7 +24,7 @@ export default class ContraintsModule {
      * @param {Modeling} modeling 
      * @param {Builder} dragging 
      */
-    constructor(eventBus, modeling, builder, elementFactory, rules, editing) {
+    constructor(eventBus, modeling, builder, elementFactory, rules, editing, helping) {
         this._builder = builder;
         this._eventBus = eventBus;
         this._modeling = modeling;
@@ -36,14 +36,14 @@ export default class ContraintsModule {
         });
 
         this._registry = {};
-        this._registry[SIMPLE_MODE] = new SimpleConstraintHandler(
-                eventBus, elementFactory, modeling, rules
+        this._registry[SIMPLE_MODE] = new UniquenessConstraintHandler(
+                eventBus, elementFactory, modeling, rules, helping
         ).setBuilder(builder);
         this._registry[OBJECT_VALUE_MODE] = new ObjectValueConstraintHandler(
-            eventBus, elementFactory, modeling, rules, editing
+            eventBus, elementFactory, modeling, rules, editing, helping
         ).setBuilder(builder);
         this._registry[ROLE_VALUE_MODE] = new RoleValueConstraintHandler(
-            eventBus, elementFactory, modeling, rules, editing
+            eventBus, elementFactory, modeling, rules, editing, helping
         ).setBuilder(builder);
 
     }
@@ -76,5 +76,6 @@ ContraintsModule.$inject = [
     'constraintsBuilder',
     'elementFactory',
     'rules',
-    'directEditing'
+    'directEditing',
+    'helpInteractions'
 ];

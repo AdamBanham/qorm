@@ -1,6 +1,13 @@
 
 import EventBus from 'diagram-js/lib/core/EventBus';
 
+export interface ConstraintContext extends MouseEvent {
+    source: any;
+    mode: string;
+    x: number;
+    y: number;
+}
+
 /**
  * A abstract interface for constraint handlers.
  */
@@ -22,32 +29,33 @@ export default class ConstraintHandler {
         return true;
     }
 
-    prepareData(context:any) : object {
+    prepareData(context:any) : ConstraintContext {
+        // @ts-ignore
         return {
             source: context.source,
             mode: context.mode,
         };
     }
 
-    move(event:any) {
+    move(event:ConstraintContext) {
     }
 
-    click(event:any) {
+    click(event:ConstraintContext) {
     }
 
-    end(event:any) {
+    end(event:ConstraintContext) {
     }
 
-    cancel(event:any) {
+    cancel(event:ConstraintContext) {
     }
 
-    cleanup(event:any) {
+    cleanup(event:ConstraintContext) {
     }
 
-    hover(event:any) {
+    hover(event:ConstraintContext) {
     }
 
-    out(event:any) {
+    out(event:ConstraintContext) {
 
     }
 }
