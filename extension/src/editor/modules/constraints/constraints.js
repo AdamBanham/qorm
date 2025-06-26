@@ -9,7 +9,7 @@ export const OBJECT_VALUE_MODE = 'object-value';
 export const ROLE_VALUE_MODE = 'role-value';
 
 import UniquenessConstraintHandler from './handlers/UniqunessConstraint';
-import ObjectValueConstraintHandler from './handlers/ObjectValueConstraint.js';
+import ObjectValueConstraintHandler from './handlers/ObjectValueConstraint';
 import RoleValueConstraintHandler from './handlers/RoleValueConstraint';
 
 /**

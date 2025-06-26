@@ -1,22 +1,35 @@
-import ConstraintHandler from './ConstraintHandler';
 
+// @ts-ignore
 import { PREFIX } from '../builder.js';
+// @ts-ignore
 import { OBJECT_VALUE_MODE as MODE } from '../constraints.js';
+import { ValueConstraint } from '../model/valueConstraint';
+import ConstraintHandler, { ConstraintContext } from './ConstraintHandler';
 
+interface ObjectValueContext extends ConstraintContext {
+    constraint: ValueConstraint; // The constraint being created
+}
 /**
  * The object value constraint handler constraints over objects
  * the mode 'object-value'.
  */
 export default class ObjectValueConstraintHandler extends ConstraintHandler {
    
-    /**
-     * 
-     * @param {*} eventBus 
-     * @param {*} factory 
-     * @param {*} modeling 
-     * @param {*} rules
-     */
-    constructor(eventBus, factory, modeling, rules, directEditing) {
+    static $inject = [
+        'eventBus',
+        'elementFactory',
+        'modeling',
+        'rules',
+        'directEditing'
+    ];
+    _eventBus:any;
+    _factory:any;
+    _modeling:any;
+    _rules:any;
+    _directEditing:any;
+    _added: boolean = false;
+
+    constructor(eventBus:any, factory:any, modeling:any, rules:any, directEditing:any) {
         super(eventBus);
         this._eventBus = eventBus;
         this._factory = factory;
@@ -27,21 +40,26 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
 
         this._eventBus.on(
             `${PREFIX}${MODE}.click`,
-            (event) => this.click(event)
+            this.click.bind(this)
         );
 
         this._eventBus.on(
             `${PREFIX}${MODE}.move`,
-            (event) => this.move(event)
+            this.move.bind(this)
         );
 
         this._eventBus.on(
-            [`${PREFIX}${MODE}.cancel`, `${PREFIX}${MODE}.cancelled`],
-            (event) => this.cancel(event)
+            [`${PREFIX}${MODE}.canceled`, `${PREFIX}${MODE}.cancel`],
+            this.cancel.bind(this)
+        );
+
+        this._eventBus.on(
+            `${PREFIX}${MODE}.cleanup`,
+            this.cleanup.bind(this)
         );
     }
 
-    prepareData(context) {
+    prepareData(context:any) : ObjectValueContext {
         const data = super.prepareData(context);
 
         let dummyState = this._factory
@@ -65,7 +83,7 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
         });
     }
 
-    move(event) {
+    move(event: ObjectValueContext) {
         let constraint = event.constraint;
 
         const { x, y } = event;
@@ -75,11 +93,16 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
         this._modeling.sendUpdate(constraint);
     }
 
-    click(event) {
+    click(event : ObjectValueContext) {
+        this.end(event);
+        this._added = true;
+        this._builder.end(event);
+    }
+
+    end(event: ObjectValueContext) {
         let source = event.source,
             constraint = event.constraint,
             that = this;
-        
         source.addConstraint(constraint);
         this._modeling.sendUpdates(source, constraint);
         setTimeout( () =>
@@ -90,19 +113,18 @@ export default class ObjectValueConstraintHandler extends ConstraintHandler {
                 }
             )
         , 25);
-        this._builder.end(event);
     }
 
-    cleanup(event) {
+    cleanup(event: ObjectValueContext): void {
+        if (!this._added) {
+            let constraint = event.constraint;
+            this._modeling.removeElements([constraint]);
+        }
+        this._added = false;
+    }
+
+    cancel(event: ObjectValueContext): void {
         let constraint = event.constraint;
         this._modeling.removeElements([constraint]);
     }
 }
-
-ObjectValueConstraintHandler.$inject = [
-    'eventBus',
-    'elementFactory',
-    'modeling',
-    'rules',
-    'directEditing'
-];
