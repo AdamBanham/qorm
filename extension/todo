@@ -19,16 +19,19 @@
     [X] add value constraints for referenced object types 
     [X] add value constraints for value types
     [X] add value constraints for facts
-[-] add a help system to guide the user through interactions
+[X] add a help system to guide the user through interactions
     [X] add a new module for handling chains of interactions
     [X] add a new data structure for triggering help chain
     [X] add helper for value constraint contruction
     [X] add helper for uniquness constraint construction
     [X] add helpers for connections betwen entities and facts
-    [ ] add helpers for subtyping creation
+    [X] add helpers for subtyping creation
 [ ] add extension setting for debug rendering
 [ ] revisit file_format.orm and update to reflect current data model
-[ ] add vertical alignment for facts
+[-] add vertical alignment for facts
+    [ ] seperate rendering for facts from main line 
+    [ ] adjust layouting to account for vertical alignment
+    [ ] seperate uniquess constraints from main line (account for vertical alignment)
 
 [X] actually write to file changes as they happen
 [X] added a new command create a new ORM model
