@@ -13,14 +13,11 @@
     target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
     mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
-    entry: {
-      extension: './src/extension.ts',
-      connectDiagram: './src/editor/connectDiagram.js'
-    }, // the entry points of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+    entry: './src/extension.ts', // the entry point of the extension, 📖 -> https://webpack.js.org/configuration/entry-context/
     output: {
       // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js',
+      filename: 'extension.js',
       libraryTarget: 'commonjs2'
     },
     externals: {
@@ -50,5 +47,40 @@
     },
     watchOptions: { poll: true },
   };
-  module.exports = [ extensionConfig ];
+
+  /** @type WebpackConfig */
+  const webviewConfig = {
+    target: 'web', // Webview scripts run in browser context
+    mode: 'none',
+
+    entry: './src/editor/connectDiagram.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'connectDiagram.js',
+      libraryTarget: 'umd'
+    },
+    resolve: {
+      extensions: ['.ts', '.js']
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'ts-loader'
+            }
+          ]
+        }
+      ]
+    },
+    devtool: 'nosources-source-map',
+    infrastructureLogging: {
+      level: "log",
+    },
+    watchOptions: { poll: true },
+  };
+
+  module.exports = [ extensionConfig, webviewConfig ];
 }());
