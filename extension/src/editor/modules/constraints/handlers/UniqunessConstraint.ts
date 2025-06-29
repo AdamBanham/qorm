@@ -96,7 +96,8 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
             source.parent
         );
         constraint.setEditing(true);
-        this._modeling.sendUpdate(constraint);
+        source.addUniqueness(constraint);
+        this._modeling.sendUpdates(constraint, source);
         this._helping.fire('help.start', { chain: HelpChain });
         return Object.assign(data, {
             mode: MODE,
@@ -139,9 +140,9 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
         });
 
         if (allowed) {
-            event.source.addUniqueness(event.constraint);
             this._modeling.sendUpdates(event.constraint, event.source);
         } else {
+            event.source.removeUniqueness(event.constraint);
             this._modeling.removeElements([event.constraint]);
         }
 
