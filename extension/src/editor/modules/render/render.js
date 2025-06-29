@@ -333,11 +333,23 @@ export default class TSRenderer extends  BaseRenderer {
             // draw arrow for the verbialisation
             if (element.type === 'fact' && element.towards){
                 let transform = "";
-                if (element.towards === "left"){
-                    transform = transform + "rotate(180) translate(-15, -25) scale(6) ";
-                } else {
-                    transform = transform + `translate(${element.width - 15}, 0) scale(6) `;
+                if (element.isVertical()){
+                    transform += " rotate(90)";
                 }
+                if (element.towards === "left"){
+                    if (element.isVertical()){
+                        transform += `rotate(180) translate(${(unitHeight/-2) - 2.5}, 0)`;
+                    } else {
+                        transform += "rotate(180) translate(-15, -25)";
+                    }
+                } else {
+                    if (element.isVertical()){
+                        transform += ` translate(${element.height - 15}, -23.5)`;
+                    } else {
+                        transform += ` translate(${element.width - 15}, 0)`;
+                    }
+                }
+                transform += " scale(6)";
                 let arrowhead = svgCreate("path", {
                     d: 'm0 0v3.804C0 3.999 0 4 .157 3.864L1.764 2.234C2.002 2.002 2.001 2 1.749 1.749L.078.092C0-.001 0 0 0 .108z',
                     'stroke-linecap': "round",
