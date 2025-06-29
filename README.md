@@ -15,13 +15,33 @@ The underlying file structure used to store the schema
 is currently written within yaml. You can check out the file structure for
 the above schema [here](./sampleFiles/travel_agency.orm).
 
-## Building the extension
+## Developing and building/packaging the extension
+
+The following sections outline the setup for the extension if you wish
+to contribute or would like a standalone installer for vs-code. 
+
+### Dev Environment
+
+The .devcontainer folder contains an image for the dev environment that 
+should be used for testing and developing. Make sure to have docker (or 
+similar) installed and the `devcontainers` extension from the vs-code 
+marketplace. 
+
+Once installed, the command `Remote: [re]open in container` command can be
+used to launch vs-code within the image. A built in development runner can
+be launched via vs-code by press `F5`. Webpack watcher will repackage the 
+extension as changes are found. After the inital build is completed, 
+a secondary instance of vs-code will launch with the extension available.
+In order to retrigger changes from a rebuild, you may need to run either of
+the following commands in the development instance `Developer: Reload Webviews` 
+(usually enough), or `Developer: Reload Window` if top level extension
+changes have been added.
+
+### Preparing and Packaging
 
 To prepare the extension for the marketplace or for personal installment,
 make sure to have the [vsce](https://github.com/microsoft/vscode-vsce) or 
 "Visual Studio Code Extensions" CLI installed.
-
-### Preparing and Packaging
 
 Using vsce, the extension can be packaged via the following commands
 ```bash
