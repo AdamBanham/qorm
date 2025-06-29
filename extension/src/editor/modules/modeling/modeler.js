@@ -301,7 +301,7 @@ export default class OrmModelling extends Modeling {
             },
             Object.assign(attrs, { content: label})
         );
-        this.fact.update();
+        fact.update();
         this.sendUpdates(fact, ...fact.labels);
         return ret;
     }
