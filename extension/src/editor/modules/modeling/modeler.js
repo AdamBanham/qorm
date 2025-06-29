@@ -172,7 +172,7 @@ export default class OrmModelling extends Modeling {
      * @returns created label
      */
     createLabelForFact(fact, label){
-        return this.createLabel(
+        let factLabel = this.createLabel(
             fact,
             { x: fact.x + fact.width / 2, 
                 y: fact.y + unitHeight * 1.5
@@ -183,6 +183,9 @@ export default class OrmModelling extends Modeling {
             ),
             fact.parent
         );
+        fact.update();
+        this.sendUpdates(fact, ...fact.labels);
+        return factLabel;
     }
 
     /**
@@ -283,6 +286,12 @@ export default class OrmModelling extends Modeling {
         }
     }
 
+    /**
+     * Creates a derived label for the fact.
+     * @param {Fact} fact 
+     * @param {string} label 
+     * @returns {} the created label
+     */
     makeDerivedLabel(fact, label){
         let attrs = this._elementFactory.createDummyAttributesForDerivedLabel();
         let ret = this.createLabel(
@@ -292,6 +301,7 @@ export default class OrmModelling extends Modeling {
             },
             Object.assign(attrs, { content: label})
         );
+        this.fact.update();
         this.sendUpdates(fact, ...fact.labels);
         return ret;
     }
