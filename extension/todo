@@ -28,13 +28,13 @@
     [X] add helpers for subtyping creation
 [ ] add extension setting for debug rendering
 [ ] revisit file_format.orm and update to reflect current data model
-[-] add vertical alignment for facts
-    [ ] seperate rendering for facts from main line 
+[X] add vertical alignment for facts
+    [X] seperate rendering for facts from main line 
     [X] adjust layouting to account for vertical alignment
-    [ ] seperate uniquess constraints from main line (account for vertical alignment)
-    [ ] adjust verbalisation direction for vertical alignment
-    [ ] adjust non-settled uniqueness constraints to account for vertical alignment
-    [ ] adjust label creation to account for vertical alignment
+    [X] seperate uniquess constraints from main line (account for vertical alignment)
+    [X] adjust verbalisation direction for vertical alignment
+    [X] adjust non-settled uniqueness constraints to account for vertical alignment
+    [X] adjust label creation to account for vertical alignment
     [X] adjusted objectified fact types to account for vertical alignment
     [X] adjust objectified fact types to account for vertical alignment
     [X] adjust labels to account for vertical alignment
