@@ -2,11 +2,10 @@ import {
     append as svgAppend,
     attr as svgAttr,
     create as svgCreate,
-    clone as svgClone,
     classes as svgClasses
 } from 'tiny-svg';
 
-import BaseRenderer from "diagram-js/lib/draw/BaseRenderer";
+import TemplateRenderer from '../templateRenderer';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import {
     createLine
@@ -27,35 +26,22 @@ const TEXT_X_OFFSET = 7; // offset for text x position
 const TEXT_Y_OFFSET = 12; // offset for text y position
 const TEXT_LETTER_WIDTH = 9; // approximate width of a letter in the text
 
-export default class ValueRenderer extends BaseRenderer {
+export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
 
-    static $inject: Array<string>;
+    static $inject: Array<string> = ['eventBus', 'styles'];
     _styles: Styles;
 
     constructor(eventBus:EventBus, styles:Styles) {
-        super(eventBus, PRIORITY);
+        super(eventBus);
         this._styles = styles;
-
-        var that = this;
-        eventBus.on([ 'render.shape' ], PRIORITY, function(evt, context) {
-
-            var element = context.element,
-                visuals = context.gfx;
-
-            if (that.canRender(element)) {
-                if (element.isVisible()) {
-                    return that.draw(visuals, element);
-                } else {
-                    return visuals;
-                }
-            } 
-            
-            return;
-        });
     }
 
     canRender(element:any): boolean {
         return ALLOWED_TYPES.includes(element.type);
+    }
+
+    shouldRender(element: ValueConstraint): boolean {
+        return element.isVisible();
     }
 
     draw(visuals: SVGElement, shape: ValueConstraint) : SVGElement {
