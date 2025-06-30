@@ -56,6 +56,7 @@ export class Fact implements fact {
     x: number;
     y: number;
     hovered?: boolean;
+    hoveredRole?: number;
     uniqueness: Array<SimpleConstraint>;
     constraints: Array<ValueConstraint>;
     objectified?: boolean | undefined;
@@ -80,6 +81,7 @@ export class Fact implements fact {
         this.x = x;
         this.y = y;
         this.hovered = false;
+        this.hoveredRole = undefined;
         this.uniqueness = new Array();
         this.objectifiedName = "foobar";
         this.derived = false;
