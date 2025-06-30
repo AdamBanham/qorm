@@ -435,7 +435,6 @@ export default class OrmModelling extends Modeling {
                     setTimeout( () => this.moveElements([con.source], {x: 0, y: 0}), 2);
                 }
             }
-            this.sendUpdate(...fact.incoming, ...fact.outgoing);                    
         }
     }
 }
