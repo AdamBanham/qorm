@@ -6,7 +6,7 @@ import { Fact } from "./facts";
 export enum constraintType {
     SIMPLE
 }
-
+export const TYPE = "constraint";
 export const UNIT_HEIGHT = 2.5;
 
 export interface constraint extends ShapeLike {
@@ -42,6 +42,7 @@ export class SimpleConstraint implements constraint {
     y: number;
     roles: number;
     editing: boolean;
+    valid: boolean = true;
     src?: Fact;
 
     constructor(
