@@ -1,0 +1,155 @@
+system:
+  name: Unnamed System
+  type: ORM
+  entities:
+    - id: entity-1
+      type: entity
+      name: ORM
+      ref: editor
+      x: 342
+      'y': 198
+      referenceMode: reference
+      meta: ' '
+    - id: entity-2
+      type: value
+      name: within vscode
+      ref: id
+      x: 500
+      'y': 199
+  facts:
+    - id: fact-3
+      type: fact
+      roles: 1
+      factors:
+        - entity-1
+      x: 314
+      'y': 340
+      label: isUnary
+      derived: false
+    - id: fact-6
+      type: fact
+      roles: 2
+      factors:
+        - entity-1
+        - entity-2
+      x: 443
+      'y': 340.75
+      label: isBinary
+      derived: false
+      uniqueness:
+        - id: constraint-10
+          type: constraint
+          mode: 0
+          over:
+            - 0
+    - id: fact-11
+      type: fact
+      roles: 3
+      factors:
+        - entity-2
+        - entity-2
+        - entity-2
+      x: 567
+      'y': 340
+      label: isTernary
+      derived: false
+      uniqueness:
+        - id: constraint-12
+          type: constraint
+          mode: 0
+          over:
+            - 1
+            - 2
+  connections:
+    - id: connection-4
+      mandatory: false
+      role: 0
+      lastEdit: null
+      waypoints:
+        - x: 371.0171813964844
+          'y': 273
+        - x: 333.52789306640625
+          'y': 340
+      source: entity-1
+      target: fact-3
+      type: connection
+    - id: connection-6
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 430.5
+        'y': 353.25
+      waypoints:
+        - x: 404.2611389160156
+          'y': 273
+        - x: 430.5
+          'y': 353.25
+        - x: 443
+          'y': 353.25
+      source: entity-1
+      target: fact-6
+      type: connection
+    - id: connection-7
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 505.5
+        'y': 353.25
+      waypoints:
+        - x: 535.7066650390625
+          'y': 274
+        - x: 505.5
+          'y': 353.25
+        - x: 493
+          'y': 353.25
+      source: entity-2
+      target: fact-6
+      type: connection
+    - id: connection-10
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 554.5
+        'y': 352.5
+      waypoints:
+        - x: 551.4547119140625
+          'y': 274
+        - x: 554.5
+          'y': 352.5
+        - x: 567
+          'y': 352.5
+      source: entity-2
+      target: fact-11
+      type: connection
+    - id: connection-11
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 604.5
+        'y': 327.5
+      waypoints:
+        - x: 572.4588012695312
+          'y': 274
+        - x: 604.5
+          'y': 327.5
+        - x: 604.5
+          'y': 340
+      source: entity-2
+      target: fact-11
+      type: connection
+    - id: connection-12
+      mandatory: false
+      role: 2
+      lastEdit:
+        x: 654.5
+        'y': 352.5
+      waypoints:
+        - x: 583.7823486328125
+          'y': 274
+        - x: 654.5
+          'y': 352.5
+        - x: 642
+          'y': 352.5
+      source: entity-2
+      target: fact-11
+      type: connection
