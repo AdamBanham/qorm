@@ -21,28 +21,28 @@ shapes, and a further setting targetting a type of shape.
 The json shape of these settings is as follows:
 ```json
 {
-    debugRendering: false,
-    renderingOptions: {
-        opacity: {
-            shape: 1,
-            others: {
-                fact: 1,
-                entity: 1,
-                label: 1,
-                objectification: 1,
-                uniquenessConstraint: 1,
-                valueConstraint: 1
+    "debugRendering": false,
+    "renderingOptions": {
+        "opacity": {
+            "shape": 1,
+            "others": {
+                "fact": 1,
+                "entity": 1,
+                "label": 1,
+                "objectification": 1,
+                "uniquenessConstraint": 1,
+                "valueConstraint": 1
             }
         },
-        debugDot: {
-            shape: false,
-            others: {
-                fact: false,
-                entity: false,
-                label: false,
-                objectification: false,
-                uniquenessConstraint: false,
-                valueConstraint: false
+        "debugDot": {
+            "shape": false,
+            "others": {
+                "fact": false,
+                "entity": false,
+                "label": false,
+                "objectification": false,
+                "uniquenessConstraint": false,
+                "valueConstraint": false
             }
         }
     }
