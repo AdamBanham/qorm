@@ -1,8 +1,20 @@
 # qORMa - An ORM editor for vscode
 
-This extension is a simple and "lightweight" implementation of the ORM schema and provided a simple graphical interface for building ORM schemas. The project is a work in progress and aims to capture the minimum features of the full ORM language. It provides a diagram interface suited to ORM models. It builds on top of the Camunda framework [diagram-js](https://github.com/bpmn-io/diagram-js).
+This extension is a "lightweight" implementation of the ORM schema and provides 
+a simple graphical interface for building ORM schemas. The project is a work 
+in progress and aims to capture the minimum features of the whole ORM language. 
+It provides a diagram interface suited to editing ORM schema, hopefully in an
+intuitive manner. It builds on top of the Camunda framework 
+[diagram-js](https://github.com/bpmn-io/diagram-js).
 
-If you are after a more verbose and powerful tool to explore the full extent of ORM then we would suggest that you try out [NORMA](https://marketplace.visualstudio.com/items?itemName=ORMSolutions.NORMA2019) in visual studio (now on the marketplace of extensions!). However, our extension focuses on the interaction side of making the schema rather than the wonderful formal compontents, like fact verbalisation available in NORMA.
+If you are after a more verbose and powerful tool to explore the full extent 
+of ORM schemas, then we would suggest that you try out 
+[NORMA](https://marketplace.visualstudio.com/items?itemName=ORMSolutions.NORMA2019) 
+in Visual Studio (now on the marketplace of extensions!). However, our extension 
+focuses on the interaction side of making the schema rather than the wonderful 
+formal components, like fact verbalisation, available in NORMA.
+
+![image](/extension/extension-assets/entities-and-values.png)
 
 ## Features
 
@@ -12,17 +24,23 @@ At this stage, we support the following components of the ORM language:
     - subtyping for entities
 - Value Entities
     - with a single name
+- Subtyped Entities
+    - a connection can be added to denote that one entity is an instance of another
 - Facts
     - of any desired arity
-    - uniqueness constraints
+    - uniqueness constraints over roles
     - derivation labels
-    - objectified (limited support)
+    - objectification of fact
+- Connections 
     - connections between facts and entities
-        - mandatory roles on connections
+        - these connections can denote that the relationship is mandatory
+    - waypoints can be used to modify the connection
+- Constraints
+    - Value constraints can be applied to entities and roles of facts.
 
 For instance, you can see the graphical representation of these elements in the following snippet:
 
-![image](/extension/extension-assets/entities-and-values.png)
+![image](/extension/extension-assets/medals-example.png)
 
 ## Requirements
 
@@ -37,6 +55,13 @@ information see [settings](/extension/settings.md).
 ## Release Notes
 
 The following section capture the most recent releases.
+
+### 0.1.8
+
+Value Constraints for entities and roles of facts can now be specified. 
+Role objectification has also been improved.
+Extension settings can be used to trigger debugging rendering.
+Added help system to describe the desired interaction for complex construction.
 
 ### 0.1.4
 
