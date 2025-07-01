@@ -30,7 +30,9 @@ The editor does not require installing any third library software packages. The 
 
 ## Extension Settings
 
-We currently do not expose any settings for the extension.
+We currently expose a set of settings for debugging purposes to the user. 
+These settings only affect the visuals of the rendered diagram. For more
+information see [settings](/extension/settings.md).
 
 ## Release Notes
 

@@ -3,6 +3,35 @@ import  { getNonce } from './util';
 const fs = require('fs');
 const path = require('path');
 
+export interface ShapeMapping<T> {
+    fact: T;
+    entity: T;
+    label: T;
+    objectification: T;
+    uniquenessConstraint: T;
+    valueConstraint: T;
+}
+
+export interface OrmRenderingOpacity {
+    shape: number;
+    others: ShapeMapping<number>;
+}
+
+export interface OrmRenderingDebugDot {
+    shape: boolean;
+    others: ShapeMapping<boolean>;
+}
+
+export interface OrmRenderingOptions {
+    opacity: OrmRenderingOpacity;
+    debugDot: OrmRenderingDebugDot;
+}
+
+export interface OrmEditorSettings {
+    debugRendering: boolean;
+    renderingOptions: OrmRenderingOptions;
+}
+
 export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -23,6 +52,37 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
     ) { 
         // this.editor = OrmEditor(context);
 
+    }
+
+    private getExtensionSettings() : OrmEditorSettings {
+        const config = vscode.workspace.getConfiguration('qorma');
+        return {
+            debugRendering : config.get<boolean>('debugRendering', false),
+            renderingOptions: {
+                opacity: {
+                    shape: config.get<number>('renderingOptions.opacity.shape', 1),
+                    others: {
+                        fact : config.get<number>('renderingOptions.opacity.fact', 1),
+                        entity : config.get<number>('renderingOptions.opacity.entity', 1),
+                        label : config.get<number>('renderingOptions.opacity.label', 1),
+                        objectification : config.get<number>('renderingOptions.opacity.objectification', 1),   
+                        uniquenessConstraint : config.get<number>('renderingOptions.opacity.uniquenessConstraint', 1),
+                        valueConstraint : config.get<number>('renderingOptions.opacity.valueConstraint', 1)
+                    }
+                },
+                debugDot: {
+                    shape: config.get<boolean>('renderingOptions.debugDot.shape', false),
+                    others: {
+                        fact: config.get<boolean>('renderingOptions.debugDot.fact', false),
+                        entity: config.get<boolean>('renderingOptions.debugDot.entity', false),
+                        label : config.get<boolean>('renderingOptions.debugDot.label', false),
+                        objectification: config.get<boolean>('renderingOptions.debugDot.objectification', false), 
+                        uniquenessConstraint: config.get<boolean>('renderingOptions.debugDot.uniquenessConstraint', false),
+                        valueConstraint: config.get<boolean>('renderingOptions.debugDot.valueConstraint', false)  
+                    }
+                }
+            }
+        };
     }
     
     /**
@@ -56,6 +116,20 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(e => {
             if (e.document.uri.toString() === document.uri.toString() && !isUpdatingDocument) {
                 updateWebview();
+            }
+        });
+
+        const configChangeSubscription = vscode.workspace.onDidChangeConfiguration(event => {
+            if (event.affectsConfiguration('qorma')) {
+                // Handle configuration changes
+                console.log('qORMa configuration changed');
+                
+                webviewPanel.webview.postMessage({
+                    type: 'settings',
+                    context: {
+                        settings : this.getExtensionSettings(),
+                    }
+                });
             }
         });
 
@@ -105,6 +179,13 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                 case 'ready':
                     // Handle ready message
                     updateWebview();
+                    // Send initial settings to the webview
+                    webviewPanel.webview.postMessage({
+                        type: 'settings',
+                        context: {
+                            settings : this.getExtensionSettings(),
+                        }
+                    });
                     break;
                 default:
                     console.warn(`Unknown message type: ${message.type}`);
@@ -114,6 +195,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
         // Make sure we get rid of the listener when our editor is closed.
         webviewPanel.onDidDispose(() => {
             changeDocumentSubscription.dispose();
+            configChangeSubscription.dispose();
         });
 
         updateWebview();

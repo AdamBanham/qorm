@@ -28,7 +28,14 @@ export default (function () {
           type
         } = event.data;
 
-        handler.poolMessages(type, event.data);
+        switch (type) {
+            case 'update':
+                // handle update message
+                handler.poolMessages(type, event.data);
+                break;
+            default:
+              messager.capture(type, event.data.context);
+        }
     });
 
     // signal to VS Code that the webview is initialized

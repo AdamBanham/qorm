@@ -7,6 +7,7 @@ import {
 
 import EventBus from 'diagram-js/lib/core/EventBus';
 import BaseRenderer from "diagram-js/lib/draw/BaseRenderer";
+import RenderOptions from '../../renderOptions/renderOptions';
 
 // constants
 export const PRIORITY = 2000;
@@ -26,12 +27,18 @@ const DEBUG_OPACITY = 1;
  */
 export default abstract class TemplateRenderer<T> extends BaseRenderer {
 
-    static $inject: Array<string> = [ 'eventBus' ];
+    static $inject: Array<string> = [ 'eventBus', 'renderingOptions' ];
+    shapeType:string = "shape";
     _eventBus: EventBus;    
+    _renderingOptions: RenderOptions;
 
-    constructor(eventBus:EventBus) {
+    constructor(eventBus:EventBus, renderingOptions:RenderOptions, shapeType?:string) {
         super(eventBus, PRIORITY);
         this._eventBus = eventBus;
+        this._renderingOptions = renderingOptions;
+        if (shapeType) {
+            this.shapeType = shapeType;
+        }
         var that = this;
         eventBus.on([ 'render.shape' ], 2000, function(evt, context) {
 
@@ -43,9 +50,15 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
                     return visuals;
                 }
                 visuals = that.draw(visuals, element);
-                if (DEBUG) {
+                // @ts-ignore
+                if (that._renderingOptions.getShapeDebugDot(that.shapeType)) {
                     visuals = that.drawDebug(visuals, element);
                 } 
+                // @ts-ignore
+                let opacity = that._renderingOptions.computeShapeOpacity(that.shapeType);
+                if (opacity < 1) {
+                    visuals = that.handleOpacity(visuals, opacity);
+                }
                 return visuals;
             } else {
                 // return nothing to trigger low priority renderers
@@ -83,7 +96,7 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
      * @param visuals 
      * @param element 
      */
-    drawDebug(visuals:any, element:any): void {
+    drawDebug(visuals:any, element:any): any {
         let dot = svgCreate("circle", {
             cx: (element.width / 2),
             cy: (element.height / 2),
@@ -97,6 +110,21 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
         svgAttr(visuals, {
             opacity: DEBUG_OPACITY
         });
+        return visuals;
+    }
+
+    /**
+     * Handles the opacity of the given SVG element.
+     * @param visuals the SVG element to handle opacity for
+     * @param opacity the opacity to set
+     * @return the SVG element with the opacity set
+     */
+    handleOpacity(visuals:any, opacity:number): any {
+        svgAttr(visuals, 
+            {
+                opacity: opacity
+            }
+        );
         return visuals;
     }
 

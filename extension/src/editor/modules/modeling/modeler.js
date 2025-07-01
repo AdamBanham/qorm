@@ -2,6 +2,7 @@ import Modeling from 'diagram-js/lib/features/modeling/modeling';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import CommandStack from 'diagram-js/lib/command/CommandStack';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
+import ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
 import { Connection } from 'diagram-js/lib/model';
 import { SUBTYPE_NAME } from '../model/subtypes';
 
@@ -20,10 +21,13 @@ export default class OrmModelling extends Modeling {
      * @param {EventBus} eventBus 
      * @param {ElementFactory} elementFactory 
      * @param {CommandStack} commandStack 
+     * @param {Canvas} canvas
+     * @param {ElementRegistry} registry
      */
-    constructor(eventBus, elementFactory, commandStack, canvas){
+    constructor(eventBus, elementFactory, commandStack, canvas, registry){
         super(eventBus, elementFactory, commandStack);
         this._canvas = canvas;  
+        this._registry = registry;
     }
 
     createShape(shape, position, target, parentIndex, hints){
@@ -437,11 +441,16 @@ export default class OrmModelling extends Modeling {
             }
         }
     }
+
+    triggerRefresh() {
+        this.sendUpdates(...this._registry.getAll());
+    }
 }
 
 OrmModelling.$inject = [
     'eventBus',
     'elementFactory',
     'commandStack',
-    'canvas'
+    'canvas',
+    'elementRegistry'
 ];

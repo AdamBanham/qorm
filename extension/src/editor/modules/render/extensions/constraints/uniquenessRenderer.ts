@@ -24,8 +24,8 @@ const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
 
 export default class UniquenessRenderer extends TemplateRenderer<SimpleConstraint> {
 
-    constructor(eventBus: EventBus) {
-        super(eventBus);
+    constructor(eventBus: EventBus, renderingOptions: any) {
+        super(eventBus, renderingOptions, 'uniquenessConstraint');
     }
 
     canRender(element: any): boolean {

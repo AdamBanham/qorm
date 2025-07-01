@@ -22,7 +22,7 @@
     "customEditors": [
       {
         "viewType": "qorma.ormEditor",
-        "displayName": "qORMa Editor",
+        "displayName": "qorma Editor",
         "selector": [
           {
             "filenamePattern": "*.orm"
@@ -33,15 +33,139 @@
     "commands": [
       {
         "command": "qorma.Create",
-        "title": "qORMa: Create new ORM Diagram",
-        "category": "qORMa"
+        "title": "qorma: Create new ORM Diagram",
+        "category": "qorma"
       },
       {
         "command": "qorma.Create.debug",
-        "title": "qORMa: (debug) Create new ORM Diagram",
-        "category": "qORMa"
+        "title": "qorma: (debug) Create new ORM Diagram",
+        "category": "qorma"
       }
-    ]
+    ],
+    "configuration" : {
+      "title": "qorma",
+      "properties": {
+        "qorma.debugRendering": {
+          "type": "boolean",
+          "category": "Debug",
+          "order": 0,
+          "default": false,
+          "description": "Enable debug rendering for qorma diagrams."
+        },
+        "qorma.renderingOptions.opacity.shape": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 1,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of shapes when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.fact": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 3,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of facts when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.entity": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 4,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of entities when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.label": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 5,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of labels when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.objectification": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 6,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of objectifications when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.uniquenessConstraint": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 7,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of uniqueness constraints when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.valueConstraint": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 8,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of value constraints when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.shape": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 2,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of shapes when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.fact": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 20,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of facts when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.entity": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 21,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of entity when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.label": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 22,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of label when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.objectification": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 23,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of objectifications when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.uniquenessConstraint": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 24,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of uniqueness constraints when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.valueConstraint": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 25,
+          "default": false,
+          "description": "Sets whether a debug dot is drawn at the center of value constraints when debug rendering is enabled."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

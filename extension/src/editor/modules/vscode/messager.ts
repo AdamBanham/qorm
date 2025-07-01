@@ -1,3 +1,4 @@
+import EventBus from "diagram-js/lib/core/EventBus";
 
 export interface vsCodeMesage {
     type: string;
@@ -7,12 +8,16 @@ export interface vsCodeMesage {
 
 const EXT_STUB = "qORMa Editor\n";
 
-export default class VscodeMessager {
-    $inject: any;  
-    private vscode: any;
+const busPrefix = "vscode.";
 
-    public constructor() {
+export default class VscodeMessager {
+    static $inject: string[] = [ 'eventBus' ];  
+    private vscode: any;
+    private _eventBus: EventBus;
+
+    public constructor(eventBus: EventBus) {
         this.vscode = null;
+        this._eventBus = eventBus;
     }
 
     /**
@@ -21,6 +26,10 @@ export default class VscodeMessager {
      */
     setApi(vscode: any) {
         this.vscode = vscode;
+    }
+
+    capture(type:string, context:any) {
+        this._eventBus.fire(busPrefix + type, context);
     }
 
     /**
@@ -64,5 +73,3 @@ export default class VscodeMessager {
     }
 
 }
-
-VscodeMessager.prototype.$inject = [];

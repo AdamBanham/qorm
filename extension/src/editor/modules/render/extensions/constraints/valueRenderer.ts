@@ -21,18 +21,17 @@ import { isFact } from '../../../model/util';
 export const ALLOWED_TYPES = [
     TYPE
 ];
-const PRIORITY = 2000;
 const TEXT_X_OFFSET = 7; // offset for text x position
 const TEXT_Y_OFFSET = 12; // offset for text y position
 const TEXT_LETTER_WIDTH = 9; // approximate width of a letter in the text
 
 export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
 
-    static $inject: Array<string> = ['eventBus', 'styles'];
+    static $inject: Array<string> = [ 'eventBus', 'renderingOptions', 'styles'];
     _styles: Styles;
 
-    constructor(eventBus:EventBus, styles:Styles) {
-        super(eventBus);
+    constructor(eventBus:EventBus, renderingOptions:any, styles:Styles) {
+        super(eventBus, renderingOptions, 'valueConstraint');
         this._styles = styles;
     }
 
@@ -142,7 +141,6 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
         }
 
         let line = createLine(segments);
-
         let lineStyle = this._styles.style({
             strokeWidth: 3, stroke: CONSTANTS.CONSTRAINT_COLOUR,
             opacity: 0.75,
@@ -193,7 +191,3 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
     }
 
 };
-
-ValueRenderer.$inject = [
-    'eventBus', 'styles'
-];

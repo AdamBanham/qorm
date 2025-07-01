@@ -11,8 +11,8 @@ import { isFact } from "../../model/util";
 
 export default class FactRenderer extends TemplateRenderer<Fact> {
 
-    constructor(eventBus: any) {
-        super(eventBus);
+    constructor(eventBus: any, renderingOptions: any) {
+        super(eventBus, renderingOptions, 'fact');
     }
 
     canRender(element: any): boolean {
