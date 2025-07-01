@@ -75,34 +75,18 @@ system:
       factors:
         - entity-1
       x: 225
-      'y': 262.75
+      'y': 192.75
       label: isReal
       derived: false
-      constraints:
-        - id: value-constraint-14
-          x: 136
-          'y': 241
-          width: 50
-          height: 50
-          factor: 0
-          description: T, F
     - id: fact-12
       type: fact
       roles: 1
       factors:
         - entity-1
       x: 225
-      'y': 344
+      'y': 406
       label: stillExists
       derived: false
-      constraints:
-        - id: value-constraint-17
-          x: 133
-          'y': 321
-          width: 50
-          height: 50
-          factor: 0
-          description: T, F
     - id: fact-15
       type: fact
       roles: 2
@@ -111,7 +95,7 @@ system:
         - entity-4
       x: 439
       'y': 459
-      label: ... has a population of ...
+      label: ... had ... althetes attend
       derived: false
     - id: fact-35
       type: fact
@@ -123,6 +107,29 @@ system:
       'y': 164
       label: ... contests ...
       derived: false
+    - id: fact-22
+      type: fact
+      roles: 2
+      factors:
+        - entity-1
+        - entity-1
+      x: 225
+      'y': 294
+      label: ... was ...
+      derived: false
+      towards: left
+      alignment: vertical
+      uniqueness:
+        - id: constraint-23
+          type: constraint
+          mode: 0
+          over:
+            - 1
+        - id: constraint-28
+          type: constraint
+          mode: 0
+          over:
+            - 0
   connections:
     - id: connection-7
       mandatory: false
@@ -178,26 +185,26 @@ system:
       lastEdit: null
       waypoints:
         - x: 340
-          'y': 302.99005126953125
+          'y': 280.0392150878906
         - x: 250
-          'y': 278.672119140625
+          'y': 214.4098358154297
       source: entity-1
       target: fact-10
       type: connection
-    - id: connection-16
+    - id: connection-15
       mandatory: false
       role: 0
       lastEdit: null
       waypoints:
         - x: 340
-          'y': 329.62939453125
+          'y': 349.9572448730469
         - x: 250
-          'y': 353.2622985839844
+          'y': 410.1803283691406
       source: entity-1
       target: fact-12
       type: connection
-    - id: connection-19
-      mandatory: false
+    - id: connection-17
+      mandatory: true
       role: 0
       lastEdit:
         x: 426.5
@@ -212,7 +219,7 @@ system:
       source: entity-1
       target: fact-15
       type: connection
-    - id: connection-20
+    - id: connection-18
       mandatory: false
       role: 1
       lastEdit:
@@ -228,7 +235,7 @@ system:
       source: entity-4
       target: fact-15
       type: connection
-    - id: connection-22
+    - id: connection-20
       mandatory: false
       role: 0
       lastEdit:
@@ -244,7 +251,7 @@ system:
       source: entity-1
       target: fact-35
       type: connection
-    - id: connection-23
+    - id: connection-21
       mandatory: false
       role: 1
       lastEdit:
@@ -259,4 +266,36 @@ system:
           'y': 176.5
       source: objectification-2
       target: fact-35
+      type: connection
+    - id: connection-25
+      mandatory: false
+      role: 1
+      lastEdit:
+        x: 237.5
+        'y': 356.5
+      waypoints:
+        - x: 340
+          'y': 329.61474609375
+        - x: 237.5
+          'y': 356.5
+        - x: 237.5
+          'y': 344
+      source: entity-1
+      target: fact-22
+      type: connection
+    - id: connection-27
+      mandatory: false
+      role: 0
+      lastEdit:
+        x: 237.5
+        'y': 281.5
+      waypoints:
+        - x: 340
+          'y': 305.02459716796875
+        - x: 237.5
+          'y': 281.5
+        - x: 237.5
+          'y': 294
+      source: entity-1
+      target: fact-22
       type: connection
