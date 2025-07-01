@@ -26,7 +26,18 @@
     [X] add helper for uniquness constraint construction
     [X] add helpers for connections betwen entities and facts
     [X] add helpers for subtyping creation
-[ ] add extension setting for debug rendering
+[X] add extension setting for debug rendering
+    [X] add global setting for debugging rendering
+    [X] add setting for general shape opacity
+    [X] add setting for shape types opacity 
+    [X] add setting for debug dots for all shapes 
+    [X] add setting for debug dots for shape types 
+    [X] create a module to handle rendering options (renderingOptions)
+    [X] intergrate rendering options within renderers
+    [X] add seperate readme for exposed setting options
+[-] refactor all other shapes into seperated renderers 
+    [ ] update debug extension settings 
+    [ ] ensure that all colour constants are referenced from a source module
 [ ] revisit file_format.orm and update to reflect current data model
 [X] add vertical alignment for facts
     [X] seperate rendering for facts from main line 
