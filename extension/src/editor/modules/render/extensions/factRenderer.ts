@@ -8,6 +8,7 @@ import TemplateRenderer from "./templateRenderer";
 // types 
 import { Fact, unitHeight, unitWidth } from "../../model/facts";
 import { isFact } from "../../model/util";
+import RenderingConstants from "../constants";
 
 export default class FactRenderer extends TemplateRenderer<Fact> {
 
@@ -15,7 +16,7 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
         super(eventBus, renderingOptions, 'fact');
     }
 
-    canRender(element: any): boolean {
+    canRender(element: any): element is Fact {
         return isFact(element);
     }
 
@@ -25,7 +26,7 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
 
     draw(visuals: SVGElement, element: Fact): SVGElement {
         var group = svgCreate("g", {
-                class: "orm-visuals"
+                class: RenderingConstants.classes.VISUAL_GROUP_CLASS,
         });
         
         // setup 
@@ -41,7 +42,7 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
         for (let i = 0; i < element.roles; i++){
             let box = svgCreate("rect", {
                 'stroke-dasharray': dashType,
-                class: "fact-role",
+                class: RenderingConstants.classes.FACT_ROLE_CLASS,
                 rx: rx,
                 width: unitWidth,
                 height: unitHeight,
@@ -49,9 +50,15 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
                 y: y
             });
             svgAppend(group, box);
+
+            // handle whether the role is hovered 
+            // highlight based on "mode" of highlighting
+            // TODO: this should react to constraint building or 
+            //       uniqueness constraint building
             if (element.hovered && i === element.hoveredRole!){
                 let classer = element.isFilled(i) ? 
-                    "fact-role-filled" : "fact-role-free";
+                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS : 
+                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS;
                 box = svgCreate("rect", {
                     class: classer,
                     rx: rx,
@@ -74,24 +81,28 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
         let style = "text-align: center;";
         style += `text-anchor: middle;`;
         style += `font-size: 12px;`;
+
         if (element.objectified && element.objectifiedName){
             let upperText;
             let offset =  - 10 - (10 * element.uniqueness.length) - 12.5;
+
+            // adjust for vertical alignment
             if (element.isVertical()){
                 centerText = Math.floor(element.height * 0.5);
                 upperText = svgCreate("text", {
                     x: offset , y:   centerText,
-                    class: "fact-objectified-label",
+                    class: RenderingConstants.classes.OBJECTIFICATION_LABEL_CLASS,
                     style: style,
                     transform: `rotate(-90, ${offset}, ${centerText})`,
                 });
             } else {
                 upperText = svgCreate("text", {
                     x: centerText, y:  - 10 - (10 * element.uniqueness.length) - 12.5,
-                    class: "fact-objectified-label",
+                    class: RenderingConstants.classes.OBJECTIFICATION_LABEL_CLASS,
                     style: style,
                 });
             }
+
             upperText.textContent = '"'+element.objectifiedName+'!"';
             svgAppend(group, upperText);
         }
@@ -119,7 +130,7 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
             let arrowhead = svgCreate("path", {
                 d: 'm0 0v3.804C0 3.999 0 4 .157 3.864L1.764 2.234C2.002 2.002 2.001 2 1.749 1.749L.078.092C0-.001 0 0 0 .108z',
                 'stroke-linecap': "round",
-                class: "fact-verb-arrow",
+                class: RenderingConstants.classes.FACT_VERB_ARROW_CLASS,
                 transform: transform
             });
             svgAppend(group, arrowhead);

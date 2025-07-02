@@ -31,7 +31,9 @@ The json shape of these settings is as follows:
                 "label": 1,
                 "objectification": 1,
                 "uniquenessConstraint": 1,
-                "valueConstraint": 1
+                "valueConstraint": 1,
+                "roleConnection" : 1,
+                "subtypeConnection": 1,
             }
         },
         "debugDot": {
@@ -42,7 +44,9 @@ The json shape of these settings is as follows:
                 "label": false,
                 "objectification": false,
                 "uniquenessConstraint": false,
-                "valueConstraint": false
+                "valueConstraint": false,
+                "roleConnection" : false,
+                "subtypeConnection": false,
             }
         }
     }

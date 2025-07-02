@@ -10,6 +10,8 @@ export interface ShapeMapping<T> {
     objectification: T;
     uniquenessConstraint: T;
     valueConstraint: T;
+    roleConnection: T;
+    subtypeConnection: T;
 }
 
 export interface OrmRenderingOpacity {
@@ -67,7 +69,9 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                         label : config.get<number>('renderingOptions.opacity.label', 1),
                         objectification : config.get<number>('renderingOptions.opacity.objectification', 1),   
                         uniquenessConstraint : config.get<number>('renderingOptions.opacity.uniquenessConstraint', 1),
-                        valueConstraint : config.get<number>('renderingOptions.opacity.valueConstraint', 1)
+                        valueConstraint : config.get<number>('renderingOptions.opacity.valueConstraint', 1),
+                        roleConnection : config.get<number>('renderingOptions.opacity.roleConnection', 1),
+                        subtypeConnection : config.get<number>('renderingOptions.opacity.subtypeConnection', 1)
                     }
                 },
                 debugDot: {
@@ -78,7 +82,9 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                         label : config.get<boolean>('renderingOptions.debugDot.label', false),
                         objectification: config.get<boolean>('renderingOptions.debugDot.objectification', false), 
                         uniquenessConstraint: config.get<boolean>('renderingOptions.debugDot.uniquenessConstraint', false),
-                        valueConstraint: config.get<boolean>('renderingOptions.debugDot.valueConstraint', false)  
+                        valueConstraint: config.get<boolean>('renderingOptions.debugDot.valueConstraint', false),
+                        roleConnection: config.get<boolean>('renderingOptions.debugDot.roleConnection', false),
+                        subtypeConnection: config.get<boolean>('renderingOptions.debugDot.subtypeConnection', false)
                     }
                 }
             }

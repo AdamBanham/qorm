@@ -64,7 +64,7 @@ export default class OrmLayouter extends BaseLayouter {
 
     layoutConnection(connection, hints) {
         switch (connection.type) {
-            case 'connection':
+            case 'role-connection':
                 return this.handleEntityToFact(connection, hints);
             default:
                 return this.defaultWithBends(connection, hints);

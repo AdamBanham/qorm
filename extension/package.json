@@ -97,10 +97,28 @@
           "maximum": 1,
           "description": "Sets the opacity of objectifications when debug rendering is enabled."
         },
-        "qorma.renderingOptions.opacity.uniquenessConstraint": {
+        "qorma.renderingOptions.opacity.roleConnection": {
           "type": "number",
           "category": "Shape Opacity",
           "order": 7,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of role connections when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.subtypeConnection": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 8,
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Sets the opacity of subtype connections when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.opacity.uniquenessConstraint": {
+          "type": "number",
+          "category": "Shape Opacity",
+          "order": 12,
           "default": 1,
           "minimum": 0,
           "maximum": 1,
@@ -109,7 +127,7 @@
         "qorma.renderingOptions.opacity.valueConstraint": {
           "type": "number",
           "category": "Shape Opacity",
-          "order": 8,
+          "order": 13,
           "default": 1,
           "minimum": 0,
           "maximum": 1,
@@ -150,17 +168,31 @@
           "default": false,
           "description": "Sets whether a debug dot is drawn at the center of objectifications when debug rendering is enabled."
         },
-        "qorma.renderingOptions.debugDot.uniquenessConstraint": {
+        "qorma.renderingOptions.debugDot.roleConnection": {
           "type": "boolean",
           "category": "Debug Dots",
           "order": 24,
+          "default": false,
+          "description": "Sets whether debug dots is drawn for waypoints of role connections when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.subtypeConnection": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 25,
+          "default": false,
+          "description": "Sets whether debug dots is drawn for waypoints of subtype connections when debug rendering is enabled."
+        },
+        "qorma.renderingOptions.debugDot.uniquenessConstraint": {
+          "type": "boolean",
+          "category": "Debug Dots",
+          "order": 30,
           "default": false,
           "description": "Sets whether a debug dot is drawn at the center of uniqueness constraints when debug rendering is enabled."
         },
         "qorma.renderingOptions.debugDot.valueConstraint": {
           "type": "boolean",
           "category": "Debug Dots",
-          "order": 25,
+          "order": 31,
           "default": false,
           "description": "Sets whether a debug dot is drawn at the center of value constraints when debug rendering is enabled."
         }

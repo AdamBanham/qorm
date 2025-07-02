@@ -36,7 +36,12 @@
     [X] intergrate rendering options within renderers
     [X] add seperate readme for exposed setting options
 [-] refactor all other shapes into seperated renderers 
-    [ ] update debug extension settings 
+    [X] spilt objectification in seperate renderer 
+    [X] spilt referenced entities in seperate renderer 
+    [X] spilt value types in seperate renderer 
+    [X] spilt connections in seperate renderer 
+    [X] spilt subtyping in seperate renderer
+    [X] update debug extension settings 
     [ ] ensure that all colour constants are referenced from a source module
 [ ] revisit file_format.orm and update to reflect current data model
 [X] add vertical alignment for facts

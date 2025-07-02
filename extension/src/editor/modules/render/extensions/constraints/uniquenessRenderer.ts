@@ -7,29 +7,24 @@ import TemplateRenderer from '../templateRenderer';
 import EventBus from 'diagram-js/lib/core/EventBus';
 
 // types
-import { SimpleConstraint, TYPE } from "../../../model/constraints";
-
-// setup
-export const ALLOWED_TYPES = [
-    TYPE
-];
+import { SimpleConstraint } from "../../../model/constraints";
+import { isConstraint } from '../../../model/util';
 
 // sizing
-import { unitWidth, unitHeight } from "../../../model/facts";
+import { unitWidth } from "../../../model/facts";
 
-// colours
-const CONSTRAINT_COLOUR = "var(--render-simple-constraint)";
-const CONSTRAINT_EDIT_COLOUR = "var(--render-simple-constraint-editing)";
-const CONSTRAINT_EDIT_FAIL = "var(--render-simple-constraint-fail)";
+// constants
+import RenderingConstants from '../../constants';
+export const SHAPE_TYPE = 'uniquenessConstraint';
 
 export default class UniquenessRenderer extends TemplateRenderer<SimpleConstraint> {
 
     constructor(eventBus: EventBus, renderingOptions: any) {
-        super(eventBus, renderingOptions, 'uniquenessConstraint');
+        super(eventBus, renderingOptions, SHAPE_TYPE);
     }
 
-    canRender(element: any): boolean {
-        return ALLOWED_TYPES.includes(element.type);
+    canRender(element: any): element is SimpleConstraint {
+        return isConstraint(element);
     }
 
     shouldRender(element: SimpleConstraint): boolean {
@@ -38,15 +33,17 @@ export default class UniquenessRenderer extends TemplateRenderer<SimpleConstrain
 
     draw(visuals:any, constraint:SimpleConstraint){
         var group = svgCreate("g", {
-            class: "orm-visuals"
+            class: RenderingConstants.classes.VISUAL_GROUP_CLASS,
         });
         // draw segments 
         let curr_x = 0;
         let next_x = unitWidth;
         let x1, y1, x2, y2;
         let color = (constraint.editing) ? 
-        ( constraint.valid ? CONSTRAINT_EDIT_COLOUR : CONSTRAINT_EDIT_FAIL) 
-        : CONSTRAINT_COLOUR;
+        ( constraint.valid ? 
+            RenderingConstants.css.CONSTRAINT_EDIT_COLOUR : 
+            RenderingConstants.css.CONSTRAINT_EDIT_FAIL) 
+        : RenderingConstants.css.CONSTRAINT_COLOUR;
         for(let i = 0; i < constraint.roles; i++){
             if (constraint.src && constraint.src.isVertical()){
                 x1 = 1.5;

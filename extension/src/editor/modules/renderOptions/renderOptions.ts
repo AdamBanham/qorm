@@ -1,8 +1,5 @@
 
 import { OrmEditorSettings, ShapeMapping } from "../../../ormEditor";
-type OrmRenderingKey = keyof OrmEditorSettings['renderingOptions'];
-type OrmRenderingSubtype = keyof OrmRenderingKey;
-type OrmRenderingSubtypeKeyValue = keyof OrmRenderingSubtype;
 
 import EventBus from "diagram-js/lib/core/EventBus";
 /**
@@ -26,7 +23,9 @@ export default class RenderOptions {
                         label: 1,
                         objectification: 1,
                         uniquenessConstraint: 1,
-                        valueConstraint: 1
+                        valueConstraint: 1,
+                        roleConnection: 1,
+                        subtypeConnection: 1
                     }
                 },
                 debugDot: {
@@ -37,7 +36,9 @@ export default class RenderOptions {
                         label: false,
                         objectification: false,
                         uniquenessConstraint: false,
-                        valueConstraint: false
+                        valueConstraint: false,
+                        roleConnection: false,
+                        subtypeConnection: false
                     }
                 }
             }

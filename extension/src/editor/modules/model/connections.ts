@@ -22,6 +22,8 @@ export function createConnection(role:number,
     return new OrmConnection(role, mandatory);
 }
 
+export const TYPE = "role-connection";
+
 export class OrmConnection implements connection {
     mandatory: boolean;
     id: string;
@@ -29,7 +31,7 @@ export class OrmConnection implements connection {
     touched:boolean;
     role:number;
     businessObject?: any;
-    type: string = "connection";
+    type: string = TYPE;
     [x: string]: any;
     waypoints: Point[];
     label?: Label | undefined;
@@ -115,7 +117,7 @@ export class OrmConnection implements connection {
     }
 
     flipMandatory(){
-        this.mandatory = !this.mandatory
+        this.mandatory = !this.mandatory;
     }
 
     setMandatory(mandatory:boolean){

@@ -3,6 +3,7 @@ import { entity, Entity, ValueEntity } from "./entities";
 import { Fact } from "./facts";
 import { OrmSubtypeConnection, SUBTYPE_NAME } from "./subtypes";
 import { OBJECTIFICATION_TYPE, ObjectifiedRole } from "./objectifiedRole";
+import { TYPE as ROLE_CONNECTION_TYPE, OrmConnection} from "./connections";
 
 let id = 0;
 
@@ -21,7 +22,7 @@ export function getNextIdentifier () {
  * @returns {boolean} whether the shape is a fact type.
  */
 export function isFact(shape: ShapeLike): shape is Fact {
-    if (shape.type){
+    if (shape && shape.type){
         return shape.type === "fact";
     }
     return false;
@@ -35,6 +36,18 @@ export function isFact(shape: ShapeLike): shape is Fact {
 export function isEntity(shape: ShapeLike): shape is Entity {
     if (shape && shape.type){
         return shape.type === "entity" || shape.type === "value";
+    }
+    return false;
+}
+
+/**
+ * Checks whether a given connection is a role connection.
+ * @param connection the connection to check
+ * @returns where the connection is a role connection
+ */
+export function isRoleConnection(connection: ConnectionLike): connection is OrmConnection {
+    if (connection.type){
+        return connection.type === ROLE_CONNECTION_TYPE;
     }
     return false;
 }

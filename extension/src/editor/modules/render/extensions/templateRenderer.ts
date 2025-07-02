@@ -14,6 +14,8 @@ export const PRIORITY = 2000;
 const DEBUG = true;
 const DEBUG_OPACITY = 1;
 
+type RenderingSuffixes = "shape" | "connection";
+
 /**
  * Template for adding a new renderer for a specific type of element.
  * Each renderer should target a specific type of element and only render
@@ -32,7 +34,8 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
     _eventBus: EventBus;    
     _renderingOptions: RenderOptions;
 
-    constructor(eventBus:EventBus, renderingOptions:RenderOptions, shapeType?:string) {
+    constructor(eventBus:EventBus, renderingOptions:RenderOptions, 
+        shapeType?:string, renderSuffix?:RenderingSuffixes) {
         super(eventBus, PRIORITY);
         this._eventBus = eventBus;
         this._renderingOptions = renderingOptions;
@@ -40,7 +43,10 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
             this.shapeType = shapeType;
         }
         var that = this;
-        eventBus.on([ 'render.shape' ], 2000, function(evt, context) {
+
+        let rSuffix = renderSuffix || "shape";
+        
+        eventBus.on([ `render.${rSuffix}` ], 2000, function(evt, context) {
 
             var element = context.element,
                 visuals = context.gfx;
@@ -73,7 +79,7 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
      * @param element the element to check
      * @return true if the renderer can render the element
      */
-    abstract canRender(element:any) : boolean;
+    abstract canRender(element:any) : element is T;
 
     /**
      * Determines if the renderer should render svgelements for the targeted 
@@ -97,14 +103,10 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
      * @param element 
      */
     drawDebug(visuals:any, element:any): any {
-        let dot = svgCreate("circle", {
-            cx: (element.width / 2),
-            cy: (element.height / 2),
-            r: 5,
-            fill: "red",
-            stroke: "transparent",
-            opacity: 0.25
-        });
+        let dot = this._drawDebugDot(
+            (element.width / 2),
+            (element.height / 2),
+        );
         svgAppend(visuals, dot);
         // add compontents to group and return
         svgAttr(visuals, {
@@ -112,6 +114,25 @@ export default abstract class TemplateRenderer<T> extends BaseRenderer {
         });
         return visuals;
     }
+
+    /**
+     * Creates a debug dot as a svg element
+     * @param cx the centerX of the dog
+     * @param cy the centerY of the dot
+     * @returns the debug dot element
+     */
+    _drawDebugDot(cx:number, cy:number): SVGElement {
+        let dot = svgCreate("circle", {
+            cx: cx,
+            cy: cy,
+            r: 5,
+            fill: "red",
+            stroke: "transparent",
+            opacity: 0.25
+        });
+        return dot;
+    }
+
 
     /**
      * Handles the opacity of the given SVG element.

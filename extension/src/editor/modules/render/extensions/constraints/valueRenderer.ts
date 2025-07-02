@@ -13,17 +13,15 @@ import {
 import Styles from 'diagram-js/lib/draw/Styles';
 
 
-import { TYPE, ValueConstraint } from "../../../constraints/model/valueConstraint";
-import CONSTANTS from "../../constants";
-import { isRoleValueConstraint } from '../../../constraints/model/utils';
+import { ValueConstraint } from "../../../constraints/model/valueConstraint";
+import RenderingConstants from "../../constants";
+import { isRoleValueConstraint, isValueConstraint } from '../../../constraints/model/utils';
 import { isFact } from '../../../model/util';
 
-export const ALLOWED_TYPES = [
-    TYPE
-];
 const TEXT_X_OFFSET = 7; // offset for text x position
 const TEXT_Y_OFFSET = 12; // offset for text y position
 const TEXT_LETTER_WIDTH = 9; // approximate width of a letter in the text
+export const SHAPE_TYPE = 'valueConstraint';
 
 export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
 
@@ -31,12 +29,12 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
     _styles: Styles;
 
     constructor(eventBus:EventBus, renderingOptions:any, styles:Styles) {
-        super(eventBus, renderingOptions, 'valueConstraint');
+        super(eventBus, renderingOptions, SHAPE_TYPE);
         this._styles = styles;
     }
 
-    canRender(element:any): boolean {
-        return ALLOWED_TYPES.includes(element.type);
+    canRender(element:any): element is ValueConstraint {
+        return isValueConstraint(element);
     }
 
     shouldRender(element: ValueConstraint): boolean {
@@ -45,7 +43,7 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
 
     draw(visuals: SVGElement, shape: ValueConstraint) : SVGElement {
         let g = svgCreate('g');
-        svgClasses(g).add(CONSTANTS.RENDER_VISUALS_CLASS);
+        svgClasses(g).add(RenderingConstants.classes.VISUAL_GROUP_CLASS);
 
         // draw the constraint box
         let lines = svgCreate('g', {});
@@ -64,7 +62,7 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
                 y: y_curr - TEXT_Y_OFFSET * 0.25,
                 width: shape.width - 4,
                 height: shape.height - 4,
-                fill: CONSTANTS.CONSTRAINT_TEXT_COLOUR,
+                fill: RenderingConstants.css.CONSTRAINT_TEXT_COLOUR,
                 fontSize: '12px',
             });
             let nextStep = this.workoutLongestSequenceOfLetters(
@@ -82,7 +80,7 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
                 y: y_curr,
                 width: 2,
                 height: shape.height,
-                fill: CONSTANTS.CONSTRAINT_COLOUR,
+                fill: RenderingConstants.css.CONSTRAINT_COLOUR,
                 fontSize: `${fontSize}px`,   
             }
         );
@@ -95,7 +93,7 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
                 y: y_curr,
                 width: 2,
                 height: shape.height,
-                fill: CONSTANTS.CONSTRAINT_COLOUR,
+                fill: RenderingConstants.css.CONSTRAINT_COLOUR,
                 fontSize: `${fontSize}px`,   
             }
         );
@@ -108,6 +106,9 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
             x2, y2, segments = [];
         segments.push({x: x1, y: y1});
         
+        // handle the alignment of facts for constraints
+        // there is a probably a case for this to handled as 
+        // connection instead of hard-coded lines
         if (isRoleValueConstraint(shape) && isFact(source)) {
             let role = shape.factor? shape.factor : 0;
             let center = source.getCenterForRole(role);
@@ -142,7 +143,7 @@ export default class ValueRenderer extends TemplateRenderer<ValueConstraint> {
 
         let line = createLine(segments);
         let lineStyle = this._styles.style({
-            strokeWidth: 3, stroke: CONSTANTS.CONSTRAINT_COLOUR,
+            strokeWidth: 3, stroke: RenderingConstants.css.CONSTRAINT_COLOUR,
             opacity: 0.75,
             fill: 'none', 
             'stroke-dasharray': '5, 5',
