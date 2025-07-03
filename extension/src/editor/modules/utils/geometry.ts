@@ -130,6 +130,12 @@ export function getAngleIntersection(point: Point, rect: Rect): IntersectionAngl
         };
     } else {
         console.warn("getAngleIntersection: Point is inside the rectangle, cannot calculate intersection angle.");
+        ret = {
+            vertex: point,
+            longside: 0,
+            angle: 0,
+            quadrant: 0
+        };
     }
     return ret;
 }
