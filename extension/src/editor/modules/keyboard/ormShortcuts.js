@@ -38,7 +38,8 @@ export default class OrmShortcuts {
     constructor(
         eventbus, keyboard, selection, elementFactory, 
         modeling, canvas, mouse, create, 
-        connect, subtyping, placement){
+        connect, subtyping, placement,
+        lassoTool, spaceTool){
         this._selection = selection;
         this._modeling = modeling;
         this._canvas = canvas;
@@ -49,6 +50,9 @@ export default class OrmShortcuts {
         this._connect = connect;
         this._csubtyping = subtyping;
         this._placement = placement;
+        this._lassoTool = lassoTool;
+        this._spaceTool = spaceTool;
+
         var that = this;
 
         keyboard.addListener((context) =>{
@@ -113,6 +117,12 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerAlignmentToggle(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerLassoTool(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerSpaceTool(that, context);
         });
     }
 
@@ -612,6 +622,26 @@ export default class OrmShortcuts {
             }
         }
     }
+
+    triggerLassoTool(that, context){
+        const event = context.keyEvent;
+        if (event.altKey){
+            if (isKey(['a', 'A'], event)){
+                that._lassoTool.activateSelection(that._mouse.getLastMoveEvent ());
+                event.stopPropagation();
+            }
+        }
+    }
+
+    triggerSpaceTool(that, context){
+        const event = context.keyEvent;
+        if (event.altKey){
+            if (isKey(['s', 's'], event)){
+                that._spaceTool.activateSelection(that._mouse.getLastMoveEvent ());
+                event.stopPropagation();
+            }
+        }
+    }
 }
 
 OrmShortcuts.$inject = [
@@ -625,5 +655,7 @@ OrmShortcuts.$inject = [
     'create',
     'ormConnect',
     'ormSubtyping',
-    'placementModule'
+    'placementModule',
+    'lassoTool',
+    'spaceTool',
 ];
