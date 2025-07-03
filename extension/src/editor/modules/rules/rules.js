@@ -22,6 +22,11 @@ export default class OrmRules extends RuleProvider{
         this.addEntityRules();
         this.addFactRules();
         this.addContraintRules();
+
+        this.addRule(
+            'shape.resize',
+            () => false
+        );
     }
 
     checkConnectionCreation(context) {

@@ -2,11 +2,12 @@ import SvgExporter from "../exporters/svgExporter";
 import { scaleToFitElements } from "../utils/canvasUtils";
 
 export default function ExamplePaletteProvider(
-    create, elementFactory, lassoTool, palette, connect, registry,
+    create, elementFactory, lassoTool, spaceTool, palette, connect, registry,
     modeling, canvas, eventBus, vscodeMessager) {
     this._create = create;
     this._elementFactory = elementFactory;
     this._lassoTool = lassoTool;
+    this._spaceTool = spaceTool;
     this._palette = palette;
     this._connect = connect;
     this._registry = registry;
@@ -22,6 +23,7 @@ export default function ExamplePaletteProvider(
     'create',
     'elementFactory',
     'lassoTool',
+    'spaceTool',
     'palette',
     'ormConnect',
     'elementRegistry',
@@ -36,6 +38,7 @@ export default function ExamplePaletteProvider(
     var create = this._create,
         factory = this._elementFactory,
         lassoTool = this._lassoTool,
+        spaceTool = this._spaceTool,
         registry = this._registry,
         modeling = this._modeling,
         canvas = this._canvas,
@@ -50,6 +53,16 @@ export default function ExamplePaletteProvider(
         action: {
           click: function(event) {
             lassoTool.activateSelection(event);
+          }
+        }
+      },
+      'space-tool': {
+        group: 'tools',
+        className: 'mdi-cursor-move mdi',
+        title: 'Activate Space Tool',
+        action: {
+          click: function(event) {
+            spaceTool.activateSelection(event);
           }
         }
       },

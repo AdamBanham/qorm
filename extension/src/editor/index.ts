@@ -16,6 +16,7 @@ const KeyBoardModule = require('diagram-js/lib/features/keyboard').default;
 const LabelSupportModule = require('diagram-js/lib/features/label-support').default;
 const BendpointsModule = require('diagram-js/lib/features/bendpoints').default;
 const SelectionModule = require('diagram-js/lib/features/selection').default;
+const SpacerToolModule = require('diagram-js/lib/features/space-tool').default;
 
 // additionals modules
 import gridModule from './modules/grid';
@@ -63,7 +64,8 @@ export default function ORMEditor(container:HTMLLIElement) :
         KeyBoardModule,
         LabelSupportModule,
         BendpointsModule,
-        SelectionModule
+        SelectionModule,
+        SpacerToolModule
     ];
 
     // additiona modules for the orm-editor

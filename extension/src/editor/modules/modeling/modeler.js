@@ -15,6 +15,8 @@ import { TYPE as VALUE_CONSTRAINT_TYPE, ValueConstraint } from '../constraints/m
 import { isValueConstraint } from '../constraints/model/utils';
 import { SimpleConstraint } from '../model/constraints';
 
+import SpaceToolHandler2 from './cmd/SpaceToolHandler2';
+
 export default class OrmModelling extends Modeling {
 
     /**
@@ -29,6 +31,13 @@ export default class OrmModelling extends Modeling {
         super(eventBus, elementFactory, commandStack);
         this._canvas = canvas;  
         this._registry = registry;
+    }
+
+    getHandlers() {
+        let handlers = super.getHandlers();
+        // need to adjust the default space tool handler
+        handlers['spaceTool'] = SpaceToolHandler2;
+        return handlers;
     }
 
     createShape(shape, position, target, parentIndex, hints){
