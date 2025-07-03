@@ -6,13 +6,14 @@ import ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
 import { Connection } from 'diagram-js/lib/model';
 import { SUBTYPE_NAME } from '../model/subtypes';
 
-import { Fact, unitHeight, unitWidth } from "../model/facts";
+import { Fact, unitHeight, unitWidth, HighlightingMode } from "../model/facts";
 import { entity, ValueEntity, Entity } from "../model/entities";
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
-import { isFact, isSubtype } from '../model/util';
+import { isConstraint, isFact, isSubtype } from '../model/util';
 import { OrmConnection } from '../model/connections';
-import { TYPE as VALUE_CONSTRAINT_TYPE } from '../constraints/model/valueConstraint';
+import { TYPE as VALUE_CONSTRAINT_TYPE, ValueConstraint } from '../constraints/model/valueConstraint';
 import { isValueConstraint } from '../constraints/model/utils';
+import { SimpleConstraint } from '../model/constraints';
 
 export default class OrmModelling extends Modeling {
 
@@ -444,6 +445,54 @@ export default class OrmModelling extends Modeling {
 
     triggerRefresh() {
         this.sendUpdates(...this._registry.getAll());
+    }
+
+
+    /**
+     * Sets the highlighting mode for rendering of the roles of a fact.
+     * @param {Fact} fact the fact to consider
+     * @param {ValueConstraint | SimpleConstraint | undefined} focus the target of the highlighting
+     */
+    setHighlightFocus(fact, focus) {
+        if (isFact(fact)) {
+            fact.highlightFocus = focus;
+            if (isConstraint(focus)) {
+                fact.highlightMode = "uniqueness";
+            } else if (isValueConstraint(focus)) {
+                fact.highlightMode = "constraint";
+            } else if (focus === undefined) {
+                fact.highlightMode = "connection";
+            }
+            fact.update();
+            this.sendUpdate(fact);
+        }
+        
+    }
+
+    /**
+     * Force sets the highlighting mode of the fact
+     * @param {Fact} fact the fact to consider
+     * @param {HighlightingMode} mode the mode to set
+     */
+    setHighlightMode(fact, mode) {
+        if (isFact(fact)) {
+            fact.highlightMode = mode;
+            fact.update();
+            this.sendUpdate(fact);
+        }
+    }
+
+    /**
+     * Resets the highlight focus of a fact to its default state.
+     * @param {Fact} fact the fact to reset
+     */
+    resetHighlightFocus(fact) {
+        if (isFact(fact)) {
+            fact.highlightFocus = undefined;
+            fact.highlightMode = "connection";
+            fact.update();
+            this.sendUpdate(fact);
+        }
     }
 }
 

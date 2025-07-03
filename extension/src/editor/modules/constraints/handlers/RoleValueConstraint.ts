@@ -112,6 +112,9 @@ export default class RoleValueConstraint extends ConstraintHandler {
             constraint: constraint
         };
 
+        this._modeling.setHighlightFocus(data.source, constraint);
+        this._modeling.sendUpdates(constraint, data.source);
+
         return Object.assign(data, {
             factor: context.factor || -1,
             mode: MODE,
@@ -158,6 +161,7 @@ export default class RoleValueConstraint extends ConstraintHandler {
 
                 state.factor = role;
                 constraint.setRoleFactor(state.factor);
+                this._modeling.resetHighlightFocus(fact);
                 this._modeling.sendUpdate(constraint);
                 state.state = "moving";
                 constraint.show();
@@ -181,16 +185,18 @@ export default class RoleValueConstraint extends ConstraintHandler {
                     }
                 )
             , 25);
+            this._modeling.resetHighlightFocus(fact);
             this._builder.end(event);
             this._eventBus.fire(
                 'help.end'
             );
         }
+        
     }
 
     cleanup(event: RoleValueContext) {
         let constraint = event.state.constraint;
-
+        this._modeling.resetHighlightFocus(event.source);
         this._modeling.removeElements([constraint]);
         this._eventBus.fire(
             'help.end'
@@ -199,7 +205,7 @@ export default class RoleValueConstraint extends ConstraintHandler {
 
     cancel(event: any): void {
         let constraint = event.state.constraint;
-
+        this._modeling.resetHighlightFocus(event.source);
         this._modeling.removeElements([constraint]);
         this._eventBus.fire(
             'help.end'

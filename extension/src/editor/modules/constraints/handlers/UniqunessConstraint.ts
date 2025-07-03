@@ -97,6 +97,7 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
         );
         constraint.setEditing(true);
         source.addUniqueness(constraint);
+        this._modeling.setHighlightFocus(source, constraint);
         this._modeling.sendUpdates(constraint, source);
         this._helping.fire('help.start', { chain: HelpChain });
         return Object.assign(data, {
@@ -129,7 +130,7 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
         } else {
             this._helping.fire('help.clear', {});
         }
-        this._modeling.sendUpdate(event.constraint);
+        this._modeling.sendUpdates(event.source, event.constraint);
     }
 
     end(event:UniquenessContext) {
@@ -150,6 +151,7 @@ export default class UniquenessConstraintHandler extends ConstraintHandler {
 
     cleanup(event: any): void {
         event.constraint?.setEditing(false);
+        this._modeling.resetHighlightFocus(event.source);
         this._helping.fire('help.end', {});
     }
 

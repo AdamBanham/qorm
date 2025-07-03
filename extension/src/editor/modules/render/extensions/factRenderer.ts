@@ -1,6 +1,7 @@
 import {
     append as svgAppend,
-    create as svgCreate
+    create as svgCreate,
+    classes as svgClasses
 } from 'tiny-svg';
 
 import TemplateRenderer from "./templateRenderer";
@@ -9,6 +10,7 @@ import TemplateRenderer from "./templateRenderer";
 import { Fact, unitHeight, unitWidth } from "../../model/facts";
 import { isFact } from "../../model/util";
 import RenderingConstants from "../constants";
+import { SimpleConstraint } from '../../model/constraints';
 
 export default class FactRenderer extends TemplateRenderer<Fact> {
 
@@ -56,18 +58,15 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
             // TODO: this should react to constraint building or 
             //       uniqueness constraint building
             if (element.hovered && i === element.hoveredRole!){
-                let classer = element.isFilled(i) ? 
-                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS : 
-                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS;
-                box = svgCreate("rect", {
-                    class: classer,
+                let attrs = {
                     rx: rx,
                     width: unitWidth,
                     height: unitHeight,
                     x: x,
                     y: y
-                });
-                svgAppend(group, box);
+                };
+                let cover = this._handleHighlighting(element, attrs, i);
+                svgAppend(group, cover);
             }
             
             if (isVertical) {
@@ -140,4 +139,36 @@ export default class FactRenderer extends TemplateRenderer<Fact> {
         svgAppend(visuals, group);
         return visuals;
     }
+
+    _handleHighlighting(element: Fact, attrs: object, role: number): SVGElement {
+        let coverBox = svgCreate("rect", attrs);
+        let classing = svgClasses(coverBox);
+
+        let highlightMode = element.highlightMode,
+            focus = element.highlightFocus,
+            classer = "";
+
+        switch (highlightMode) {
+            case "connection":
+                classer = element.isFilled(role) ? 
+                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS : 
+                    RenderingConstants.classes.FACT_ROLE_FREE_CLASS;
+                break; 
+            case "constraint":
+                classer = element.hasValueConstraintOver(role) ?
+                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS : 
+                    RenderingConstants.classes.FACT_ROLE_FREE_CLASS;       
+                break;
+            case "uniqueness":
+                let unique:SimpleConstraint = focus as SimpleConstraint;
+                classer = unique.isRoleConstrainted(role) ? 
+                    RenderingConstants.classes.FACT_ROLE_FILLED_CLASS : 
+                    RenderingConstants.classes.FACT_ROLE_FREE_CLASS; 
+                break;
+        }
+        classing.add(classer);
+                
+        return coverBox;
+    }
+
 }

@@ -43,9 +43,10 @@
     [X] spilt subtyping in seperate renderer
     [X] update debug extension settings 
     [X] ensure that all colour constants are referenced from a source module
-[-] make highlighting mode for roles of fact configurable
-    [ ] make a highlighting mode for value constraints
-    [ ] make a highlighting mode for uniqueness constraints
+[X] make highlighting mode for roles of fact configurable
+    [X] make a highlighting mode for value constraints
+    [X] make a highlighting mode for uniqueness constraints
+[-] revisit keyboard delete shortcuts, some of the shapes need modeling calls
 [ ] revisit file_format.orm and update to reflect current data model
 [X] add vertical alignment for facts
     [X] seperate rendering for facts from main line 

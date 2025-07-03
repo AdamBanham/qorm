@@ -5,14 +5,21 @@ import {
     Label, Element, 
     Connection} from "diagram-js/lib/model/Types";
 import { Objectification } from "./objectifiedRole";
-import { ValueConstraint, TYPE as ValueConstraintType } from "../constraints/model/valueConstraint";
+import { ValueConstraint } from "../constraints/model/valueConstraint";
 import { isValueConstraint } from "../constraints/model/utils";
 
 export const unitWidth = 25;
 export const unitHeight = 25;
 export const constraintDiff = 10;
 
-export interface fact extends Element {
+export type HighlightingMode = "connection" | "constraint" | "uniqueness";
+
+export interface HighlightControls {
+    highlightMode: HighlightingMode;
+    highlightFocus?: ValueConstraint | SimpleConstraint;
+}
+
+export interface fact extends Element, HighlightControls {
     id: string;
     roles: number;
     factors: Array<entity | null>;
@@ -70,6 +77,8 @@ export class Fact implements fact {
     parent?: Element | undefined;
     incoming: Connection[];
     outgoing: Connection[];
+    highlightMode: HighlightingMode = "connection";
+    highlightFocus?: ValueConstraint | SimpleConstraint;
 
     constructor(factors: Array<entity | null>, width: number, height: number, x: number, y: number) {
         this.id = "fact-" + getNextIdentifier();
