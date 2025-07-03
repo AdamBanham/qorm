@@ -7,7 +7,7 @@ import {
 import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import EventBus from "diagram-js/lib/core/EventBus";
 
-import { isFact, isEntity, isExactlyEntity, isSubtype, isObjectification } from "../model/util";
+import { isFact, isEntity, isExactlyEntity, isSubtype, isObjectification, isConstraint } from "../model/util";
 import Modeling from "../modeling/modeler";
 import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
          SIMPLE_MODE as CONSTRAINT_SIMPLE_MODE,
@@ -125,7 +125,23 @@ export default class OrmShortcuts {
     triggerDelete(that, context){
         const event = context.keyEvent;
         if (isKey([ 'Delete', 'Del', ], event)){
-            that._modeling.removeElements(that._selection.get());
+            let selected = that._selection.get();
+            for(let select of selected){
+                switch (true) {
+                    case isValueConstraint(select):
+                        that._modeling.removeValueConstraint(select);
+                        break;
+                    case isConstraint(select):
+                        that._modeling.removeConstraint(select);
+                        break;
+                    case isObjectification(select):
+                        that._modeling.flipObjectification(select.fact);
+                        break;
+                    default:
+                        that._modeling.removeElements([select]);
+                }
+            }
+            
         }
     }
 
