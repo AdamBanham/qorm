@@ -79,10 +79,10 @@
     [ ] fact xml 
     [ ] connections? 
 [ ] add verb conventions to bottom of html?
-[-] double check what defaults I want in the palette
+[X] double check what defaults I want in the palette
     [X] add spacer tool?
-    [ ] add shortcut for spacer tool 
-    [ ] add shortcut for lasso tool
+    [X] add shortcut for spacer tool 
+    [X] add shortcut for lasso tool
 [ ] add tab model 
    [] when an element is selected, tabbing goes through its connections 
    [] when tab is pressed, rotate from top left across and then down 
@@ -115,4 +115,4 @@ Bugfixes
 [?] laying out for intersections are a bit off, seems like intersection with shapes need to be revisited
 [X] editing opens after file load, should be closed after load
 [X] Mandatory constraints on fact connections need to be closer to the entity
-[ ] layouting can error out in cases where intersection is not possible, need a fallthrough case.
+[X] layouting can error out in cases where intersection is not possible, need a fallthrough case.
