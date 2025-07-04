@@ -9,6 +9,7 @@ At a high level, the extension allows for the construction of ORM schemas
 and exporting them into a svg. The following schema is constructed to very
 roughly capture how might a travel agency might handle their application data
 for a website.
+
 ![travel_agency_orm](./sampleFiles/travel_agency.svg)
 
 The underlying file structure used to store the schema 

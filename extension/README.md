@@ -30,7 +30,7 @@ At this stage, we support the following components of the ORM language:
     - of any desired arity
     - uniqueness constraints over roles
     - derivation labels
-    - objectification of fact
+    - objectification of facts
 - Connections 
     - connections between facts and entities
         - these connections can denote that the relationship is mandatory
@@ -56,21 +56,30 @@ information see [settings](/extension/settings.md).
 
 The following section capture the most recent releases.
 
+### 0.1.9
+
+- Added spacing tool in palette.
+- Added tabbing for selection controls. Also added alt+left and alt+right for 
+  traversing the selection history.
+- Improved highlight roles based on the construction context.
+- Added several helper shortcuts for tools.
+
 ### 0.1.8
 
-Value Constraints for entities and roles of facts can now be specified. 
-Role objectification has also been improved.
-Extension settings can be used to trigger debugging rendering.
-Added help system to describe the desired interaction for complex construction.
+- Value Constraints for entities and roles of facts can now be specified. 
+- Role objectification has also been improved.
+- Extension settings can be used to trigger debugging rendering.
+- Added help system to describe the desired interaction for complex construction.
 
 ### 0.1.4
 
-Several bugfixes have been completed for interactions with the ORM schema.
-Also, a keyboard shortcut menu has been added, toggle the menu with ctrl+k or via the right-hand palette.
-The package now contributes two commands to open a new ORM schema file.
-Some general improvements to how connections between elements are handled
-have been implemented (mostly visual).
+- Several bugfixes have been completed for interactions with the ORM schema.
+- Also, a keyboard shortcut menu has been added, toggle the menu with ctrl+k 
+  or via the right-hand palette.
+- The package now contributes two commands to open a new ORM schema file.
+- Some general improvements to how connections between elements are handled
+  have been implemented (mostly visual).
 
 ### 0.1.0
 
-Initial release of the ORM editor for testing purposes.
+- Initial release of the ORM editor for testing purposes.

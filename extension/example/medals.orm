@@ -120,12 +120,12 @@ system:
       towards: left
       alignment: vertical
       uniqueness:
-        - id: constraint-23
+        - id: constraint-25
           type: constraint
           mode: 0
           over:
             - 1
-        - id: constraint-28
+        - id: constraint-26
           type: constraint
           mode: 0
           over:
@@ -267,7 +267,7 @@ system:
       source: objectification-2
       target: fact-35
       type: connection
-    - id: connection-25
+    - id: connection-24
       mandatory: false
       role: 1
       lastEdit:
@@ -283,7 +283,7 @@ system:
       source: entity-1
       target: fact-22
       type: connection
-    - id: connection-27
+    - id: connection-23
       mandatory: false
       role: 0
       lastEdit:

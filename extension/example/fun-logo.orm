@@ -14,7 +14,7 @@ system:
       type: value
       name: within vscode
       ref: id
-      x: 500
+      x: 513
       'y': 199
   facts:
     - id: fact-3
@@ -37,7 +37,7 @@ system:
       label: isBinary
       derived: false
       uniqueness:
-        - id: constraint-10
+        - id: constraint-8
           type: constraint
           mode: 0
           over:
@@ -49,12 +49,12 @@ system:
         - entity-2
         - entity-2
         - entity-2
-      x: 567
+      x: 588
       'y': 340
       label: isTernary
       derived: false
       uniqueness:
-        - id: constraint-12
+        - id: constraint-13
           type: constraint
           mode: 0
           over:
@@ -96,7 +96,7 @@ system:
         x: 505.5
         'y': 353.25
       waypoints:
-        - x: 535.7066650390625
+        - x: 544.5310668945312
           'y': 274
         - x: 505.5
           'y': 353.25
@@ -109,14 +109,14 @@ system:
       mandatory: false
       role: 0
       lastEdit:
-        x: 554.5
+        x: 575.5
         'y': 352.5
       waypoints:
-        - x: 551.4547119140625
+        - x: 567.0409545898438
           'y': 274
-        - x: 554.5
+        - x: 575.5
           'y': 352.5
-        - x: 567
+        - x: 588
           'y': 352.5
       source: entity-2
       target: fact-11
@@ -125,14 +125,14 @@ system:
       mandatory: false
       role: 1
       lastEdit:
-        x: 604.5
+        x: 625.5
         'y': 327.5
       waypoints:
-        - x: 572.4588012695312
+        - x: 588.7554931640625
           'y': 274
-        - x: 604.5
+        - x: 625.5
           'y': 327.5
-        - x: 604.5
+        - x: 625.5
           'y': 340
       source: entity-2
       target: fact-11
@@ -141,14 +141,16 @@ system:
       mandatory: false
       role: 2
       lastEdit:
-        x: 654.5
+        x: 675.5
         'y': 352.5
       waypoints:
-        - x: 583.7823486328125
+        - x: 607.3717041015625
           'y': 274
-        - x: 654.5
+        - x: 676
+          'y': 332
+        - x: 675.5
           'y': 352.5
-        - x: 642
+        - x: 663
           'y': 352.5
       source: entity-2
       target: fact-11

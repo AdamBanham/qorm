@@ -239,7 +239,7 @@ system:
       label: ... has ...
       derived: false
       uniqueness:
-        - id: constraint-55
+        - id: constraint-51
           type: constraint
           mode: 0
           over:
@@ -255,7 +255,7 @@ system:
       label: ... has ...
       derived: false
       uniqueness:
-        - id: constraint-59
+        - id: constraint-55
           type: constraint
           mode: 0
           over:
