@@ -88,6 +88,7 @@
    [X] when tab is pressed, rotate from top left across and then down 
    [X] alt left goes to the last previous tab 
    [X] alt right goes to the next known tabbed element
+[ ] add github action to make release and store vsix for each tagged release
 
 
 Bugfixes
