@@ -83,11 +83,11 @@
     [X] add spacer tool?
     [X] add shortcut for spacer tool 
     [X] add shortcut for lasso tool
-[ ] add tab model 
-   [] when an element is selected, tabbing goes through its connections 
-   [] when tab is pressed, rotate from top left across and then down 
-   [] alt left goes to the last previous tab 
-   [] alt right goes to the next known tabbed element
+[X] add tab model 
+   [X] when an element is selected, tabbing goes through its connections 
+   [X] when tab is pressed, rotate from top left across and then down 
+   [X] alt left goes to the last previous tab 
+   [X] alt right goes to the next known tabbed element
 
 
 Bugfixes

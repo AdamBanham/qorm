@@ -188,6 +188,7 @@ export default function OrmConnect(
 
     eventBus.on('connect.cleanup', function(event) {
       helping.fire('help.end');
+      eventBus.fire('tab-mode.restore', {});
     });
 
     eventBus.on(['connect.cancel','connect.canceled'], function(event) {
@@ -229,6 +230,7 @@ export default function OrmConnect(
      * @param {boolean} [autoActivate=false]
      */
     this.start = function(event, start, connectionStart, autoActivate) {
+      eventBus.fire('tab-mode.store', {});
       if (!isObject(connectionStart)) {
         autoActivate = connectionStart;
         connectionStart = getMid(start);

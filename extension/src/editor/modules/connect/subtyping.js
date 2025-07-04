@@ -169,6 +169,7 @@ export default function OrmSubtyping(
 
     eventBus.on(`${EMIT_NAME}.cleanup`, function(event) {
       helping.fire('help.end');
+      eventBus.fire('tab-mode.restore', {});
     });
 
     eventBus.on([`${EMIT_NAME}.cancel`,`${EMIT_NAME}.canceled`], function(event) {
@@ -209,6 +210,7 @@ export default function OrmSubtyping(
      * @param {boolean} [autoActivate=false]
      */
     this.start = function(event, start, connectionStart, autoActivate) {
+      eventBus.fire('tab-mode.store', {});
       if (!isObject(connectionStart)) {
         autoActivate = connectionStart;
         connectionStart = getMid(start);

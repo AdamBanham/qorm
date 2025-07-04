@@ -179,6 +179,12 @@ export default class OrmModelling extends Modeling {
         return con;
     }
 
+    connect(source, target, attrs, hints){
+        let con = super.connect(source, target, attrs, hints);
+        this._eventBus.fire('connection.created', {connection: con});
+        return con;
+    }
+
     /**
      * Adds a label to the give fact.
      * @param {Fact} fact the fact to attach to

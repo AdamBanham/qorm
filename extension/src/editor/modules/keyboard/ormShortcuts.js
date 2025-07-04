@@ -16,6 +16,7 @@ import { BUS_TRIGGER as CONSTRAINT_BUS_TRIGGER,
          ROLE_VALUE_MODE
  } from "../constraints/constraints";
 import { isValueConstraint } from "../constraints/model/utils";
+import TabModel from "../tab-model/tabber";
 
 const ZoomPunch = 0.25;
 
@@ -34,12 +35,18 @@ export default class OrmShortcuts {
      * @param {Canvas} canvas
      * @param {*} mouse
      * @param {*} create
+     * @param {*} connect
+     * @param {*} subtyping
+     * @param {*} placement
+     * @param {*} lassoTool
+     * @param {*} spaceTool
+     * @param {TabModel} tabModel
      */
     constructor(
         eventbus, keyboard, selection, elementFactory, 
         modeling, canvas, mouse, create, 
         connect, subtyping, placement,
-        lassoTool, spaceTool){
+        lassoTool, spaceTool, tabModel){
         this._selection = selection;
         this._modeling = modeling;
         this._canvas = canvas;
@@ -52,8 +59,14 @@ export default class OrmShortcuts {
         this._placement = placement;
         this._lassoTool = lassoTool;
         this._spaceTool = spaceTool;
+        this._tabModel = tabModel;
 
         var that = this;
+
+        // debugger to work out key codes, albeit a bit silly
+        // keyboard.addListener((context) => {
+        //     console.log('keyboard event', context);
+        // });
 
         keyboard.addListener((context) =>{
             that.triggerDelete(that, context);
@@ -123,6 +136,15 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerSpaceTool(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerTab(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerTabBack(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerTabForward(that, context);
         });
     }
 
@@ -642,6 +664,36 @@ export default class OrmShortcuts {
             }
         }
     }
+
+    triggerTab(that, context){
+        const event = context.keyEvent;
+        if (isKey(['Tab'], event)){
+            event.stopPropagation();
+            event.preventDefault();
+            that._tabModel.fire('tab');
+        }
+    }
+
+    triggerTabBack(that, context){
+        const event = context.keyEvent;
+        if (event.altKey) {
+            if (isKey(['ArrowLeft'], event)){
+                that._tabModel.fire('shift.back');
+                event.stopPropagation();
+            }
+        }
+    }
+
+    triggerTabForward(that, context){
+        const event = context.keyEvent;
+        if (event.altKey) {
+            if (isKey(['ArrowRight'], event)){
+                that._tabModel.fire('shift.forward');
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }
+    }
 }
 
 OrmShortcuts.$inject = [
@@ -658,4 +710,5 @@ OrmShortcuts.$inject = [
     'placementModule',
     'lassoTool',
     'spaceTool',
+    'tabModel'
 ];

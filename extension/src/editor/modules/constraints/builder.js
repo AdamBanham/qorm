@@ -433,6 +433,9 @@ export default function ConstraintBuilder(eventBus, canvas, selection,
 
     context = null;
 
+    // fire that the builder has been closed
+    eventBus.fire(`constraint-builder.closed`, {});
+
     return previousContext;
   }
 
