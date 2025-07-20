@@ -88,6 +88,13 @@
    [X] when tab is pressed, rotate from top left across and then down 
    [X] alt left goes to the last previous tab 
    [X] alt right goes to the next known tabbed element
+[ ] add alt+o to search for symbols in the schema
+   [ ] add a search bar to the top of the webview (using vscode api)
+   [ ] after selection, the editor jumps to the selected element
+   [ ] should be similar to symbol search in normal text editor for code files
+   [ ] make entities and facts searchable
+   [ ] make objectifications searchable 
+   [ ] make constraints searchable 
 [ ] add github action to make release and store vsix for each tagged release
 
 
