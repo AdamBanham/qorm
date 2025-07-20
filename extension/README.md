@@ -16,6 +16,10 @@ formal components, like fact verbalisation, available in NORMA.
 
 ![image](/extension/extension-assets/logo-example.png)
 
+We have made the editor with keyboard in mind, meaning that for the most part one can edit the schema without needing to use a mouse (if you are willing to press tab a few times). A demo of our interactions can be seen below.
+
+![image](/extension/extension-assets/qorma_presentation.gif)
+
 ## Features
 
 At this stage, we support the following components of the ORM language:
