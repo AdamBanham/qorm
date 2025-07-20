@@ -97,6 +97,12 @@ system:
       'y': 459
       label: ... had ... althetes attend
       derived: false
+      uniqueness:
+        - id: constraint-27
+          type: constraint
+          mode: 0
+          over:
+            - 0
     - id: fact-35
       type: fact
       roles: 2
@@ -107,6 +113,13 @@ system:
       'y': 164
       label: ... contests ...
       derived: false
+      uniqueness:
+        - id: constraint-28
+          type: constraint
+          mode: 0
+          over:
+            - 0
+            - 1
     - id: fact-22
       type: fact
       roles: 2
