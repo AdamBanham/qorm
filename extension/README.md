@@ -60,6 +60,9 @@ information see [settings](/extension/settings.md).
 
 The following section capture the most recent releases.
 
+### 0.1.11
+- Added support for symbol searching within ORM schemas (triggerable via crtl+shift+o)
+
 ### 0.1.9
 
 - Added spacing tool in palette.

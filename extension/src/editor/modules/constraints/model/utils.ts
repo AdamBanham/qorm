@@ -1,6 +1,16 @@
 import { ValueConstraint, TYPE as VC_TYPE } from "./valueConstraint";
 import { isEntity, isFact } from "../../model/util";
 
+
+/**
+ * Checks whether the given shape is an external constraint.
+ * @param shape 
+ * @returns whether the shape is an external constraint
+ */
+export function isExternalConstraint(shape: any): boolean {
+    return isValueConstraint(shape) || isObjectValueConstraint(shape) || isRoleValueConstraint(shape);
+}
+
 /**
  * Checks if the given shape is a ValueConstraint.
  * @param {object} shape shape to check

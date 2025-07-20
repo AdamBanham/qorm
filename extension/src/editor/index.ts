@@ -43,6 +43,7 @@ import OrmInteractionEvents from './modules/interaction-events';
 import OrmHelpInteractions from './modules/help-interactions';
 import OrmRenderingOptions from './modules/renderOptions';
 import OrmTabModel from './modules/tab-model';
+import OrmSymbolSearching from './modules/symbol-search';
 
 import { scaleToFitElements } from './modules/utils/canvasUtils';
 
@@ -94,7 +95,8 @@ export default function ORMEditor(container:HTMLLIElement) :
         ormMoving,
         OrmInteractionEvents,
         OrmHelpInteractions,
-        OrmTabModel
+        OrmTabModel,
+        OrmSymbolSearching
     ];
 
     var diagram =  new Diagram({

@@ -46,7 +46,8 @@ export default class OrmShortcuts {
         eventbus, keyboard, selection, elementFactory, 
         modeling, canvas, mouse, create, 
         connect, subtyping, placement,
-        lassoTool, spaceTool, tabModel){
+        lassoTool, spaceTool, tabModel,
+        searching ) {
         this._selection = selection;
         this._modeling = modeling;
         this._canvas = canvas;
@@ -60,6 +61,7 @@ export default class OrmShortcuts {
         this._lassoTool = lassoTool;
         this._spaceTool = spaceTool;
         this._tabModel = tabModel;
+        this._symbolSearch = searching;
 
         var that = this;
 
@@ -145,6 +147,9 @@ export default class OrmShortcuts {
         });
         keyboard.addListener((context) => {
             that.triggerTabForward(that, context);
+        });
+        keyboard.addListener((context) => {
+            that.triggerSymbolSearch(that, context);
         });
     }
 
@@ -694,6 +699,16 @@ export default class OrmShortcuts {
             }
         }
     }
+
+    triggerSymbolSearch(that, context){
+        const event = context.keyEvent;
+        if (event.ctrlKey && event.shiftKey && isKey(['o', 'O'], event)){
+            console.log('Triggering symbol search');
+            that._symbolSearch.fire('symbol.search.start');
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }
 }
 
 OrmShortcuts.$inject = [
@@ -710,5 +725,6 @@ OrmShortcuts.$inject = [
     'placementModule',
     'lassoTool',
     'spaceTool',
-    'tabModel'
+    'tabModel',
+    'symbolSearch'
 ];

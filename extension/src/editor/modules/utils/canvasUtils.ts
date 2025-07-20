@@ -1,6 +1,6 @@
 import { Position } from "../model/position";
 import { CanvasViewbox } from "diagram-js/lib/core/Canvas";
-import { ShapeLike } from "diagram-js/lib/model/Types";
+import { ElementLike, ShapeLike } from "diagram-js/lib/model/Types";
 import Canvas from "diagram-js/lib/core/Canvas";
 
 /**
@@ -58,4 +58,26 @@ export function scaleToFitElements(canvas:Canvas){
     ) * 0.8;
     canvas.zoom('fit-viewport', center);
     canvas.zoom(scale);
+}
+
+/**
+ * Moves the canvas viewbox to center on the given element.
+ * @param canvas current canvas 
+ * @param element shape to center on
+ */
+export function centerOnElement(canvas:Canvas, element:any): void {
+    const viewbox = canvas.viewbox();
+    const centerX = element.x + element.width / 2;
+    const centerY = element.y + element.height / 2;
+    
+    // Calculate the new viewbox position
+    const newViewbox = {
+        x: centerX - (viewbox.width / 2),
+        y: centerY - (viewbox.height / 2),
+        width: viewbox.width,
+        height: viewbox.height
+    };
+    
+    // Set the new viewbox
+    canvas.viewbox(newViewbox);
 }

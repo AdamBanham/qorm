@@ -34,6 +34,16 @@ export interface OrmEditorSettings {
     renderingOptions: OrmRenderingOptions;
 }
 
+export interface OrmEditorSymbolElement {
+    display: string,
+    id: string
+}
+
+export interface OrmEditorSymbolSearch {
+    selected?: OrmEditorSymbolElement,
+    options: Array<OrmEditorSymbolElement> 
+}
+
 export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
 
     public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -193,6 +203,10 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
                         }
                     });
                     break;
+                case 'symbol.search.show':
+                    // Handle symbol search request
+                    this.SymbolSearch(webviewPanel, message.search);
+                    break;
                 default:
                     console.warn(`Unknown message type: ${message.type}`);
             }
@@ -268,7 +282,7 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             <div class="content" data-vscode-context='{"webviewSection": "main", "mouseCount": 4, "preventDefaultContextMenuItems": true}'>
                 <h1> Qwery Object-Role-Modelling (ORM) Architect </h1>
                 
-                <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}'>
+                <div class="editor" id="editor" data-vscode-context='{"webviewSection": "editor"}' tabindex="0">
                     <!-- The editor will be rendered here -->
                     ${helpInteractionsContent}             
                     ${keyboardShortcutsContent}
@@ -280,6 +294,42 @@ export class OrmEditorProvider implements vscode.CustomTextEditorProvider {
             </body>
         </html>
         `;
-    } 
+    }
     
+    /**
+     * Makes a search bar appear, which allows the user to search for an element of the ORM schema.
+     * @param webview 
+     */
+    private async SymbolSearch(panel:vscode.WebviewPanel, search:OrmEditorSymbolSearch){
+        const items = search.options.map(opt => ({
+            label: opt.display,
+            description: opt.id
+        }));
+
+        const selected = await vscode.window.showQuickPick(items, {
+            placeHolder: 'Search for an ORM element...',
+            matchOnDescription: true
+        });
+
+        if (selected) {
+            panel.webview.postMessage({
+                type: 'search.selected',
+                context: {  
+                    selected: {
+                        display: selected.label,
+                        id: selected.description
+                    }
+                }
+            });
+        } else {
+            panel.webview.postMessage({
+                type: 'search.selected',
+                context: {  
+                    selected: null
+                }
+            });
+        }
+        panel.reveal(panel.viewColumn, false);
+    }
 }
+

@@ -4,6 +4,7 @@ export interface vsCodeMesage {
     type: string;
     alert?: string;
     message?: string;
+    search?: any
 }
 
 const EXT_STUB = "qORMa Editor\n";
@@ -29,6 +30,7 @@ export default class VscodeMessager {
     }
 
     capture(type:string, context:any) {
+        console.log(`Capturing event: ${busPrefix}${type}`, context);
         this._eventBus.fire(busPrefix + type, context);
     }
 
