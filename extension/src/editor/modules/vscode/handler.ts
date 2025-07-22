@@ -2,7 +2,7 @@ import DocuementParser from "./document";
 import { Document } from "./document";
 import { documentNode, DocumentEntity, DocumentFact, DocumentConnection } from "./document";
 import { isEqualSets } from "../utils/sets";
-import { isConstraint, isEntity, isExactlyEntity, isFact } from "../model/util";
+import { isEntity, isExactlyEntity, isFact } from "../model/util";
 import { Entity, unitHeight as entityHeight, unitWidth as entityWidth } from "../model/entities";
 import { unitHeight as factHeight, unitWidth as factWidth } from "../model/facts";
 import VscodeMessager from "./messager";
@@ -13,7 +13,6 @@ import { isConnection } from "diagram-js/lib/util/ModelUtil";
 import Canvas from "diagram-js/lib/core/Canvas";
 import EventBus from "diagram-js/lib/core/EventBus";
 import { isValueConstraint } from "../constraints/model/utils";
-import { off } from "process";
 
 interface differences {
     changes: Array<DocumentEntity | DocumentFact | DocumentConnection>;
